@@ -7,6 +7,7 @@ import subprocess
 from pathlib import Path
 import pandas as pd
 
+# Running the external python file run-classifier.py from the official repo for aMLP
 def run_official_classifier(
     amlp_repo: Path,
     dataset_train: Path,
@@ -19,16 +20,18 @@ def run_official_classifier(
     learning_rate: float,
     python_exe: str | None = None,
 ):
-    # 使うPython（run_amlp.pyを実行している環境のpythonに揃えるのが安全）
+
+    # Make sure that the setting aligns with the environment where run_amlp is run
     if python_exe is None:
         python_exe = sys.executable
 
-    # run-classifier.py のパスを repo から作る
+    # Create a path from the repo
     run_classifier_path = (amlp_repo / "run-classifier.py").resolve()
     if not run_classifier_path.exists():
         raise FileNotFoundError(f"run-classifier.py not found: {run_classifier_path}")
 
-    # ★重要：aMLP-japanese repo直下をCWDにする（emoji.jsonなど相対参照があるため）
+    # Since the script expects all the tok packages inside of CWD,
+    # CWD should be set up as third_party/aMLP-japanese, not the actual CWD
     repo_root = amlp_repo.resolve()
 
     cmd = [
@@ -45,14 +48,15 @@ def run_official_classifier(
     ]
 
     print("Running official aMLP classifier script:")
-    print(f"  CWD: {repo_root}")
-    print("  CMD:", " ".join(cmd))
+    print(f"CWD: {repo_root}")
+    print("CMD:", " ".join(cmd))
 
+    # subprocess.run for running the third-party script
     completed = subprocess.run(
-        cmd,
-        cwd=str(repo_root),
+        cmd, # run the assigned command
+        cwd=str(repo_root), # set up cwd properly
         capture_output=True,
-        text=True,
+        text=True, # Records the output (stdout/stderr)
     )
 
     print("\n----run-classifier.py STDOUT----\n")
@@ -66,6 +70,7 @@ def run_official_classifier(
             "See stdout/stderr above."
         )
 
+# Util: avoid proceeding with the extracted git repo broken
 def ensure_git_repo(repo_dir: Path, repo_url: str, sentinel: str):
     """
     Ensure a git repo is present at repo_dir by checking sentinel file.
@@ -99,7 +104,7 @@ def ensure_git_repo(repo_dir: Path, repo_url: str, sentinel: str):
             f"Repo layout may have changed or wrong sentinel."
         )
 
-    print("Clone successful.")
+    print("Clone successful")
 
 def _sanitize_label(label):
     """
