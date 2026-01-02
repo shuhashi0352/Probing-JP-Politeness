@@ -6,11 +6,10 @@ def eval_amlp(cfg, tokenizer, ckpt_path, test_df, out_dir):
     run_dir = out_dir / "amlp_baseline"
     run_dir.mkdir(parents=True, exist_ok=True)
 
-    # ここに：
+    # Upcoming...
     # - checkpoint load
-    # - test 推論
-    # - metrics（accuracy, f1, macro-f1など）
-    # を実装していく
+    # - test inference
+    # - metrics（accuracy, f1, macro-f1??）
 
     test_df.to_csv(run_dir / "test.csv", index=False)
 
