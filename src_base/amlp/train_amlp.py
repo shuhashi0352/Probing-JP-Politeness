@@ -165,7 +165,7 @@ def _copy_tokenizer_assets(tokenizer_dir, vocab_file, emoji_file, work_dir):
     if not dst_vocab.exists():
         shutil.copyfile(vocab_src, dst_vocab)
 
-
+# Controller
 def train_amlp(cfg, train_df, dev_df, out_dir):
     """
     Train aMLP using the OFFICIAL TensorFlow script (run-classifier.py) via subprocess.
