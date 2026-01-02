@@ -1,0 +1,11 @@
+# Data
+data/
+
+# External packages (aMLP-japanese)
+third_party/
+
+# aMLP-base-ja
+aMLP-base-ja/
+
+# Items for training
+runs/

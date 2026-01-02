@@ -1,0 +1,55 @@
+# Experiment
+experiment:
+  name: "baseline-classification-amlp"
+  output_dir: "./runs/baseline_amlp"
+  seed: 42
+  train_size: 0.8
+  ratio_dev_test: 0.5
+  stratify: True
+
+# Data
+data:
+  root_dir: "./data/"
+  text_col: "本文"
+  label_col: "Level"
+  honorific_col: "尊敬語"
+  humble_col: "謙譲語"
+  polite_col: "丁寧語"
+  field_col: "フィールド"
+
+# Models
+model:
+  name: "aMLP-base-ja"
+  download_url: "https://s3.ap-northeast-1.amazonaws.com/ailab.nama.ne.jp/models/aMLP-base-ja.tar.bz2"
+  repo_dir: "https://github.com/tanreinama/aMLP-japanese/blob/master"
+  amlp_repo_local: "./third_party/aMLP-japanese"
+  model_dir: "./aMLP-base-ja"
+
+# for pytorch
+optimizer: 
+  name: adamw
+  lr: 2e-5
+  weight_decay: 0.01
+
+scheduler:
+  name: linear
+  warmup_steps: 0.1
+
+# Training
+task:
+  num_classes: 4
+  batch_size: 4
+  num_epochs: 5
+  learning_rate: 1e-5
+  clean_text: False
+
+tokenizer:
+  type: japanese_bpe_v2
+  tokenizer_dir: "./third_party/Japanese-BPEEncoder_V2"
+  vocab_file: ja-swe24k.txt
+  emoji_file: emoji.json
+  vocab_size: 24000
+  encoder: Japanese-BPEEncoder_V2
+  bpe_dropout_rate: 0.0
+
+
