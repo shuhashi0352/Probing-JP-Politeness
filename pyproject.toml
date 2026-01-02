@@ -10,7 +10,7 @@ authors = [
 ]
 dependencies = [
   "tensorflow>=2.11,<2.16",
-  "numpy",
+  "numpy<2",
   "pandas",
   "scikit-learn>=1.2,<1.5",
   "pyyaml",
