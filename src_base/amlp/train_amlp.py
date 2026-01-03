@@ -7,7 +7,39 @@ import subprocess
 from pathlib import Path
 import pandas as pd
 
-# Running the external python file run-classifier.py from the official repo for aMLP
+def patch_amlp_run_classifier(run_classifier_path):
+    """
+    Patch third-party run-classifier.py to use legacy Adam optimizer.
+    This is needed for TF/Keras versions where the new optimizer can't track dynamically added variables.
+    Returns True if the file was modified.
+    """
+    text = run_classifier_path.read_text(encoding="utf-8")
+    original = text
+
+    # Replace all occurences of tensorflow.keras.optimizers with tensorflow.keras.optimizers.legacy
+    text = re.sub(
+        r"^from tensorflow\.keras\.optimizers import Adam\s*$",
+        "from tensorflow.keras.optimizers.legacy import Adam",
+        text,
+        flags=re.MULTILINE,
+    )
+
+    text = re.sub(
+        r"^from keras\.optimizers import Adam\s*$",
+        "from tensorflow.keras.optimizers.legacy import Adam",
+        text,
+        flags=re.MULTILINE,
+    )
+
+    # direct calls -> legacy.Adam
+    text = text.replace("tf.keras.optimizers.Adam", "tf.keras.optimizers.legacy.Adam")
+    text = text.replace("keras.optimizers.Adam", "tf.keras.optimizers.legacy.Adam")
+
+    if text != original:
+        run_classifier_path.write_text(text, encoding="utf-8")
+        return True
+    return False
+
 def run_official_classifier(
     amlp_repo: Path,
     dataset_train: Path,
@@ -21,6 +53,10 @@ def run_official_classifier(
     python_exe: str | None = None,
 ):
 
+    """
+    Running the external python file run-classifier.py from the official repo for aMLP
+    """
+
     # Make sure that the setting aligns with the environment where run_amlp is run
     if python_exe is None:
         python_exe = sys.executable
@@ -29,6 +65,12 @@ def run_official_classifier(
     run_classifier_path = (amlp_repo / "run-classifier.py").resolve()
     if not run_classifier_path.exists():
         raise FileNotFoundError(f"run-classifier.py not found: {run_classifier_path}")
+    
+    patched = patch_amlp_run_classifier(run_classifier_path)
+    if patched:
+        print(f"[patch] Updated {run_classifier_path.name}: use tf.keras.optimizers.legacy.Adam")
+    else:
+        print(f"[patch] No changes needed for {run_classifier_path.name}")
 
     # Since the script expects all the tok packages inside of CWD,
     # CWD should be set up as third_party/aMLP-japanese, not the actual CWD
@@ -71,7 +113,7 @@ def run_official_classifier(
         )
 
 # Util: avoid proceeding with the extracted git repo broken
-def ensure_git_repo(repo_dir: Path, repo_url: str, sentinel: str):
+def ensure_git_repo(repo_dir, repo_url, sentinel):
     """
     Ensure a git repo is present at repo_dir by checking sentinel file.
     If not present, clone repo_url into repo_dir.
@@ -203,7 +245,6 @@ def train_amlp(cfg, train_df, dev_df, out_dir):
         repo_url="https://github.com/tanreinama/Japanese-BPEEncoder_V2",
         sentinel="ja-swe24k.txt",
     )
-    run_classifier_path = amlp_repo / "run-classifier.py"
 
     out_dir = Path(out_dir)
     run_dir = out_dir / "amlp_baseline"
@@ -243,31 +284,6 @@ def train_amlp(cfg, train_df, dev_df, out_dir):
     batch_size = int(cfg["task"]["batch_size"])
     num_epochs = int(cfg["task"]["num_epochs"])
     learning_rate = float(cfg["task"]["learning_rate"])
-
-    cmd = [
-        sys.executable,
-        str(run_classifier_path.resolve()),
-        "--dataset",
-        str(train_ds_dir),
-        "--val_dataset",
-        str(dev_ds_dir),
-        "--base_model",
-        str(model_dir.resolve()),
-        "--batch_size",
-        str(batch_size),
-        "--num_epochs",
-        str(num_epochs),
-        "--learning_rate",
-        str(learning_rate),
-        "--log_dir",
-        str(log_dir),
-        "--run_name",
-        run_name,
-    ]
-
-    print("Running official aMLP classifier script:")
-    print("  CWD:", run_dir)
-    print("  CMD:", " ".join(cmd))
 
     run_official_classifier(
         amlp_repo=amlp_repo,
