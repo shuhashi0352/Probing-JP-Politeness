@@ -110,7 +110,7 @@ Controls to avoid overclaiming (if the time allows):
 - Shuffled-label control (probe should drop to chance)
 - Random-feature control (same dimensionality)
 
-> **Options:** LR couldn't be poweful enough => probe family beyond (e.g., linear SVM, small MLP, MDL probing).
+> **Options:** Logistic regression couldn't be poweful enough => probe family beyond LR (e.g., linear SVM, small MLP, MDL probing).
 
 ---
 
