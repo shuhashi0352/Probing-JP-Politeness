@@ -1,4 +1,4 @@
-# Probing-JP-Politeness (base_LineDistilBERT) — Setup with `uv`
+# Setup Instruction (uv / pip)
 
 This repo consists of:
 - `pyproject.toml` (project metadata + dependencies)
