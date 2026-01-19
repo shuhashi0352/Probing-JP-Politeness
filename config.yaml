@@ -1,7 +1,7 @@
 # Experiment
 experiment:
-  name: "baseline-classification-amlp"
-  output_dir: "./runs/baseline_amlp"
+  name: "baseline-classification-LineDistilBERT"
+  output_dir: "./results_lineDistilBERT"
   seed: 42
   train_size: 0.8
   ratio_dev_test: 0.5
@@ -9,6 +9,7 @@ experiment:
 
 # Data
 data:
+  url: "https://raw.githubusercontent.com/Liumx2020/KeiCO-corpus/main/keico_corpus(forLREC)-OldVersion.csv"
   root_dir: "./data/"
   text_col: "本文"
   label_col: "Level"
@@ -19,37 +20,36 @@ data:
 
 # Models
 model:
-  name: "aMLP-base-ja"
-  download_url: "https://s3.ap-northeast-1.amazonaws.com/ailab.nama.ne.jp/models/aMLP-base-ja.tar.bz2"
-  repo_dir: "https://github.com/tanreinama/aMLP-japanese/blob/master"
-  amlp_repo_local: "./third_party/aMLP-japanese"
-  model_dir: "./aMLP-base-ja"
+  name: "line-corporation/line-distilbert-base-japanese"
+  num_labels: 4
 
 # for pytorch
+torch:
+  dtype: 
+
 optimizer: 
   name: adamw
   lr: 2e-5
   weight_decay: 0.01
 
 scheduler:
-  name: linear
-  warmup_steps: 0.1
+  name: "linear"
+  warmup_steps: 0
 
 # Training
 task:
   num_classes: 4
-  batch_size: 4
+  num_warmsteps: 0
+  batch_size: 16
   num_epochs: 5
-  learning_rate: 1e-5
+  learning_rate: 1.0e-5
   clean_text: False
+  shuffle: True
 
 tokenizer:
-  type: japanese_bpe_v2
-  tokenizer_dir: "./third_party/Japanese-BPEEncoder_V2"
-  vocab_file: ja-swe24k.txt
-  emoji_file: emoji.json
-  vocab_size: 24000
-  encoder: Japanese-BPEEncoder_V2
-  bpe_dropout_rate: 0.0
-
+  name: "line-corporation/line-distilbert-base-japanese"
+  truncation: True
+  return_tensors: "pt"
+  trust_remote_code: True
+  padding_strategy: "max_length"
 

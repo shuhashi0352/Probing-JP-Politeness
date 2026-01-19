@@ -1,11 +1,14 @@
 # Data
 data/
 
-# External packages (aMLP-japanese)
-third_party/
+# Results
+results_lineDistilBERT/
 
-# aMLP-base-ja
-aMLP-base-ja/
+# Compiled bytecode
+src_base/__pycache__/
+line_distil_bert/__pycache__/
 
-# Items for training
-runs/
+# venv
+.venv/
+venv/
+.env/

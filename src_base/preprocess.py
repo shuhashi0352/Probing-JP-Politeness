@@ -1,82 +1,54 @@
-from pathlib import Path
+import torch
 import yaml
-import json
-import sys
-import requests
+from transformers import AutoTokenizer
+import numpy as np
 
-# Force it to look for "config.yaml" from "Probing-JP-Politeness", NOT the current working directory
-ROOT = Path(__file__).resolve().parents[1]
-CONFIG_PATH = ROOT / "config.yaml"
-TOKENIZER_DIR = ROOT / "tokenizer" / "Japanese-BPEEncoder_V2"
+def load_yaml(path): # "config.yaml"
+    with open(path, "r", encoding="utf-8") as f:
+        return yaml.safe_load(f)
 
-FILES = {
-    "encode_swe.py": "https://raw.githubusercontent.com/tanreinama/Japanese-BPEEncoder_V2/master/encode_swe.py",
-    "emoji.json": "https://raw.githubusercontent.com/tanreinama/Japanese-BPEEncoder_V2/master/emoji.json",
-    "ja-swe24k.txt": "https://raw.githubusercontent.com/tanreinama/Japanese-BPEEncoder_V2/master/ja-swe24k.txt",
-}
+def build_tokenizer(cfg, train, dev, test, text, label, df):
 
-# Download required files locally for the tokenizer if not exist
-def ensure_tokenizer_files():
-
-    # Create an upper directory (tokenizer/)
-    TOKENIZER_DIR.mkdir(parents=True, exist_ok=True)
-
-    for fname, url in FILES.items():
-
-        # Create a path
-        out = TOKENIZER_DIR / fname
-
-        # If the file already exists, skip fetching it
-        if out.exists():
-            print(f"{fname} exists. Skip downloading...")
-            continue
-        
-        print(f"{fname} downloading")
-        r = requests.get(url, timeout=60)
-        r.raise_for_status()
-        # Write the raw version of the file
-        out.write_bytes(r.content)
-        print(f"{fname} saved")
-
-    return TOKENIZER_DIR
+    tokenizer = cfg["tokenizer"]
+    truncation = tokenizer["truncation"]
+    return_tensors = tokenizer["return_tensors"]
+    LineTokenizer = tokenizer["name"]
+    trust_remote_code = tokenizer["trust_remote_code"]
+    padding = tokenizer["padding_strategy"]
 
 
-def build_tokenizer():
+    dtype = torch.long
 
-    # Pull the path for the tokenizer to be downloaded
-    ensure_tokenizer_files()
+    tok = AutoTokenizer.from_pretrained(LineTokenizer, trust_remote_code=trust_remote_code)
+    sentence_lengths = [len(tok.tokenize(sent)) for sent in df[text].dropna()]
+    max_padding_length = int(np.percentile(sentence_lengths, 95))
 
-    with CONFIG_PATH.open() as f:
-        cfg = yaml.safe_load(f)
+    train_enc = tok(
+        list(train[text].dropna()),
+        padding=padding,
+        truncation=truncation, 
+        max_length=max_padding_length, 
+        return_tensors=return_tensors)
 
-    tok_cfg = cfg["tokenizer"]
+    dev_enc = tok(
+        list(dev[text].dropna()), 
+        padding=padding, 
+        truncation=truncation, 
+        max_length=max_padding_length, 
+        return_tensors=return_tensors)  
 
-    with (TOKENIZER_DIR / tok_cfg["vocab_file"]).open(encoding="utf-8") as f:
-        bpe = f.read().splitlines()
+    test_enc = tok(
+        list(test[text].dropna()), 
+        padding=padding, 
+        truncation=truncation, 
+        max_length=max_padding_length, 
+        return_tensors=return_tensors)  
+    
+    # Pytorch expects 4 classes RANGED FROM 0 to 3
+    # NOT 1 to 4 as labeled in the dataset
+    # So -1 for every label
+    train_labels = torch.tensor(list(train[label]), dtype=dtype) - 1
+    dev_labels = torch.tensor(list(dev[label]), dtype=dtype) - 1
+    test_labels = torch.tensor(list(test[label]), dtype=dtype) - 1
 
-    with (TOKENIZER_DIR / tok_cfg["emoji_file"]).open(encoding="utf-8") as f:
-        emoji = json.load(f)
-
-    """
-    Since Japanese-BPEEncoder_V2 is not a python package, 
-    we need to let the installer to search this package for modules.
-    Insert the file path into the first row of the import list (the highest priority), 
-    so that Japanese-BPEEncoder_V2 can be properly imported. 
-    """
-
-    sys.path.insert(0, str(TOKENIZER_DIR))
-    from encode_swe import SWEEncoder_ja
-
-    # Load the tokenizer
-    enc = SWEEncoder_ja(bpe, emoji)
-
-    return enc
-
-if __name__ == "__main__":
-    enc = build_tokenizer()
-
-    # Test
-    # p = enc.encode("今日は日曜焼き肉定食をたべる")
-    # print(p)
-    # print(enc.decode(p))
-    # print([enc.decode([i]) for i in p])
+    return train_enc, dev_enc, test_enc, train_labels, dev_labels, test_labels

@@ -9,10 +9,15 @@ authors = [
     "Victor Shi <wencshi@iu.edu>"
 ]
 dependencies = [
-  "tensorflow>=2.11,<2.16",
+  "torch>2.5.1",
   "numpy<2",
   "pandas",
   "scikit-learn>=1.2,<1.5",
   "pyyaml",
   "requests",
+  "tqdm",
+  "transformers>=4.49,<5",
+  "sentencepiece",
+  "fugashi",
+  "unidic_lite"
 ]
