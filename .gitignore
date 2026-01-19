@@ -1,11 +1,12 @@
 # Data
 data/
 
-# External packages (aMLP-japanese)
-third_party/
+# Results
 
-# aMLP-base-ja
-aMLP-base-ja/
+# Compiled bytecode
+*.py[cod]
 
-# Items for training
-runs/
+# venv
+.venv/
+venv/
+.env/
