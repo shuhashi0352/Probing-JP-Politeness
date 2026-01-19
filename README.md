@@ -30,6 +30,16 @@ We use **KeiCO / KeiCorpus**:
 The dataset provides Japanese text paired with **four politeness levels** (as defined by the authors’ SFL-based framework).  
 - This project follows the original definition/structure of politeness used in KeiCO.
 
+#### Dataset Statistics (from Liu & Kobayashi, 2022) -> see [See table 3 in the paper](https://aclanthology.org/2022.dclrl-1.3/)
+
+| Honorific level | Sentences | Avg. sentence length | Avg. kanji per sentence | Word tokens | Word types | Yule’s characteristic K |
+|---|---:|---:|---:|---:|---:|---:|
+| Level 1 | 2,584 | 18.2 | 2.6 | 47,111 | 4,744 | 135.70 |
+| Level 2 | 2,046 | 16.4 | 2.1 | 33,476 | 3,897 | 136.23 |
+| Level 3 | 2,694 | 15.2 | 1.8 | 40,980 | 4,448 | 130.28 |
+| Level 4 | 2,683 | 13.5 | 1.6 | 36,233 | 4,315 | 129.80 |
+| **Total** | **10,007** | **15.8** | **2.0** | **157,806** | **6,465** | **125.54** |
+
 ---
 
 ## Task Definition
