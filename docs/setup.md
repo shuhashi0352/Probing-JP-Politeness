@@ -27,7 +27,7 @@ d.  [Run scripts using uv run](#run-scripts-using-uv-run)
 
 
 ### 2. pip
-a. [Install Python 3.11+](#install-python-311)(optional)
+a. [Install Python 3.11+](#install-python-311) (If you originally have a lower version)
 
 b. [Create and activate a virtual environment](#create-and-activate-a-virtual-environment)
 
