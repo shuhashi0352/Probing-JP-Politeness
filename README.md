@@ -110,17 +110,18 @@ Interpretation:
 
 Here's the big picture of how the direction can be extracted (illustrative):
 
-1. Let's take two sentences "ありがとう"(casual) and "ありがとうございます" (polite), both of which mean "Thank you."
-2. LineDistilBERT has 768 dimentions of hidden states, which means there's a 768-dimentional space for each sentence. 
-3. Each sentence produces a vector.
+Let's take two sentences "ありがとう" (casual) and "ありがとうございます" (polite), both of which mean "Thank you." LineDistilBERT has 768 dimentions of hidden states, which means there's a 768-dimentional space for each sentence. 
+
+Each sentence produces a vector.
 
 $x_{\text{casual}}, \;x_{\text{polite}} \in \mathbb{R}^{768}$
 
-4. A direction $v$ represents the arrow between them:
+A direction $v$ represents the arrow between them:
 
 $v = x_{\text{polite}} - x_{\text{casual}}$
 - That subtraction gives you an arrow pointing from “casual-ish region” toward “polite-ish region.”
-5. The direction $v$ is normalized:
+
+The direction $v$ is normalized:
 
 $\hat v = \frac{v}{\|v\|}$
 
@@ -139,43 +140,37 @@ $v = \mu_{\text{1}} - \mu_{\text{4}}, \quad \hat v = \frac{v}{\lVert v\rVert}.$
 
 ---
 
-### 3) Embedding extraction (features-as-data)
-After selecting the best layer(s), we extract embeddings and build a probing dataset:
+### 3) Causality Check
 
-Each example includes:
-- Representation vector(s) from selected layer(s)
-- Gold politeness label
-- Potentially... metadata such as text length, domain, etc.
+#### Option A: Intervention
+Now we have:
 
-Important design choice:
-- We primarily collect embeddings for examples the baseline model classified **correctly**, because we want to study how the model supports correct behavior.
-- We may also store **incorrect-only** and **all** examples for diagnostic comparisons.
+- $h$: the hidden-state vector for a sentence (e.g., CLS at layer $l$*), shape $d$
 
-> **TODO:** Finalize whether the default probing dataset is correct-only vs all vs split (or experiment with all of them?)
+- $\hat v$: a unit vector (length 1) that represents “politeness direction”
 
----
+Given that $\hat v$ has length 1, we use the dot product:
 
-### 4) Probing (main evaluation)
-We train probes on the extracted embedding dataset to measure how strongly politeness is encoded.
+$h \cdot \hat v$
 
-Default probe (Not yet determined):
-- **Multinomial logistic regression (L2)**
+ This represents the scalar projection of $h$ onto that direction — basically “how far $h$ goes in the $\hat v$ direction”.
 
-Controls to avoid overclaiming (if the time allows):
-- Shuffled-label control (probe should drop to chance)
-- Random-feature control (same dimensionality)
+> **Intuition:** $h \cdot \hat v$ is “how much politeness” is in h along that axis
 
-> **Options:** Logistic regression couldn't be poweful enough => probe family beyond LR (e.g., linear SVM, small MLP, MDL probing).
+After the dot product, we take that scalar amount and turn it back into a vector by multiplying by $\hat v$:
 
----
+$\underbrace{(h \cdot \hat v)}_{\text{amount}} \times \underbrace{\hat v}_{\text{direction}} = \text{component of } h \text{ along } \hat v$
 
-## Evaluation
+This is literally **“the politeness component inside h”**
 
-### Baseline classifier evaluation
-- Accuracy
-- Macro-F1
-- Confusion matrix
+Finally, we subtract it to remove that component:
 
-### Probing evaluation
-- Macro-F1 per layer / per representation type
-- Optional: Probe-vs-control gap (true labels vs shuffled labels)
+$h' = h - (h \cdot \hat v)\hat v$
+
+> **Geometrically:** $h'$ is the projection of $h$ onto the hyperplane perpendicular to $\hat v$.
+
+Below is the blueprint of **intervention** to check causality:
+
+1. start with the full representation $h$
+2. subtract the part that lies along politeness axis
+3. the result $h'$ is $h$ with “politeness-axis information” removed
