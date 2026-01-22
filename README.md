@@ -113,29 +113,27 @@ Here's the big picture of how the direction can be extracted (illustrative):
 1. Let's take two sentences "ありがとう"(casual) and "ありがとうございます" (polite), both of which mean "Thank you."
 2. LineDistilBERT has 768 dimentions of hidden states, which means there's a 768-dimentional space for each sentence. 
 3. Each sentence produces a vector.
-$$
-x_{\text{casual}}
-$$
-$$
-x_{\text{polite}}
-$$
+
+$x_{\text{casual}}, \;x_{\text{polite}} \in \mathbb{R}^{768}$
 
 4. A direction $v$ represents the arrow between them:
-$$
-v = x_{\text{polite}} - x_{\text{casual}}
-$$
+
+$v = x_{\text{polite}} - x_{\text{casual}}$
 - That subtraction gives you an arrow pointing from “casual-ish region” toward “polite-ish region.”
 5. The direction $v$ is normalized:
-$$
-\hat v = \frac{v}{\|v\|}
-$$
 
+$\hat v = \frac{v}{\|v\|}$
+
+#### Direction estimation
 However, the class means $\mu_{\text{level}}$ are employed since we are interested in the consistent change across many examples when politeness changes. 
 
-For example, if the direction that points from the “average of level 1 embedding” toward the “average of level 2 embedding.”:
-$$
-v = \mu_{\text{2}} - \mu_{\text{1}}
-$$
+Because a single pair is noisy, we estimate v from many labeled examples using class mean embeddings. For each politeness level k, we compute the mean embedding:
+
+$\mu_k = \frac{1}{N_k}\sum_{i: y_i = k} x_i.$
+
+We then define a direction using the extremes (most polite = level 1, most casual = level 4) and normalize it:
+
+$v = \mu_{\text{1}} - \mu_{\text{4}}, \quad \hat v = \frac{v}{\lVert v\rVert}.$
 
  This captures the typical shift in representation associated with politeness.
 
