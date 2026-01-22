@@ -140,16 +140,23 @@ $v = \mu_{\text{1}} - \mu_{\text{4}}, \quad \hat v = \frac{v}{\lVert v\rVert}.$
 
 ---
 
-### 3) Causality Check
+### 3) Causality Check / Causal Intervention
 
-#### Option A: Intervention
-Now we have:
+In this test, we basically change (remove) an internal variable (associated with politeness) on purpose and observe the effect. 
+
+#### Option A: Direction Removal (Ablation)
+
+> **Question:** With the same datapoint, what level would the model predict if the feature of politeness was removed? Would removing that feature cause the model to predict the level involved in "casual"?
+
+#### How we execute direction removal
+
+Given that we have:
 
 - $h$: the hidden-state vector for a sentence (e.g., CLS at layer $l$*), shape $d$
 
 - $\hat v$: a unit vector (length 1) that represents “politeness direction”
 
-Given that $\hat v$ has length 1, we use the dot product:
+and we know that $\hat v$ has length 1, we use the dot product:
 
 $h \cdot \hat v$
 
@@ -174,3 +181,42 @@ Below is the blueprint of **intervention** to check causality:
 1. start with the full representation $h$
 2. subtract the part that lies along politeness axis
 3. the result $h'$ is $h$ with “politeness-axis information” removed
+
+#### Option B: Activation Patching (Swap)
+
+In this test, we replace receiver’s hidden state with donor’s hidden state. Concretely, we paste polite internal state into casual sentence and see if output becomes polite.
+
+> **Question:** If we take the internal representation from a polite sentence at layer $l$ and paste it into a casual sentence’s forward pass, does the model’s prediction follow the pasted representation?
+
+#### How we execute activation patching
+
+Run the model normally on each input:
+
+- $y_d = f(x_d)$ → the model’s output for the donor sentence
+- $y_r = f(x_r)$ → the model’s output for the receiver sentence
+
+The outputs represent **probabilities** (the value before $\arg\max$ is done).
+
+> We expected them to be different. Otherwise, they can't be flipped.
+
+At layer $l$, the model has hidden states [CLS]:
+
+$h_{\text{CLS}}^{(l)} \in \mathbb{R}^{d}$
+
+We do a forward pass on the receiver $x_r$, but at layer $l$ you overwrite its [CLS] with the donor’s.
+
+$H_{r,\text{patched}}^{(l)}[0] = H_d^{(l)}[0]$
+
+> index 0 is CLS token
+
+This is when **patching** happens.
+
+Then let the model continue forward from layer $l + 1$ to the end and compute output (probability):
+
+$y_{r \leftarrow d} = f_{\text{patched}}(x_r)$
+
+If layer $l$ encodes politeness in a way the model uses, then the probability of donor class increases, meaning that the receiver’s prediction should shift toward the donor’s politeness level.
+
+> **CAUTION:** Both tests A and B are not necessarily capable of holistically supporting causality because the whole instances in the dataset do not only vary across the aspect of politeness, but also other variety of factors can influence the model's prediction (e.g., tense). 
+
+> **Future Implementation:** To eradicate/reduce the *noise*, we need to create a dataset where only minimum pairs exist in terms of politeness.
