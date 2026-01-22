@@ -82,7 +82,7 @@ To identify where politeness is encoded, we extract representations from each la
 
 > **Why logistic regression?** Because (multinomial) logistic regression evaluates each layer in terms of how much it's linearly decodable. It means if linear probes succeed, the representaion has made politeness explicit and easy to read out.
 
-- For each layer "l":
+- For each layer $l$:
   - Extract hidden states (representation choice: `[CLS]` and/or pooled tokens)
   > The [CLS] token is designed to represent the whole sentence.
   - Train a linear probe on train features
@@ -92,7 +92,9 @@ To identify where politeness is encoded, we extract representations from each la
 > **Why Heatmap?** Choosing the best layer based on the logistic regression might not be enough. (Apperance of politeness doesn't necessarily justify the fact that the model **uses the feature of politeness** through its learning process. Thus, we use the heatmap to pick where to look, and check **causality** around the layer.
 
 There are two choices to test causality:
-- **Intervention** -> remove the politeness direction at the layer to see if politeness behavior drops (e.g., The model could predict level 4 for the instance that it predicted level 1 before the intervention)
+- **Intervention** -> remove the politeness direction at the layer to see if politeness behavior drops (e.g., The model could predict level 4 for the instance that it predicted level 1 before the intervention).
+
+> As for this test, we need to extract the politeness direction $v$ for the model to be trained with. See [Extracting the Politeness Direction](#extracting-the-politeness-direction)
 
 - **Activation patching** -> swap the layer's activation between polite (level 1-2) vs casual (level 4) sentences to see if output also swaps.
 
@@ -100,6 +102,42 @@ Interpretation:
 - High performance at layer "l" suggests politeness is **linearly decodable** from that layer’s representations.
 - Successful results in the causality check implies that the model uses politeness to learn.
 - This provides a **justification** for selecting layer(s) for embedding extraction.
+
+---
+
+### Extracting the Politeness Direction
+> **Direction $v$**: We are looking for a vector that points to the feature of politeness in the embedding space.
+
+Here's the big picture of how the direction can be extracted (illustrative):
+
+1. Let's take two sentences "ありがとう"(casual) and "ありがとうございます" (polite), both of which mean "Thank you."
+2. LineDistilBERT has 768 dimentions of hidden states, which means there's a 768-dimentional space for each sentence. 
+3. Each sentence produces a vector.
+$$
+x_{\text{casual}}
+$$
+$$
+x_{\text{polite}}
+$$
+
+4. A direction $v$ represents the arrow between them:
+$$
+v = x_{\text{polite}} - x_{\text{casual}}
+$$
+- That subtraction gives you an arrow pointing from “casual-ish region” toward “polite-ish region.”
+5. The direction $v$ is normalized:
+$$
+\hat v = \frac{v}{\|v\|}
+$$
+
+However, the class means $\mu_{\text{level}}$ are employed since we are interested in the consistent change across many examples when politeness changes. 
+
+For example, if the direction that points from the “average of level 1 embedding” toward the “average of level 2 embedding.”:
+$$
+v = \mu_{\text{2}} - \mu_{\text{1}}
+$$
+
+ This captures the typical shift in representation associated with politeness.
 
 ---
 
