@@ -80,17 +80,26 @@ Output:
 ### 2) Layerwise probing (heatmap stage)
 To identify where politeness is encoded, we extract representations from each layer and train a **multinomial logistic regression (L2-regularized)** per layer:
 
-- For each layer l:
-  - Extract hidden states \( h^\ell \) (representation choice: `[CLS]` and/or pooled tokens)
+> **Why logistic regression?** Because (multinomial) logistic regression evaluates each layer in terms of how much it's linearly decodable. It means if linear probes succeed, the representaion has made politeness explicit and easy to read out.
+
+- For each layer "l":
+  - Extract hidden states (representation choice: `[CLS]` and/or pooled tokens)
+  > The [CLS] token is designed to represent the whole sentence.
   - Train a linear probe on train features
-  - Evaluate on test features
-- Visualize results as a **heatmap over layers** (e.g., macro-F1)
+  - Evaluate on test features(e.g., macro-F1)
+- Visualize results as a **heatmap over layers** 
+
+> **Why Heatmap?** Choosing the best layer based on the logistic regression might not be enough. (Apperance of politeness doesn't necessarily justify the fact that the model **uses the feature of politeness** through its learning process. Thus, we use the heatmap to pick where to look, and check **causality** around the layer.
+
+There are two choices to test causality:
+- **Intervention** -> remove the politeness direction at the layer to see if politeness behavior drops (e.g., The model could predict level 4 for the instance that it predicted level 1 before the intervention)
+
+- **Activation patching** -> swap the layer's activation between polite (level 1-2) vs casual (level 4) sentences to see if output also swaps.
 
 Interpretation:
-- High performance at layer l suggests politeness is **linearly decodable** from that layer’s representations.
-- This provides a *justification* for selecting layer(s) for embedding extraction.
-
-> THOUGH... “decodable” does not automatically mean “causally used.”  
+- High performance at layer "l" suggests politeness is **linearly decodable** from that layer’s representations.
+- Successful results in the causality check implies that the model uses politeness to learn.
+- This provides a **justification** for selecting layer(s) for embedding extraction.
 
 ---
 
