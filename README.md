@@ -77,31 +77,64 @@ Output:
 
 ---
 
-### 2) Layerwise probing (heatmap stage)
+### 2) Layerwise probing
 To identify where politeness is encoded, we extract representations from each layer and train a **multinomial logistic regression (L2-regularized)** per layer:
 
 > **Why logistic regression?** Because (multinomial) logistic regression evaluates each layer in terms of how much it's linearly decodable. It means if linear probes succeed, the representaion has made politeness explicit and easy to read out.
 
 - For each layer $l$:
-  - Extract hidden states (representation choice: `[CLS]` and/or pooled tokens)
+  - Extract hidden states (representation choice: `[CLS]`)
   > The [CLS] token is designed to represent the whole sentence.
   - Train a linear probe on train features
-  - Evaluate on test features(e.g., macro-F1)
+  - Evaluate on dev features(e.g., macro-F1)
 - Visualize results as a **heatmap over layers** 
 
-> **Why Heatmap?** Choosing the best layer based on the logistic regression might not be enough. (Apperance of politeness doesn't necessarily justify the fact that the model **uses the feature of politeness** through its learning process. Thus, we use the heatmap to pick where to look, and check **causality** around the layer.
+- **Choose the best layer using dev only** (avoid test leakage).
+- Use test only once for final reporting after layer selection.
 
-There are two choices to test causality:
-- **Intervention** -> remove the politeness direction at the layer to see if politeness behavior drops (e.g., The model could predict level 4 for the instance that it predicted level 1 before the intervention).
+#### Step A: Extract representations from each layer
+- Run the (frozen) encoder with `output_hidden_states=True` to obtain hidden states for all layers in one forward pass.
+- For each sentence and each layer *l*, convert token-level outputs into a **single sentence vector**.
 
-> As for this test, we need to extract the politeness direction $v$ for the model to be trained with. See [Extracting the Politeness Direction](#extracting-the-politeness-direction)
+Representation choice (default):
+- **`[CLS]` vector**
+  - Take the hidden state of the `[CLS]` token at layer *l* as the sentence embedding.
+  - Rationale: `[CLS]` is designed to represent the whole sentence for classification.
 
-- **Activation patching** -> swap the layer's activation between polite (level 1-2) vs casual (level 4) sentences to see if output also swaps.
+What this produces:
+- Let the number of sentences be **N** and hidden size be **768**.
+- For each layer *l*, we build a feature matrix:
+  - `X_train^l` with shape **(N_train × 768)**
+  - `X_dev^l` with shape **(N_dev × 768)**
+  - (optionally `X_test^l` for final reporting only)
 
-Interpretation:
-- High performance at layer "l" suggests politeness is **linearly decodable** from that layer’s representations.
-- Successful results in the causality check implies that the model uses politeness to learn.
-- This provides a **justification** for selecting layer(s) for embedding extraction.
+> Note: Mean pooling over non-padding tokens is a common alternative; we use `[CLS]` as the main setting and may report mean pooling as an ablation.
+
+#### Step B: Train a linear probe per layer
+- For each layer *l*:
+  - Train a **multinomial logistic regression (L2-regularized)** on `X_train^l` → `y_train`
+  - Tune **C** (regularization strength) using dev (e.g., `LogisticRegressionCV` or a small grid search)
+  - If class imbalance is strong, consider `class_weight="balanced"`
+
+#### Step C: Evaluate and select the “best layer”
+- For each layer *l*:
+  - Evaluate on `X_dev^l` (recommended metric: **macro-F1**)
+- Select:
+  - `best_layer = argmax_l macroF1_dev(l)`
+
+Tie-breaking (recommended):
+- If multiple layers are within a small margin:
+  - Prefer the layer that is **more stable** across random seeds / folds, OR
+  - Use a **1-SE rule** (choose the simplest/earliest layer within one standard error of the best)
+
+#### Step D: Visualize as a heatmap over layers
+- Plot dev scores (macro-F1, optionally accuracy) across layers.
+- The peak region indicates where politeness is most linearly decodable.
+
+Output:
+- Per-layer dev scores (macro-F1, accuracy)
+- A heatmap over layers
+- Selected `best_layer` for downstream analysis (e.g., embedding extraction / interventions)
 
 ---
 
