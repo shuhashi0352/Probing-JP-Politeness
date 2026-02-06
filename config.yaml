@@ -1,0 +1,55 @@
+# Experiment
+experiment:
+  name: "baseline-classification-LineDistilBERT"
+  output_dir: "./results_lineDistilBERT"
+  seed: 42
+  train_size: 0.8
+  ratio_dev_test: 0.5
+  stratify: True
+
+# Data
+data:
+  url: "https://raw.githubusercontent.com/Liumx2020/KeiCO-corpus/main/keico_corpus(forLREC)-OldVersion.csv"
+  root_dir: "./data/"
+  text_col: "本文"
+  label_col: "Level"
+  honorific_col: "尊敬語"
+  humble_col: "謙譲語"
+  polite_col: "丁寧語"
+  field_col: "フィールド"
+
+# Models
+model:
+  name: "line-corporation/line-distilbert-base-japanese"
+  num_labels: 4
+
+# for pytorch
+torch:
+  dtype: 
+
+optimizer: 
+  name: adamw
+  lr: 2.0e-5
+  weight_decay: 0.01
+
+scheduler:
+  name: "linear"
+  warmup_steps: 0
+
+# Training
+task:
+  num_classes: 4
+  num_warmsteps: 0
+  batch_size: 16
+  num_epochs: 5
+  learning_rate: 1.0e-5
+  clean_text: False
+  shuffle: True
+
+tokenizer:
+  name: "line-corporation/line-distilbert-base-japanese"
+  truncation: True
+  return_tensors: "pt"
+  trust_remote_code: True
+  padding_strategy: "max_length"
+

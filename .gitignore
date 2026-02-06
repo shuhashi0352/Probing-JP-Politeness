@@ -2,11 +2,15 @@
 data/
 
 # Results
+results_lineDistilBERT/
 
 # Compiled bytecode
-*.py[cod]
+src_base/__pycache__/
+line_distil_bert/__pycache__/
 
 # venv
 .venv/
 venv/
 .env/
+
+.DS_Store
