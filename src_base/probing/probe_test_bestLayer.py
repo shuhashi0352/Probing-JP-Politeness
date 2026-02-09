@@ -28,7 +28,6 @@ def train_trdev_probe_and_eval_test(
         LogisticRegression(
             penalty="l2",
             solver="lbfgs",
-            multi_class="multinomial",
             max_iter=max_iter,
             C=C,
         )

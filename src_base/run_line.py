@@ -62,6 +62,8 @@ def run_line(cfg):
     X_train_layers, y_train = extract_cls_by_layer(train_dl, model, device, desc="Extract train")
     X_dev_layers, y_dev = extract_cls_by_layer(dev_dl, model, device, desc="Extract dev")
 
+    # print(X_dev_layers, y_dev)
+
     #8. Layerwise probing
     dev_f1_macro_by_layer, best_layer, best_f1_macro = layerwise_logreg_scores(X_train_layers, y_train, X_dev_layers, y_dev)
     print(f"[Layerwise probing] Best layer = {best_layer} (dev macro-F1 = {best_f1_macro:.3f})")
