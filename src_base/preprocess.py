@@ -2,6 +2,7 @@ import torch
 import yaml
 from transformers import AutoTokenizer
 import numpy as np
+from torch.utils.data import DataLoader
 
 def load_yaml(path): # "config.yaml"
     with open(path, "r", encoding="utf-8") as f:

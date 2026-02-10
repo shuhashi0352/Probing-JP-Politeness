@@ -1,14 +1,16 @@
 from pathlib import Path
 import yaml
-from data import pull_data, read_data, split_df
+from src_base.data import pull_data, read_data, split_df, split_donor_receiver_df
 from preprocess import build_tokenizer
-from line_distil_bert.train_line import prepare_model, train
+from line_distil_bert.train_line import prepare_model, make_dataloader, train
 from line_distil_bert.eval_line import dev, test
 from line_distil_bert.checkpoint import inspect_checkpoint
-from probing.extract_cls import extract_cls_by_layer
+from probing.extract_cls import extract_cls_by_layer, extract_cls_at_layer
 from probing.visual import line_graph, heatmap, compare_ft_vs_probe_bar
 from probing.probe_dev import layerwise_logreg_scores
 from probing.probe_test_bestLayer import train_trdev_probe_and_eval_test
+from probing.utils import get_encoder_layer_module
+from probing.patching import causal_cls_patching_dev
 
 def load_yaml(path): # "config.yaml"
     with open(path, "r", encoding="utf-8") as f:
@@ -35,11 +37,11 @@ def run_line(cfg):
     
     #1. Pull and read the dataset to split it into train/dev/test
     file_path = pull_data(cfg)
-    df = read_data(file_path)
-    train_df, dev_df, test_df, text, label = split_df(cfg, df)
+    all_df = read_data(file_path)
+    train_df, dev_df, test_df, text, label = split_df(cfg, all_df)
 
     #2. Build the tokenizer
-    train_enc, dev_enc, test_enc, train_labels, dev_labels, test_labels = build_tokenizer(cfg, train_df, dev_df, test_df, text, label, df)
+    train_enc, dev_enc, test_enc, train_labels, dev_labels, test_labels = build_tokenizer(cfg, train_df, dev_df, test_df, text, label, all_df)
 
     train_dl, dev_dl, test_dl, model, device = prepare_model(cfg, train_enc, dev_enc, test_enc, train_labels, dev_labels, test_labels)
 
@@ -73,11 +75,35 @@ def run_line(cfg):
     # heatmap(dev_f1_macro_by_layer)
 
     #10. Test on the best layer
-    X_test_layers, y_test = extract_cls_by_layer(test_dl, model, device, desc="Extract test")
+    X_test_layers, y_test, test_batch_no_labels = extract_cls_by_layer(test_dl, model, device, desc="Extract test")
     probe, accuracy_pr, macro_f1_pr = train_trdev_probe_and_eval_test(X_train_layers, y_train, X_test_layers, y_test, out_dir, best_layer=best_layer, C=1.0)
 
     #11. Compare the probing score (best layer) to the finetune test score (all layers passed)
     compare_ft_vs_probe_bar(accuracy_ft, macro_f1_ft, accuracy_pr, macro_f1_pr)
+
+    """
+    Causality Test
+    """
+
+    train_donor_df, train_receiver_df = split_donor_receiver_df(train_df, label, split="train", donor_label=0, receiver_label=3)
+    dev_donor_df, dev_receiver_df = split_donor_receiver_df(dev_df, label, split="dev", donor_label=0, receiver_label=3)
+    test_donor_df, test_receiver_df = split_donor_receiver_df(test_df, label, split="test", donor_label=0, receiver_label=3)
+
+    _, donor_dev_enc, donor_test_enc, _, donor_dev_labels, donor_test_labels = build_tokenizer(cfg, train_donor_df, dev_donor_df, test_donor_df, text, label, all_df)
+    _, receiver_dev_enc, receiver_test_enc, _, receiver_dev_labels, receiver_test_labels = build_tokenizer(cfg, train_receiver_df, dev_receiver_df, test_receiver_df, text, label, all_df)
+
+    donor_dev_dl = make_dataloader(donor_dev_enc, donor_dev_labels, cfg)
+    receiver_dev_dl = make_dataloader(receiver_dev_enc, receiver_dev_labels, cfg)
+
+    layer_module = get_encoder_layer_module(model, layer_idx=best_layer)
+
+    patch_results_dev = causal_cls_patching_dev(model, donor_dev_dl, receiver_dev_dl, layer_module, best_layer, device, out_dir, target_class_idx=0)
+
+    # donor_cls = extract_cls_at_layer(model, layer_idx=best_layer)
+
+    # donor_test_dl    = make_dataloader(donor_test_enc, donor_test_labels, cfg)
+    # receiver_test_dl = make_dataloader(receiver_test_enc, receiver_test_labels, cfg)
+
 
 if __name__ == "__main__":
     # Avoid creating a path whose parent becomes the current directory

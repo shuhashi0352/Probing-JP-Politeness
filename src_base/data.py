@@ -53,4 +53,20 @@ def split_df(cfg, df):
     test, dev = train_test_split(test, train_size=ratio_dev_test, random_state=seed)
 
     return train, dev, test, text, label
+
+def split_donor_receiver_df(df, label_col, donor_label=0, receiver_label=3):
+
+    # donor/receiver extraction
+    donor_df = df[df[label_col] == donor_label].copy()
+    receiver_df = df[df[label_col] == receiver_label].copy()
+
+    # Sanity check
+    if len(donor_df) == 0:
+        raise ValueError(f"No donor instances found for label={donor_label}")
+    if len(receiver_df) == 0:
+        raise ValueError(f"No receiver instances found for label={receiver_label}")
+
+    return donor_df, receiver_df # Don't return the base df since it won't be used for causality tests
+
+
     

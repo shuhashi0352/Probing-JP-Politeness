@@ -16,7 +16,7 @@ def extract_cls_by_layer(dataloader, model, device, desc="Extract CLS by layer")
             batch_no_labels = {k: v for k, v in batch.items() if k != "labels"}
 
             outputs = model(**batch_no_labels, output_hidden_states=True, return_dict=True)
-            hidden_states = outputs.hidden_states  # tuple (L, B, T, H)
+            hidden_states = outputs.hidden_states  # tuple (B, T, H) for each tuple with len = L
 
             if all_layer_cls is None:
                 all_layer_cls = [[] for _ in range(len(hidden_states))]
@@ -28,3 +28,12 @@ def extract_cls_by_layer(dataloader, model, device, desc="Extract CLS by layer")
     X_layers = [torch.cat(chunks, dim=0).cpu().numpy() for chunks in all_layer_cls]  # list of (N,H)
     y = torch.from_numpy(__import__("numpy").concatenate(all_labels, axis=0)).numpy()
     return X_layers, y
+
+def extract_cls_at_layer(model, batch_no_labels, layer_idx):
+    """
+    Returns donor CLS vector at a given layer: shape (B, H)
+    """
+    out = model(**batch_no_labels, output_hidden_states=True, return_dict=True)
+    hidden_states = out.hidden_states  # tuple length L: each (B, T, H)
+    cls_vec = hidden_states[layer_idx][:, 0, :]  # (B, H)
+    return cls_vec

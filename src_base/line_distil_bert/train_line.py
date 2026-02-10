@@ -53,6 +53,10 @@ def prepare_model(cfg, train_enc, dev_enc, test_enc, train_labels, dev_labels, t
 
     return train_dataloader, dev_dataloader, test_dataloader, model, device
 
+def make_dataloader(enc, labels, cfg, shuffle=False):
+    ds = PolitenessDataset(enc, labels)
+    return DataLoader(ds, batch_size=cfg["task"]["batch_size"], shuffle=shuffle)
+
 def train(cfg, train_dl, model, device):
 
     sched = cfg["scheduler"]
