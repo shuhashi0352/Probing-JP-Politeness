@@ -24,6 +24,25 @@ The core idea is: **if politeness information is systematically decodable from s
 
 ---
 
+## Getting started
+
+### Start here: [Project Setup Guide](docs/setup.md)
+
+#### Environment (uv recommended)
+
+This project is designed to be set up with **[uv]** (fast Python package + environment manager).  
+If you see files like `pyproject.toml` and `uv.lock`, **use uv** to ensure dependency versions match the author’s environment.
+
+The setup guide covers:
+- installing **uv**
+- creating / syncing the environment from `uv.lock`
+- installing dependencies
+- running the main scripts end-to-end
+
+> If you prefer conda/pip, you *may* be able to make it work, but the recommended and most reproducible path is **uv + uv.lock**
+
+---
+
 ## Dataset
 
 We use **KeiCO / KeiCorpus**:
