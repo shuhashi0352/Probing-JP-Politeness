@@ -48,10 +48,11 @@ def prepare_model(cfg, train_enc, dev_enc, test_enc, train_labels, dev_labels, t
     model = AutoModelForSequenceClassification.from_pretrained(LineDistilBERT, num_labels=num_labels)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
+    model_num_layers = len(model.distilbert.transformer.layer)
 
-    print("Model successfully set up")
+    print("\nModel successfully set up\n")
 
-    return train_dataloader, dev_dataloader, test_dataloader, model, device
+    return train_dataloader, dev_dataloader, test_dataloader, model, device, model_num_layers
 
 def make_dataloader(enc, labels, cfg, shuffle=False):
     ds = PolitenessDataset(enc, labels)

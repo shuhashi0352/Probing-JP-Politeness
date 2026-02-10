@@ -26,7 +26,7 @@ def run_with_cls_patched(model, receiver_batch_no_labels, layer_module, donor_cl
         handle.remove()  # always remove, even if something fails
     return out
 
-def causal_cls_patching_dev(model, donor_dl, receiver_dl, layer_module, best_layer, device, out_dir, target_class_idx=0):
+def causal_cls_patching(model, receiver_dl, layer_module, device, out_dir, donor_dl=None, mode="paired", hs_index=None, target_class_idx=0, out_path="patching_results_dev.json", random_donor=False, seed=42, data=None):
     """
     Return:
     "n_receiver_instances": the total number of instances in receiver_dl
@@ -36,31 +36,49 @@ def causal_cls_patching_dev(model, donor_dl, receiver_dl, layer_module, best_lay
     "patched_pred_counts": the list showing how many times each label (0-3) is predicted AFTER patching (baseline)
     "transition_counts": the showing how many times each transition heppened (e.g., 3 -> 0, 3 -> 1, 3 -> 2, 3 -> 3)
     """
+
+    print(f"Patching on {data}... (hs_index={hs_index})")
+    
     model.eval()
 
     n_total = 0
     n_flip_to_target = 0
     delta_target_logit_sum = 0.0
 
-    donor_iter = iter(donor_dl)
+    base_pred_counts = torch.zeros(4, dtype=torch.long)
+    patched_pred_counts = torch.zeros(4, dtype=torch.long)
+    transition_counts = torch.zeros((4, 4), dtype=torch.long)
 
-    for receiver_batch in tqdm(receiver_dl, desc="CLS patching (dev receiver batches)"):
+    g = torch.Generator(device="cpu").manual_seed(seed)
+    donor_iter = iter(donor_dl) if (mode == "paired") else None
+
+    for receiver_batch in tqdm(receiver_dl, desc=f"CLS patching ({data} receiver batches)"):
         receiver_batch = {k: v.to(device) for k, v in receiver_batch.items()}
         receiver_no_labels = {k: v for k, v in receiver_batch.items() if k != "labels"}
 
-        try:
-            donor_batch = next(donor_iter)
-        except StopIteration:
-            donor_iter = iter(donor_dl)
-            donor_batch = next(donor_iter)
+        if mode == "self":
+            donor_no_labels = receiver_no_labels
+        elif mode == "paired":
+            if donor_dl is None:
+                raise ValueError("mode='paired' requires donor_dl")
+            try:
+                donor_batch = next(donor_iter)
+            except StopIteration:
+                donor_iter = iter(donor_dl)
+                donor_batch = next(donor_iter)
 
-        donor_batch = {k: v.to(device) for k, v in donor_batch.items()}
-        donor_no_labels = {k: v for k, v in donor_batch.items() if k != "labels"}
+            donor_batch = {k: v.to(device) for k, v in donor_batch.items()}
+            donor_no_labels = {k: v for k, v in donor_batch.items() if k != "labels"}
 
-        # batch size align
-        B = min(receiver_no_labels["input_ids"].size(0), donor_no_labels["input_ids"].size(0))
-        receiver_no_labels = {k: v[:B] for k, v in receiver_no_labels.items()}
-        donor_no_labels = {k: v[:B] for k, v in donor_no_labels.items()}
+            # batch size align
+            B = min(receiver_no_labels["input_ids"].size(0), donor_no_labels["input_ids"].size(0))
+            receiver_no_labels = {k: v[:B] for k, v in receiver_no_labels.items()}
+            donor_no_labels = {k: v[:B] for k, v in donor_no_labels.items()}
+
+        else:
+            raise ValueError("mode must be 'paired' or 'self'")
+        
+        B = receiver_no_labels["input_ids"].size(0)
 
         with torch.no_grad():
             # Baseline receiver output
@@ -70,7 +88,11 @@ def causal_cls_patching_dev(model, donor_dl, receiver_dl, layer_module, best_lay
 
             # Donor CLS at best_layer
             donor_out = model(**donor_no_labels, output_hidden_states=True, return_dict=True)
-            donor_cls = donor_out.hidden_states[best_layer][:, 0, :].detach()  # (B, H)
+            donor_cls = donor_out.hidden_states[hs_index][:, 0, :].detach()  # (B, H)
+
+            if random_donor and mode == "paired":
+                perm = torch.randperm(B, generator=g)
+                donor_cls = donor_cls[perm.to(donor_cls.device)] 
 
         # Patch hook
         def patch_cls_hook(module, inputs, output):
@@ -80,10 +102,10 @@ def causal_cls_patching_dev(model, donor_dl, receiver_dl, layer_module, best_lay
                 patched = hs.clone()
                 patched[:, 0, :] = donor_cls.to(patched.device)
                 return (patched,) + output[1:]
-            else:
-                patched = output.clone()
-                patched[:, 0, :] = donor_cls.to(patched.device)
-                return patched
+
+            patched = output.clone()
+            patched[:, 0, :] = donor_cls.to(patched.device)
+            return patched
 
         handle = layer_module.register_forward_hook(patch_cls_hook)
         try:
@@ -118,7 +140,7 @@ def causal_cls_patching_dev(model, donor_dl, receiver_dl, layer_module, best_lay
         "transition_counts": transition_counts.tolist()
     }
 
-    out_path = out_dir / "patching_results.json"
+    out_path = out_dir / out_path
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with out_path.open("w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)

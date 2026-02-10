@@ -21,7 +21,7 @@ def pull_data(cfg):
     file_path = os.path.join(save_dir, file_name)
 
     if not os.path.exists(file_path):
-        print('Downloading data...')
+        print("\nDownloading data...\n")
         with requests.get(url) as r:
             with open(file_path, 'wb') as f:
                 f.write(r.content)
@@ -29,7 +29,7 @@ def pull_data(cfg):
         print('Download successful')
     
     else:
-        print('Data already exists. Skip downloading...')
+        print("\nData already exists. Skip downloading...\n")
     
     return file_path
 

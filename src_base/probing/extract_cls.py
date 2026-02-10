@@ -2,6 +2,7 @@ import torch
 from tqdm import tqdm
 
 def extract_cls_by_layer(dataloader, model, device, desc="Extract CLS by layer"):
+    print("\nExtracting [CLS]...\n")
     model.eval()
     all_layer_cls = None
     all_labels = []

@@ -18,7 +18,7 @@ def train_trdev_probe_and_eval_test(
     Re-train probes with train+dev using logistic regression.
     Return the accuracy and f1 score
     """
-    print("[Probe] Evaluating on test ...")
+    print("\n[Probe] Evaluating on test...\n")
 
     X_tr = X_train_layers[best_layer]
     y_tr = y_train

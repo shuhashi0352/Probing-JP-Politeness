@@ -6,7 +6,8 @@ results_lineDistilBERT/
 
 # Compiled bytecode
 src_base/__pycache__/
-line_distil_bert/__pycache__/
+src_base/line_distil_bert/__pycache__/
+src_base/probing/__pycache__/
 
 # venv
 .venv/
