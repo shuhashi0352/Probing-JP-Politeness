@@ -77,107 +77,13 @@ Output:
 
 ---
 
-### 2) Layerwise probing
-To identify where politeness is encoded, we extract representations from each layer and train a **multinomial logistic regression (L2-regularized)** per layer:
-
-> **Why logistic regression?** Because (multinomial) logistic regression evaluates each layer in terms of how much it's linearly decodable. It means if linear probes succeed, the representaion has made politeness explicit and easy to read out.
-
-- For each layer $l$:
-  - Extract hidden states (representation choice: `[CLS]`)
-  > The [CLS] token is designed to represent the whole sentence.
-  - Train a linear probe on train features
-  - Evaluate on dev features(e.g., macro-F1)
-- Visualize results as a **heatmap over layers** 
-
-- **Choose the best layer using dev only** (avoid test leakage).
-- Use test only once for final reporting after layer selection.
-
-#### Step A: Extract representations from each layer
-- Run the (frozen) encoder with `output_hidden_states=True` to obtain hidden states for all layers in one forward pass.
-- For each sentence and each layer *l*, convert token-level outputs into a **single sentence vector**.
-
-Representation choice (default):
-- **`[CLS]` vector**
-  - Take the hidden state of the `[CLS]` token at layer *l* as the sentence embedding.
-  - Rationale: `[CLS]` is designed to represent the whole sentence for classification.
-
-What this produces:
-- Let the number of sentences be **N** and hidden size be **768**.
-- For each layer *l*, we build a feature matrix:
-  - `X_train^l` with shape **(N_train × 768)**
-  - `X_dev^l` with shape **(N_dev × 768)**
-  - (optionally `X_test^l` for final reporting only)
-
-> Note: Mean pooling over non-padding tokens is a common alternative; we use `[CLS]` as the main setting and may report mean pooling as an ablation.
-
-#### Step B: Train a linear probe per layer
-- For each layer *l*:
-  - Train a **multinomial logistic regression (L2-regularized)** on `X_train^l` → `y_train`
-  - Tune **C** (regularization strength) using dev (e.g., `LogisticRegressionCV` or a small grid search)
-  - If class imbalance is strong, consider `class_weight="balanced"`
-
-#### Step C: Evaluate and select the “best layer”
-- For each layer *l*:
-  - Evaluate on `X_dev^l` (recommended metric: **macro-F1**)
-- Select:
-  - `best_layer = argmax_l macroF1_dev(l)`
-
-Tie-breaking (recommended):
-- If multiple layers are within a small margin:
-  - Prefer the layer that is **more stable** across random seeds / folds, OR
-  - Use a **1-SE rule** (choose the simplest/earliest layer within one standard error of the best)
-
-#### Step D: Visualize as a heatmap over layers
-- Plot dev scores (macro-F1, optionally accuracy) across layers.
-- The peak region indicates where politeness is most linearly decodable.
-
-Output:
-- Per-layer dev scores (macro-F1, accuracy)
-- A heatmap over layers
-- Selected `best_layer` for downstream analysis (e.g., embedding extraction / interventions)
-
----
-
-### Extracting the Politeness Direction
-> **Direction $v$**: We are looking for a vector that points to the feature of politeness in the embedding space.
-
-Here's the big picture of how the direction can be extracted (illustrative):
-
-Let's take two sentences "ありがとう" (casual) and "ありがとうございます" (polite), both of which mean "Thank you." LineDistilBERT has 768 dimentions of hidden states, which means there's a 768-dimentional space for each sentence. 
-
-Each sentence produces a vector.
-
-$x_{\text{casual}}, \;x_{\text{polite}} \in \mathbb{R}^{768}$
-
-A direction $v$ represents the arrow between them:
-
-$v = x_{\text{polite}} - x_{\text{casual}}$
-- That subtraction gives you an arrow pointing from “casual-ish region” toward “polite-ish region.”
-
-The direction $v$ is normalized:
-
-$\hat v = \frac{v}{\|v\|}$
-
-#### Direction estimation
-However, the class means $\mu_{\text{level}}$ are employed since we are interested in the consistent change across many examples when politeness changes. 
-
-Because a single pair is noisy, we estimate v from many labeled examples using class mean embeddings. For each politeness level k, we compute the mean embedding:
-
-$\mu_k = \frac{1}{N_k}\sum_{i: y_i = k} x_i.$
-
-We then define a direction using the extremes (most polite = level 1, most casual = level 4) and normalize it:
-
-$v = \mu_{\text{1}} - \mu_{\text{4}}, \quad \hat v = \frac{v}{\lVert v\rVert}.$
-
- This captures the typical shift in representation associated with politeness.
-
----
-
 ## 2) Layerwise probing
 
 **Goal:** Identify *where* politeness becomes **linearly accessible** in the model’s representation stack.
 
 We extract a sentence vector from each layer (default: **`[CLS]`**) and train a **multinomial L2 logistic regression probe** per layer.
+
+> **Why logistic regression?** Because (multinomial) logistic regression evaluates each layer in terms of how much it's linearly decodable. It means if linear probes succeed, the representaion has made politeness explicit and easy to read out.
 
 ---
 
@@ -243,7 +149,7 @@ This step produces:
 
 - `dev_f1_macro_by_layer` (array of size `num_hidden_states`)
 - `best_layer` and `best_f1_macro`
-- a plot of dev macro-F1 by layer (saved into `results/`)
+- a plot of dev macro-F1 by layer
 
 ---
 
