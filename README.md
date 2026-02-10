@@ -173,83 +173,262 @@ $v = \mu_{\text{1}} - \mu_{\text{4}}, \quad \hat v = \frac{v}{\lVert v\rVert}.$
 
 ---
 
-### 3) Causality Check / Causal Intervention
+## 2) Layerwise probing
 
-In this test, we basically change (remove) an internal variable (associated with politeness) on purpose and observe the effect. 
+**Goal:** Identify *where* politeness becomes **linearly accessible** in the model’s representation stack.
 
-#### Option A: Direction Removal (Ablation)
+We extract a sentence vector from each layer (default: **`[CLS]`**) and train a **multinomial L2 logistic regression probe** per layer.
 
-> **Question:** With the same datapoint, what level would the model predict if the feature of politeness was removed? Would removing that feature cause the model to predict the level involved in "casual"?
+---
 
-#### How we execute direction removal
+### 2.1 Representation extraction (features-as-data)
 
-Given that we have:
+We run the (fine-tuned) model with:
 
-- $h$: the hidden-state vector for a sentence (e.g., CLS at layer $l$*), shape $d$
+- `output_hidden_states=True`
 
-- $\hat v$: a unit vector (length 1) that represents “politeness direction”
+This returns:
 
-and we know that $\hat v$ has length 1, we use the dot product:
+- `hidden_states[0]`: embedding output (pre-transformer)
+- `hidden_states[1]`: output after encoder layer 0
+- ...
+- `hidden_states[L]`: output after encoder layer (L−1)
 
-$h \cdot \hat v$
+**Sentence representation (default):**
 
- This represents the scalar projection of $h$ onto that direction — basically “how far $h$ goes in the $\hat v$ direction”.
+- Use the `[CLS]` token hidden state:
+  - `x = hidden_states[hs_index][:, 0, :]`  (shape: `(B, H)`)
 
-> **Intuition:** $h \cdot \hat v$ is “how much politeness” is in h along that axis
+This produces, for each `hs_index`:
 
-After the dot product, we take that scalar amount and turn it back into a vector by multiplying by $\hat v$:
+- `X_train[hs_index]` with shape `(N_train, H)`
+- `X_dev[hs_index]` with shape `(N_dev, H)`
+- (optionally) `X_test[hs_index]` with shape `(N_test, H)`
 
-$\underbrace{(h \cdot \hat v)}_{\text{amount}} \times \underbrace{\hat v}_{\text{direction}} = \text{component of } h \text{ along } \hat v$
+> Alternative (optional): mean pooling over non-padding tokens. In this project, `[CLS]` is the default.
 
-This is literally **“the politeness component inside h”**
+---
 
-Finally, we subtract it to remove that component:
+### 2.2 Linear probe per layer
 
-$h' = h - (h \cdot \hat v)\hat v$
+For each `hs_index`:
 
-> **Geometrically:** $h'$ is the projection of $h$ onto the hyperplane perpendicular to $\hat v$.
+- Train a multinomial logistic regression probe:
+  - L2 regularization
+  - solver: `lbfgs`
+- Evaluate on dev (recommended metric: **macro-F1**)
 
-Below is the blueprint of **intervention** to check causality:
+Selection rule:
 
-1. start with the full representation $h$
-2. subtract the part that lies along politeness axis
-3. the result $h'$ is $h$ with “politeness-axis information” removed
+- `best_layer = argmax_hs_index macroF1_dev(hs_index)`
 
-#### Option B: Activation Patching (Swap)
+**Important:** We use **dev only** to choose `best_layer` to avoid test leakage.
 
-In this test, we replace receiver’s hidden state with donor’s hidden state. Concretely, we paste polite internal state into casual sentence and see if output becomes polite.
+---
 
-> **Question:** If we take the internal representation from a polite sentence at layer $l$ and paste it into a casual sentence’s forward pass, does the model’s prediction follow the pasted representation?
+### 2.3 Visualization
 
-#### How we execute activation patching
+We plot dev macro-F1 across layers as:
 
-Run the model normally on each input:
+- a line plot (primary)
+- (optionally) a heatmap-style plot over layers
 
-- $y_d = f(x_d)$ → the model’s output for the donor sentence
-- $y_r = f(x_r)$ → the model’s output for the receiver sentence
+The peak region indicates where politeness is most linearly decodable.
 
-The outputs represent **probabilities** (the value before $\arg\max$ is done).
+---
 
-> We expected them to be different. Otherwise, they can't be flipped.
+### 2.4 Output artifacts
 
-At layer $l$, the model has hidden states [CLS]:
+This step produces:
 
-$h_{\text{CLS}}^{(l)} \in \mathbb{R}^{d}$
+- `dev_f1_macro_by_layer` (array of size `num_hidden_states`)
+- `best_layer` and `best_f1_macro`
+- a plot of dev macro-F1 by layer (saved into `results/`)
 
-We do a forward pass on the receiver $x_r$, but at layer $l$ you overwrite its [CLS] with the donor’s.
+---
 
-$H_{r,\text{patched}}^{(l)}[0] = H_d^{(l)}[0]$
+## 3) Probing on the best layer (final probe evaluation)
 
-> index 0 is CLS token
+After selecting `best_layer` on dev:
 
-This is when **patching** happens.
+- Extract `X_test[best_layer]`
+- Train probe on **train** features at `best_layer`
+- Evaluate on **test** features at `best_layer`
 
-Then let the model continue forward from layer $l + 1$ to the end and compute output (probability):
+This yields the final probing performance:
 
-$y_{r \leftarrow d} = f_{\text{patched}}(x_r)$
+- accuracy
+- macro-F1
+- (optional) confusion matrix
 
-If layer $l$ encodes politeness in a way the model uses, then the probability of donor class increases, meaning that the receiver’s prediction should shift toward the donor’s politeness level.
+> Note: If the probe score at `best_layer` is close to the fine-tuned classifier score, it suggests the politeness signal is already quite explicit in the representation (linearly readable).
 
-> **CAUTION:** Both tests A and B are not necessarily capable of holistically supporting causality because the whole instances in the dataset do not only vary across the aspect of politeness, but also other variety of factors can influence the model's prediction (e.g., tense). 
+---
 
-> **Future Implementation:** To eradicate/reduce the *noise*, we need to create a dataset where only minimum pairs exist in terms of politeness.
+## 4) Causal intervention via CLS patching (activation patching)
+
+**Goal:** Test whether the representation at `best_layer` is not only *decodable*, but also *causally used* by the classifier.
+
+We perform **CLS patching**:
+
+- Receiver examples: typically the most casual class (e.g., Level 4)
+- Donor examples: typically the most polite class (e.g., Level 1)
+
+For each receiver batch:
+
+1. Run **baseline** forward pass on the receiver → `base_logits`, `base_pred`
+2. Run donor forward pass with `output_hidden_states=True` and extract donor CLS at `hs_index = best_layer`:
+   - `donor_cls = hidden_states[best_layer][:, 0, :]`
+3. Register a forward hook on the **encoder layer module** corresponding to `best_layer`
+4. In the hook, replace only the receiver CLS vector with `donor_cls`:
+   - `patched[:, 0, :] = donor_cls`
+5. Run receiver again → `patched_logits`, `patched_pred`
+6. Aggregate transition statistics across the dataset
+
+### 4.1 What is actually replaced?
+
+- Only the `[CLS]` vector at the patched layer is replaced.
+- All other token vectors remain unchanged.
+
+This is intentional:
+
+- It tests whether a **sentence-level** control signal is sufficient to shift politeness predictions,
+- without directly overwriting token-specific honorific markers.
+
+---
+
+### 4.2 Metrics reported
+
+We compute:
+
+- `avg_delta_target_logit`  
+  Average change in the target class logit due to patching:
+  - `patched_logits[:, target] - base_logits[:, target]`
+
+- `flip_to_target_rate`  
+  Fraction of instances where prediction flips **into** the target class:
+  - baseline is **not** target AND patched prediction **is** target
+
+- `base_pred_counts`  
+  Predicted class counts **before** patching (length 4)
+
+- `patched_pred_counts`  
+  Predicted class counts **after** patching (length 4)
+
+- `transition_counts` (4×4)  
+  Confusion-like transition matrix:
+  - rows = baseline prediction
+  - cols = patched prediction
+  - entry `(i, j)` counts how many moved from `i → j`
+
+We visualize `transition_counts` as a **4×4 heatmap** for paper-ready figures.
+
+---
+
+## 5) Controls (sanity + strength checks)
+
+We include controls to ensure the effect is not an artifact.
+
+### 5.1 Self-patch (implementation sanity check)
+
+**Definition (strict):**
+
+- Use the **same receiver batch** as the donor
+- Extract donor CLS from the receiver itself
+- Patch receiver CLS with its own CLS
+
+Expected:
+
+- Almost no change (transition matrix ~ diagonal)
+
+Implementation:
+
+- `mode="self"` sets `donor_no_labels = receiver_no_labels`
+
+---
+
+### 5.2 Random donor CLS (break pairing)
+
+**Definition:**
+
+- Extract donor CLS normally (from Level 1 donors),
+- then shuffle donor CLS vectors **within the batch** (break sentence ↔ CLS correspondence).
+
+Expected:
+
+- The effect weakens or becomes less consistent,
+- because “this donor sentence’s CLS” is no longer aligned.
+
+Implementation:
+
+- `perm = torch.randperm(B, generator=g)`
+- `donor_cls = donor_cls[perm]`
+
+---
+
+### 5.3 Wrong-layer patch (layer sweep)
+
+**Definition:**
+
+- Patch CLS at **every encoder layer** (or every hidden-state index),
+- compute effect curves across layers.
+
+Expected:
+
+- Stronger effect near the layer(s) where politeness is encoded/used.
+- If it aligns with probe peak layers, that strengthens the causal story.
+
+Implementation:
+
+- Loop over encoder layers, hook each `layer_module`
+- Use matching hidden-state index `hs_idx = layer_idx + 1` for donor CLS
+
+---
+
+## 6) Practical notes (indexing: hidden states vs encoder layers)
+
+HuggingFace `hidden_states` indexing and encoder layer indexing differ:
+
+- `hidden_states[0]` is **embeddings**, not an encoder block output.
+- Encoder layers are `layer_idx = 0..L-1`
+- Their outputs correspond to:
+  - `hidden_states[layer_idx + 1]`
+
+Therefore we track two indices:
+
+- `layer_idx` = encoder layer module index (for hooks)
+- `hs_index` = hidden states index (for extracting donor CLS)
+
+In code:
+
+- `layer_module = model.distilbert.transformer.layer[layer_idx]`
+- `donor_cls = donor_out.hidden_states[hs_index][:, 0, :]`
+- Usually: `hs_index = layer_idx + 1`
+
+When using `best_layer` selected from probing:
+
+- If probing was done over `hidden_states` indices, use it directly as `hs_index`.
+- Convert to encoder layer index via:
+  - `layer_idx = best_layer - 1`
+
+---
+
+## 7) Outputs and reproducibility
+
+This pipeline saves:
+
+- fine-tune metrics (`finetune_results.json`)
+- probe scores by layer (and plots)
+- patching metrics JSON:
+  - `patching_results_{dev|test}.json`
+  - `self_patching_results_test.json`
+  - `random_patching_results_test.json`
+  - `patching_results_test_layer{k}.json`
+- paper-ready heatmaps:
+  - `transition_heatmap_counts_*.png`
+
+We fix RNG seeds (`seed=42` by default) for:
+
+- Python
+- NumPy
+- Torch (and the random permutation generator used in random-donor control)
