@@ -80,11 +80,14 @@ The baseline fine-tuning is used to ensure:
 
 ## Models
 
-We fine-tune one or more **Japanese BERT-family models** (e.g., BERT, RoBERTa, DeBERTa variants pretrained on Japanese).
+This project uses a **single Japanese BERT-style encoder model**:
 
-> **TODO:** List the exact model checkpoints used (names + links) once finalized.
+- **LINE DistilBERT (Japanese)**: `line-corporation/line-distilbert-base-japanese`
 
-> **NOTES:** Could be LLMs but those decoders are removed.
+We fine-tune this checkpoint for **4-class politeness classification** and then reuse the same fine-tuned model for:
+- layerwise hidden-state extraction (`output_hidden_states=True`)
+- linear probing (logistic regression over per-layer `[CLS]` vectors)
+- causal interventions (CLS patching via forward hooks)
 
 ---
 
