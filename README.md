@@ -12,11 +12,15 @@ The core idea is: **if politeness information is systematically decodable from s
 
 ## Project Goals
 
-- Train a supervised baseline on a 4-class politeness label set.
-- Evaluate baseline performance to ensure the model actually learned the task.
-- Run **layerwise linear probes** to measure where politeness is accessible in the representation stack.
-- Extract embeddings from the most informative layers and build a probing dataset.
-- Probe embeddings (e.g., with multinomial L2 logistic regression) under controls to evaluate “how encoded” politeness is.
+- Train a supervised baseline (4-way politeness classification) to ensure the model learns a usable politeness signal.
+- Validate the baseline on test data (e.g., accuracy / macro-F1) so later analyses aren’t probing a broken or underfit model.
+- Locate “where” politeness becomes linearly accessible by running **layerwise linear probes** on sentence embeddings extracted from every layer.
+- Run **causal intervention tests** (**CLS patching**) at the selected layer to check whether swapping internal representations changes predictions in the expected direction.
+- Run **control interventions** to verify that the patching effect is not an implementation artifact:
+  1. **Self-patch** (receiver CLS → receiver CLS): should produce ~no change.
+  2. **Random-donor** (shuffle donor CLS within batch): effect should weaken or destabilize.
+  3. **Wrong-layer sweep** (patch across all layers): effect should peak near the probe-selected layer.
+- Summarize effects with transition heatmaps (4×4) and logit deltas, producing figures suitable for inclusion in a paper.
 
 ---
 
