@@ -82,7 +82,7 @@ The baseline fine-tuning is used to ensure:
 
 This project uses a **single Japanese BERT-style encoder model**:
 
-- **LINE DistilBERT (Japanese)**: `line-corporation/line-distilbert-base-japanese`
+- **[LINE DistilBERT (Japanese)](https://huggingface.co/line-corporation/line-distilbert-base-japanese)**: `line-corporation/line-distilbert-base-japanese`
 
 We fine-tune this checkpoint for **4-class politeness classification** and then reuse the same fine-tuned model for:
 - layerwise hidden-state extraction (`output_hidden_states=True`)
