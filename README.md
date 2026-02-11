@@ -95,7 +95,7 @@ We fine-tune this checkpoint for **4-class politeness classification** and then 
 
 ### 1) Baseline training (supervised fine-tuning)
 - Fine-tune a Japanese BERT-style encoder for 4-way classification.
-- Evaluate on a held-out test set (accuracy, macro-F1, confusion matrix etc... TBD).
+- Evaluate on a held-out test set (accuracy, macro-F1).
 
 Output:
 - A trained baseline model
@@ -156,20 +156,12 @@ Selection rule:
 
 **Important:** We use **dev only** to choose `best_layer` to avoid test leakage.
 
----
-
-### 2.3 Visualization
-
 We plot dev macro-F1 across layers as:
 
 - a line plot (primary)
 - (optionally) a heatmap-style plot over layers
 
 The peak region indicates where politeness is most linearly decodable.
-
----
-
-### 2.4 Output artifacts
 
 This step produces:
 
@@ -183,7 +175,7 @@ This step produces:
 
 After selecting `best_layer` on dev:
 
-- Extract `X_test[best_layer]`
+- Extract CLS `X_test[best_layer]`
 - Train probe on **train** features at `best_layer`
 - Evaluate on **test** features at `best_layer`
 
@@ -193,7 +185,12 @@ This yields the final probing performance:
 - macro-F1
 - (optional) confusion matrix
 
-> Note: If the probe score at `best_layer` is close to the fine-tuned classifier score, it suggests the politeness signal is already quite explicit in the representation (linearly readable).
+If the probe score at `best_layer` is close to the fine-tuned classifier score, it suggests the politeness signal is already quite explicit in the representation (linearly readable). 
+
+However, you still can’t say it’s “explicit” in a mechanistic sense even if that's the case. 
+
+- The information may be **weakly present** but still separable.
+- It only tells you they reach similar accuracy, **not that they reach it in the same way**.
 
 ---
 
@@ -203,8 +200,10 @@ This yields the final probing performance:
 
 We perform **CLS patching**:
 
-- Receiver examples: typically the most casual class (e.g., Level 4)
-- Donor examples: typically the most polite class (e.g., Level 1)
+Here, we exclusively use these two labels to make contrast clear.
+
+- Receiver: the most casual class (Level 4)
+- Donor: the most polite class (Level 1)
 
 For each receiver batch:
 
@@ -217,6 +216,8 @@ For each receiver batch:
 5. Run receiver again → `patched_logits`, `patched_pred`
 6. Aggregate transition statistics across the dataset
 
+---
+
 ### 4.1 What is actually replaced?
 
 - Only the `[CLS]` vector at the patched layer is replaced.
@@ -224,8 +225,7 @@ For each receiver batch:
 
 This is intentional:
 
-- It tests whether a **sentence-level** control signal is sufficient to shift politeness predictions,
-- without directly overwriting token-specific honorific markers.
+- It tests whether a **sentence-level** control signal is sufficient to shift politeness predictions without directly overwriting token-specific honorific markers.
 
 ---
 
@@ -253,7 +253,7 @@ We compute:
   - cols = patched prediction
   - entry `(i, j)` counts how many moved from `i → j`
 
-We visualize `transition_counts` as a **4×4 heatmap** for paper-ready figures.
+We visualize `transition_counts` as a **4×4 heatmap**.
 
 ---
 
