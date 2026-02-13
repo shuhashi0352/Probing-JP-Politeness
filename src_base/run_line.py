@@ -104,13 +104,13 @@ def run_line(cfg):
 
     patch_results_dev = causal_cls_patching(model, receiver_dev_dl, layer_module, device, out_dir, donor_dl=donor_dev_dl, mode="paired", hs_index=best_layer, target_class_idx=0, out_path="patching_results_dev.json", random_donor=False, seed=42, data="dev")
 
-    plot_transition_heatmap_from_json(json_path=out_dir / "patching_results_dev.json", out_path=out_dir / "transition_heatmap_counts_dev.png", class_names=["0(polite)", "1", "2", "3(casual)"], normalize=None, name="Dev")
+    plot_transition_heatmap_from_json(json_path=out_dir / "patching_results_dev.json", out_path=out_dir / "transition_heatmap_counts_dev.png", class_names=["1(polite)", "2", "3", "4(casual)"], normalize=None, name="Dev")
 
     donor_test_dl = make_dataloader(donor_test_enc, donor_test_labels, cfg)
     receiver_test_dl = make_dataloader(receiver_test_enc, receiver_test_labels, cfg)
 
     patch_results_test = causal_cls_patching(model, receiver_test_dl, layer_module, device, out_dir, donor_dl=donor_test_dl, mode="paired", hs_index=best_layer, target_class_idx=0, out_path="patching_results_test.json", random_donor=False, seed=42, data="test")
-    plot_transition_heatmap_from_json(json_path=out_dir / "patching_results_test.json", out_path=out_dir / "transition_heatmap_counts_test.png", class_names=["0(polite)", "1", "2", "3(casual)"], normalize=None, name="Test")
+    plot_transition_heatmap_from_json(json_path=out_dir / "patching_results_test.json", out_path=out_dir / "transition_heatmap_counts_test.png", class_names=["1(polite)", "2", "3", "4(casual)"], normalize=None, name="Test")
 
     """
     Controls for patching
@@ -131,13 +131,13 @@ def run_line(cfg):
     self_receiver_test_dl = make_dataloader(self_receiver_test_enc, self_receiver_test_labels, cfg)
 
     self_patch_results_test = causal_cls_patching(model, self_receiver_test_dl, layer_module, device, out_dir, donor_dl=None, mode="self", hs_index=best_layer, target_class_idx=0, out_path="self_patching_results_test.json", random_donor=False, seed=42, data="control(self)")
-    plot_transition_heatmap_from_json(json_path=out_dir / "self_patching_results_test.json", out_path=out_dir / "self_transition_heatmap_counts_test.png", class_names=["0(polite)", "1", "2", "3(casual)"], normalize=None, name="Self-patch")
+    plot_transition_heatmap_from_json(json_path=out_dir / "self_patching_results_test.json", out_path=out_dir / "self_transition_heatmap_counts_test.png", class_names=["1(polite)", "2", "3", "4(casual)"], normalize=None, name="Self-patch")
 
     # Random Patch
     print("Control - Random patch")
     print("Data already set up")
     random_patch_results_test = causal_cls_patching(model, receiver_test_dl, layer_module, device, out_dir, donor_dl=donor_test_dl, mode="paired", hs_index=best_layer, target_class_idx=0, out_path="random_patching_results_test.json", random_donor=True, seed=42, data="control(random)")
-    plot_transition_heatmap_from_json(json_path=out_dir / "random_patching_results_test.json", out_path=out_dir / "random_transition_heatmap_counts_test.png", class_names=["0(polite)", "1", "2", "3(casual)"], normalize=None, name="Random Patch")
+    plot_transition_heatmap_from_json(json_path=out_dir / "random_patching_results_test.json", out_path=out_dir / "random_transition_heatmap_counts_test.png", class_names=["1(polite)", "2", "3", "4(casual)"], normalize=None, name="Random Patch")
 
     # Wrong-layer patch
     print("\nControl - Wrong patch")
@@ -146,7 +146,7 @@ def run_line(cfg):
         layer_module = get_encoder_layer_module(model, layer_idx=layer_idx)
         hs_idx = layer_idx + 1
         patch_results = causal_cls_patching(model, receiver_test_dl, layer_module, device, out_dir, donor_dl=donor_test_dl, mode="paired", hs_index=hs_idx, target_class_idx=0, out_path=f"patching_results_test_layer{layer_idx}.json", random_donor=False, seed=42, data="control(wrong-layer)")
-        plot_transition_heatmap_from_json(json_path=out_dir / f"patching_results_test_layer{layer_idx}.json", out_path=out_dir / f"transition_heatmap_counts_test_layer{layer_idx}.png", class_names=["0(polite)", "1", "2", "3(casual)"], normalize=None, name=f"Wrong Patch at layer {count + 1}")
+        plot_transition_heatmap_from_json(json_path=out_dir / f"patching_results_test_layer{layer_idx}.json", out_path=out_dir / f"transition_heatmap_counts_test_layer{layer_idx}.png", class_names=["1(polite)", "2", "3", "4(casual)"], normalize=None, name=f"Wrong Patch at layer {count + 1}")
         count += 1
 
 
