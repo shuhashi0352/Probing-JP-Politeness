@@ -55,7 +55,7 @@ The dataset provides Japanese text paired with **four politeness levels** (as de
 
 #### Dataset Statistics (from Liu & Kobayashi, 2022) -> see [See table 3 in the paper](https://aclanthology.org/2022.dclrl-1.3/)
 
-| Honorific level | Sentences | Avg. sentence length | Avg. kanji per sentence | Word tokens | Word types | Yule’s characteristic K |
+| Polite level | Sentences | Avg. sentence length | Avg. kanji per sentence | Word tokens | Word types | Yule’s characteristic K |
 |---|---:|---:|---:|---:|---:|---:|
 | Level 1 | 2,584 | 18.2 | 2.6 | 47,111 | 4,744 | 135.70 |
 | Level 2 | 2,046 | 16.4 | 2.1 | 33,476 | 3,897 | 136.23 |
