@@ -146,7 +146,7 @@ def run_line(cfg):
         layer_module = get_encoder_layer_module(model, layer_idx=layer_idx)
         hs_idx = layer_idx + 1
         patch_results = causal_cls_patching(model, receiver_test_dl, layer_module, device, out_dir, donor_dl=donor_test_dl, mode="paired", hs_index=hs_idx, target_class_idx=0, out_path=f"patching_results_test_layer{layer_idx}.json", random_donor=False, seed=42, data="control(wrong-layer)")
-        plot_transition_heatmap_from_json(json_path=out_dir / f"patching_results_test_layer{layer_idx}.json", out_path=out_dir / f"transition_heatmap_counts_test_layer{layer_idx}.png", class_names=["0(polite)", "1", "2", "3(casual)"], normalize=None, name=f"Wrong Patch at layer {count}")
+        plot_transition_heatmap_from_json(json_path=out_dir / f"patching_results_test_layer{layer_idx}.json", out_path=out_dir / f"transition_heatmap_counts_test_layer{layer_idx}.png", class_names=["0(polite)", "1", "2", "3(casual)"], normalize=None, name=f"Wrong Patch at layer {count + 1}")
         count += 1
 
 
