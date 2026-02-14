@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 import yaml
 from data import pull_data, read_data, split_df, split_donor_receiver_df
 from preprocess import build_tokenizer
@@ -34,7 +35,9 @@ def run_line(cfg):
     10. Test the score on the best layer selected in 8.
     11. Compare the score to the fine-tune test score
     """
-    
+    out_dir = Path(cfg["experiment"]["output_dir"]).resolve()
+    create_dir(out_dir)
+
     #1. Pull and read the dataset to split it into train/dev/test
     file_path = pull_data(cfg)
     all_df = read_data(file_path)
@@ -64,22 +67,49 @@ def run_line(cfg):
     X_train_layers, y_train = extract_cls_by_layer(train_dl, model, device, desc="Extract train")
     X_dev_layers, y_dev = extract_cls_by_layer(dev_dl, model, device, desc="Extract dev")
 
-    # print(X_dev_layers, y_dev)
+    #8. Layerwise probing with C sweep
+    C_VALUES = [0.01, 0.1, 1, 10, 100]
+    seed = cfg["experiment"].get("seed", 42)
+    dev_results = []
+    for C in C_VALUES:
+        dev_f1_macro_by_layer, best_layer, best_f1_macro = layerwise_logreg_scores(
+            X_train_layers, y_train, X_dev_layers, y_dev, C=C
+        )
+        print(f"C={C}: best_layer={best_layer}, dev macro-F1={best_f1_macro:.4f}")
+        dev_results.append((C, best_layer, best_f1_macro))
 
-    #8. Layerwise probing
-    dev_f1_macro_by_layer, best_layer, best_f1_macro = layerwise_logreg_scores(X_train_layers, y_train, X_dev_layers, y_dev)
-    print(f"\n[Layerwise probing] Best layer = {best_layer} (dev macro-F1 = {best_f1_macro:.3f})")
+    print("\n--- Dev results per C ---")
+    for C, bl, f1 in dev_results:
+        print(f"  C={C}: best_layer={bl}, dev_f1_macro={f1:.4f}")
+
+    best_C, best_layer, _ = max(dev_results, key=lambda x: x[2])
+    dev_f1_macro_by_layer, _, _ = layerwise_logreg_scores(
+        X_train_layers, y_train, X_dev_layers, y_dev, C=best_C
+    )
+    print(f"\n[Layerwise probing] Best C={best_C}, best layer={best_layer}")
+
+    c_sweep_path = out_dir / "C_sweep_dev_results.json"
+    with c_sweep_path.open("w", encoding="utf-8") as f:
+        json.dump({
+            "seed": seed,
+            "per_C": [{"C": C, "best_layer": int(bl), "dev_f1_macro": float(f1)} for C, bl, f1 in dev_results],
+            "best_C": best_C,
+            "best_layer": int(best_layer),
+        }, f, indent=2)
+    print(f"Saved: {c_sweep_path}")
 
     #9. Visualize the score
-    line_graph(dev_f1_macro_by_layer)
-    # heatmap(dev_f1_macro_by_layer)
+    line_graph(dev_f1_macro_by_layer, out_path=out_dir / "dev_f1_by_layer_line.png", title=f"Dev Macro F1 by Layer (C={best_C})")
+    heatmap(dev_f1_macro_by_layer, out_path=out_dir / "dev_f1_by_layer_heatmap.png", title=f"Dev Macro F1 by Layer (C={best_C})")
 
     #10. Test on the best layer
     X_test_layers, y_test = extract_cls_by_layer(test_dl, model, device, desc="Extract test")
-    probe, accuracy_pr, macro_f1_pr = train_trdev_probe_and_eval_test(X_train_layers, y_train, X_test_layers, y_test, out_dir, best_layer=best_layer, C=1.0)
+    probe, accuracy_pr, macro_f1_pr = train_trdev_probe_and_eval_test(
+        X_train_layers, y_train, X_test_layers, y_test, out_dir, best_layer=best_layer, C=best_C
+    )
 
     #11. Compare the probing score (best layer) to the finetune test score (all layers passed)
-    compare_ft_vs_probe_bar(accuracy_ft, macro_f1_ft, accuracy_pr, macro_f1_pr)
+    compare_ft_vs_probe_bar(accuracy_ft, macro_f1_ft, accuracy_pr, macro_f1_pr, out_path=out_dir / "ft_vs_probe_bar.png")
 
     """
     Causality Test

@@ -3,17 +3,23 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 import json
 
-def line_graph(dev_f1_macro): # dev_f1_macro: macro-F1 per layer
+def line_graph(dev_f1_macro, out_path=None, title="Layerwise Probing Performance"):  # dev_f1_macro: macro-F1 per layer
     print("\nGenerating line graph...\n")
     layers = list(range(len(dev_f1_macro)))
     plt.figure()
     plt.plot(layers, dev_f1_macro)
     plt.xlabel("Layer")
     plt.ylabel("Dev Macro-F1")
-    plt.title("Layerwise Probing Performance")
-    plt.show()
+    plt.title(title)
+    if out_path is not None:
+        Path(out_path).parent.mkdir(parents=True, exist_ok=True)
+        plt.savefig(out_path, dpi=150, bbox_inches="tight")
+        plt.close()
+        print(f"Saved: {out_path}")
+    else:
+        plt.show()
 
-def heatmap(dev_f1_macro):
+def heatmap(dev_f1_macro, out_path=None, title="Layerwise Probing Heatmap"):
     print("\nGenerating heatmap...\n")
     scores = np.array(dev_f1_macro)[None, :]  # (1, num_layers)
     plt.figure()
@@ -21,9 +27,15 @@ def heatmap(dev_f1_macro):
     plt.yticks([0], ["macro-F1"])
     plt.xticks(range(len(dev_f1_macro)), range(len(dev_f1_macro)))
     plt.xlabel("Layer")
-    plt.title("Layerwise Probing Heatmap")
+    plt.title(title)
     plt.colorbar()
-    plt.show()
+    if out_path is not None:
+        Path(out_path).parent.mkdir(parents=True, exist_ok=True)
+        plt.savefig(out_path, dpi=150, bbox_inches="tight")
+        plt.close()
+        print(f"Saved: {out_path}")
+    else:
+        plt.show()
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -31,7 +43,8 @@ import numpy as np
 def compare_ft_vs_probe_bar(
     accuracy_ft, macro_f1_ft,
     accuracy_pr, macro_f1_pr,
-    title="Fine-tune vs Probe (Test Metrics)"
+    title="Fine-tune vs Probe (Test Metrics)",
+    out_path=None,
 ):
     """
     One figure, grouped bars:
@@ -78,7 +91,13 @@ def compare_ft_vs_probe_bar(
             )
 
     fig.tight_layout()
-    plt.show()
+    if out_path is not None:
+        Path(out_path).parent.mkdir(parents=True, exist_ok=True)
+        fig.savefig(out_path, dpi=150, bbox_inches="tight")
+        plt.close()
+        print(f"Saved: {out_path}")
+    else:
+        plt.show()
 
 def plot_transition_heatmap(
     transition_counts,
