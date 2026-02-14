@@ -5,7 +5,6 @@ experiment:
   seed: 42
   train_size: 0.8
   ratio_dev_test: 0.5
-  stratify: True
 
 # Data
 data:
@@ -44,7 +43,6 @@ task:
   num_epochs: 5
   learning_rate: 1.0e-5
   clean_text: False
-  shuffle: True
 
 tokenizer:
   name: "line-corporation/line-distilbert-base-japanese"

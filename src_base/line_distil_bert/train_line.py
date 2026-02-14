@@ -31,9 +31,12 @@ def prepare_model(cfg, train_enc, dev_enc, test_enc, train_labels, dev_labels, t
 
     bert = cfg["model"]
     batch_size = cfg["task"]["batch_size"]
-    shuffle = cfg["task"]["shuffle"]
     LineDistilBERT = bert["name"]
     num_labels = bert["num_labels"]
+    seed = cfg["experiment"]["seed"]
+
+    g = torch.Generator()
+    g.manual_seed(seed)
 
     # Create datasets
     train_dataset = PolitenessDataset(train_enc, train_labels)
@@ -41,9 +44,9 @@ def prepare_model(cfg, train_enc, dev_enc, test_enc, train_labels, dev_labels, t
     test_dataset = PolitenessDataset(test_enc, test_labels)
 
     # Create DataLoaders for batch training
-    train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle)
-    dev_dataloader = DataLoader(dev_dataset, batch_size=batch_size, shuffle=shuffle)
-    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=shuffle)
+    train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, generator=g)
+    dev_dataloader = DataLoader(dev_dataset, batch_size=batch_size, shuffle=False)
+    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
     model = AutoModelForSequenceClassification.from_pretrained(LineDistilBERT, num_labels=num_labels)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

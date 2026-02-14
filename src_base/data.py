@@ -49,8 +49,8 @@ def split_df(cfg, df):
     if missing:
         raise ValueError(f"Missing required columns: {missing}")
     
-    train, test = train_test_split(df, train_size=train_size, random_state=seed)
-    test, dev = train_test_split(test, train_size=ratio_dev_test, random_state=seed)
+    train, temporary = train_test_split(df, train_size=train_size, random_state=seed, stratify=df[label])
+    test, dev = train_test_split(temporary, train_size=ratio_dev_test, random_state=seed, stratify=temporary[label])
 
     return train, dev, test, text, label
 
