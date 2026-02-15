@@ -34,7 +34,6 @@ def run_line(cfg):
     10. Test the score on the best layer selected in 8.
     11. Compare the score to the fine-tune test score
     """
-
     #1. Pull and read the dataset to split it into train/dev/test
     file_path = pull_data(cfg)
     all_df = read_data(file_path)
