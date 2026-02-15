@@ -11,7 +11,7 @@ def train_trdev_probe_and_eval_test(
     X_test_layers, y_test,
     out_dir,
     best_layer,
-    C=1.0,
+    C=0.1,
     max_iter=2000
 ):
     """

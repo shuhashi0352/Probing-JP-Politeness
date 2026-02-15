@@ -5,7 +5,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score
 from tqdm import tqdm
 
-def layerwise_logreg_scores(X_train_layers, y_train, X_dev_layers, y_dev, C=1.0, desc="Layerwise probes"):
+def layerwise_logreg_scores(X_train_layers, y_train, X_dev_layers, y_dev, C=0.1, desc="Layerwise probes"):
     print("\nSelecting the best layer..\n")
     dev_f1_macro = []
     for l in tqdm(range(len(X_train_layers)), desc=desc, unit="layer"):
