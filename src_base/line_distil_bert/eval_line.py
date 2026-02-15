@@ -37,7 +37,7 @@ def test(test_dl, model, out_dir, device=None):
 
     with torch.no_grad():
         for batch in tqdm(test_dl, desc="Test Per Batch", unit="batch"):
-            batch = {key: val for key, val in batch.items()}
+            batch = {k: v.to(device) for k, v in batch.items()}
             outputs = model(**batch)
 
             preds = torch.argmax(outputs.logits, dim=1)
