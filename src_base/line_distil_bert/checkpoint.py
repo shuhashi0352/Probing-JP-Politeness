@@ -56,7 +56,7 @@ def load_checkpoint(path, model, optimizer=None, scheduler=None, device="cpu", s
                 fixed.append(s.detach().cpu().to(torch.uint8))
             else:
                 fixed.append(torch.as_tensor(s, dtype=torch.uint8))
-        torch.cuda.set_rng_state_all(ckpt["cuda_rng_state_all"])
+        torch.cuda.set_rng_state_all(fixed)
     if "numpy_rng_state" in ckpt:
         np.random.set_state(ckpt["numpy_rng_state"])
     if "py_rng_state" in ckpt:
