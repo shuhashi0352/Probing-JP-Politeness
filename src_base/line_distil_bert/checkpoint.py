@@ -43,8 +43,19 @@ def load_checkpoint(path, model, optimizer=None, scheduler=None, device="cpu", s
 
     # restore RNG (optional but nice)
     if "torch_rng_state" in ckpt:
-        torch.random.set_rng_state(ckpt["torch_rng_state"])
+        torch_state = ckpt["torch_rng_state"]
+        if isinstance(torch_state, torch.Tensor):
+            torch_state = torch_state.detach().cpu().to(torch.uint8)
+        torch.random.set_rng_state(torch_state)
+
     if torch.cuda.is_available() and "cuda_rng_state_all" in ckpt:
+        cuda_states = ckpt["cuda_rng_state_all"]
+        fixed = []
+        for s in cuda_states:
+            if isinstance(s, torch.Tensor):
+                fixed.append(s.detach().cpu().to(torch.uint8))
+            else:
+                fixed.append(torch.as_tensor(s, dtype=torch.uint8))
         torch.cuda.set_rng_state_all(ckpt["cuda_rng_state_all"])
     if "numpy_rng_state" in ckpt:
         np.random.set_state(ckpt["numpy_rng_state"])
