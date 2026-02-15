@@ -28,7 +28,7 @@ def dev(dev_dl, model, device):
     accuracy = accuracy_score(all_labels, all_preds)
     print(f"Validation Accuracy: {accuracy:.4f}")
 
-def test(test_dl, model, out_dir):
+def test(test_dl, model, out_dir, device=None):
     model.eval()
     if device is None:
         device = next(model.parameters()).device

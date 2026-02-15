@@ -57,7 +57,7 @@ def run_line(cfg):
     # However, you can compare the score on this test to the one with proving
     # If the score on finetune is nearly equal to the one on probing,
     # it implies that the information on politeness is quite explicit at the best layer even in a linear fashion
-    accuracy_ft, macro_f1_ft = test(test_dl, model, out_dir)
+    accuracy_ft, macro_f1_ft = test(test_dl, model, out_dir, device)
 
     #7. Hidden state extraction
     X_train_layers, y_train = extract_cls_by_layer(train_dl, model, device, desc="Extract train")
