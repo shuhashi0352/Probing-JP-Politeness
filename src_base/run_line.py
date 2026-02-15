@@ -34,8 +34,6 @@ def run_line(cfg):
     10. Test the score on the best layer selected in 8.
     11. Compare the score to the fine-tune test score
     """
-    out_dir = Path(cfg["experiment"]["output_dir"]).resolve()
-    create_dir(out_dir)
 
     #1. Pull and read the dataset to split it into train/dev/test
     file_path = pull_data(cfg)
