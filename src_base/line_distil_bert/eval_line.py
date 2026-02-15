@@ -6,6 +6,8 @@ import json
 def dev(dev_dl, model, device):
     # set the model to evaluating mode
     model.eval()
+    if device is None:
+        device = next(model.parameters()).device
     all_preds = []
     all_labels = []
 
@@ -28,6 +30,8 @@ def dev(dev_dl, model, device):
 
 def test(test_dl, model, out_dir):
     model.eval()
+    if device is None:
+        device = next(model.parameters()).device
     all_preds = []
     all_labels = []
 
