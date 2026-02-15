@@ -34,7 +34,6 @@ def run_line(cfg):
     10. Test the score on the best layer selected in 8.
     11. Compare the score to the fine-tune test score
     """
-    
     #1. Pull and read the dataset to split it into train/dev/test
     file_path = pull_data(cfg)
     all_df = read_data(file_path)
@@ -64,22 +63,20 @@ def run_line(cfg):
     X_train_layers, y_train = extract_cls_by_layer(train_dl, model, device, desc="Extract train")
     X_dev_layers, y_dev = extract_cls_by_layer(dev_dl, model, device, desc="Extract dev")
 
-    # print(X_dev_layers, y_dev)
-
     #8. Layerwise probing
-    dev_f1_macro_by_layer, best_layer, best_f1_macro = layerwise_logreg_scores(X_train_layers, y_train, X_dev_layers, y_dev)
+    dev_f1_macro_by_layer, best_layer, best_f1_macro = layerwise_logreg_scores(X_train_layers, y_train, X_dev_layers, y_dev, C=0.1)
     print(f"\n[Layerwise probing] Best layer = {best_layer} (dev macro-F1 = {best_f1_macro:.3f})")
 
     #9. Visualize the score
-    line_graph(dev_f1_macro_by_layer)
-    # heatmap(dev_f1_macro_by_layer)
+    line_graph(dev_f1_macro_by_layer, out_path=out_dir / "dev_f1_by_layer_line.png", title=f"Dev Macro F1 by Layer")
+    heatmap(dev_f1_macro_by_layer, out_path=out_dir / "dev_f1_by_layer_heatmap.png", title=f"Dev Macro F1 by Layer")
 
     #10. Test on the best layer
     X_test_layers, y_test = extract_cls_by_layer(test_dl, model, device, desc="Extract test")
-    probe, accuracy_pr, macro_f1_pr = train_trdev_probe_and_eval_test(X_train_layers, y_train, X_test_layers, y_test, out_dir, best_layer=best_layer, C=1.0)
+    probe, accuracy_pr, macro_f1_pr = train_trdev_probe_and_eval_test(X_train_layers, y_train, X_test_layers, y_test, out_dir, best_layer=best_layer, C=0.1)
 
     #11. Compare the probing score (best layer) to the finetune test score (all layers passed)
-    compare_ft_vs_probe_bar(accuracy_ft, macro_f1_ft, accuracy_pr, macro_f1_pr)
+    compare_ft_vs_probe_bar(accuracy_ft, macro_f1_ft, accuracy_pr, macro_f1_pr, out_path=out_dir / "ft_vs_probe_bar.png")
 
     """
     Causality Test
