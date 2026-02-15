@@ -81,7 +81,7 @@ def train(cfg, train_dl, model, device):
     # Define loss function (CrossEntropy for classification)
     loss_fn = torch.nn.CrossEntropyLoss()
 
-    ckpt_path = "checkpoints/baseline.pt"
+    ckpt_path = cfg.get("experiment", {}).get("checkpoint_path", "checkpoints/baseline.pt")
 
     start_epoch = 0
     global_step = 0

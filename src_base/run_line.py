@@ -67,56 +67,40 @@ def run_line(cfg):
     X_train_layers, y_train = extract_cls_by_layer(train_dl, model, device, desc="Extract train")
     X_dev_layers, y_dev = extract_cls_by_layer(dev_dl, model, device, desc="Extract dev")
 
-    #8. Layerwise probing with C sweep
-    C_VALUES = [0.01, 0.1, 1, 10, 100]
+    #8. Layerwise probing (fixed C=0.01)
+    C_FIXED = 0.01
     seed = cfg["experiment"].get("seed", 42)
-    dev_results = []
-    for C in C_VALUES:
-        dev_f1_macro_by_layer, best_layer, best_f1_macro = layerwise_logreg_scores(
-            X_train_layers, y_train, X_dev_layers, y_dev, C=C
-        )
-        print(f"C={C}: best_layer={best_layer}, dev macro-F1={best_f1_macro:.4f}")
-        dev_results.append((C, best_layer, best_f1_macro))
-
-    print("\n--- Dev results per C ---")
-    for C, bl, f1 in dev_results:
-        print(f"  C={C}: best_layer={bl}, dev_f1_macro={f1:.4f}")
-
-    best_C, best_layer, _ = max(dev_results, key=lambda x: x[2])
-    dev_f1_macro_by_layer, _, _ = layerwise_logreg_scores(
-        X_train_layers, y_train, X_dev_layers, y_dev, C=best_C
+    dev_f1_macro_by_layer, best_layer, best_f1_macro = layerwise_logreg_scores(
+        X_train_layers, y_train, X_dev_layers, y_dev, C=C_FIXED
     )
-    print(f"\n[Layerwise probing] Best C={best_C}, best layer={best_layer}")
+    print(f"\n[Layerwise probing] C={C_FIXED}, best_layer={best_layer}, dev macro-F1={best_f1_macro:.4f}")
 
-    c_sweep_path = out_dir / "C_sweep_dev_results.json"
-    with c_sweep_path.open("w", encoding="utf-8") as f:
+    seed_results_path = out_dir / "seed_dev_results.json"
+    with seed_results_path.open("w", encoding="utf-8") as f:
         json.dump({
             "seed": seed,
-            "per_C": [{"C": C, "best_layer": int(bl), "dev_f1_macro": float(f1)} for C, bl, f1 in dev_results],
-            "best_C": best_C,
+            "C": C_FIXED,
             "best_layer": int(best_layer),
+            "dev_f1_macro": float(best_f1_macro),
         }, f, indent=2)
-    print(f"Saved: {c_sweep_path}")
+    print(f"Saved: {seed_results_path}")
 
     #9. Visualize the score
-    line_graph(dev_f1_macro_by_layer, out_path=out_dir / "dev_f1_by_layer_line.png", title=f"Dev Macro F1 by Layer (C={best_C})")
-    heatmap(dev_f1_macro_by_layer, out_path=out_dir / "dev_f1_by_layer_heatmap.png", title=f"Dev Macro F1 by Layer (C={best_C})")
+    line_graph(dev_f1_macro_by_layer, out_path=out_dir / "dev_f1_by_layer_line.png", title=f"Dev Macro F1 by Layer (C={C_FIXED})")
+    # heatmap(dev_f1_macro_by_layer, out_path=out_dir / "dev_f1_by_layer_heatmap.png", title=f"Dev Macro F1 by Layer (C={C_FIXED})")
 
     #10. Test on the best layer
     X_test_layers, y_test = extract_cls_by_layer(test_dl, model, device, desc="Extract test")
     probe, accuracy_pr, macro_f1_pr = train_trdev_probe_and_eval_test(
-        X_train_layers, y_train, X_test_layers, y_test, out_dir, best_layer=best_layer, C=best_C
+        X_train_layers, y_train, X_test_layers, y_test, out_dir, best_layer=best_layer, C=C_FIXED
     )
 
     #11. Compare the probing score (best layer) to the finetune test score (all layers passed)
     compare_ft_vs_probe_bar(accuracy_ft, macro_f1_ft, accuracy_pr, macro_f1_pr, out_path=out_dir / "ft_vs_probe_bar.png")
 
+    # Causality test commented out for seed sweep
     """
-    Causality Test
-    """
-
     print("\nCAUSALITY TEST - PATCHING\n")
-
     train_donor_df, train_receiver_df = split_donor_receiver_df(train_df, label, donor_label=1, receiver_label=4)
     dev_donor_df, dev_receiver_df = split_donor_receiver_df(dev_df, label, donor_label=1, receiver_label=4)
     test_donor_df, test_receiver_df = split_donor_receiver_df(test_df, label, donor_label=1, receiver_label=4)
@@ -142,12 +126,7 @@ def run_line(cfg):
     patch_results_test = causal_cls_patching(model, receiver_test_dl, layer_module, device, out_dir, donor_dl=donor_test_dl, mode="paired", hs_index=best_layer, target_class_idx=0, out_path="patching_results_test.json", random_donor=False, seed=42, data="test")
     plot_transition_heatmap_from_json(json_path=out_dir / "patching_results_test.json", out_path=out_dir / "transition_heatmap_counts_test.png", class_names=["1(polite)", "2", "3", "4(casual)"], normalize=None, name="Test")
 
-    """
-    Controls for patching
-    1. Self-patch: donor_batch = receiver_batch
-    2. Random patch: shuffle donor CLS within label=0
-    3. Wrong-layer patch: patching 0 to 3 for all the layers
-    """
+    # Controls for patching: Self-patch, Random patch, Wrong-layer patch
     # 1. Self-patch
     print("Control - Self-patch")
     self_train_donor_df, self_train_receiver_df = split_donor_receiver_df(train_df, label, donor_label=1, receiver_label=1)
@@ -178,16 +157,47 @@ def run_line(cfg):
         patch_results = causal_cls_patching(model, receiver_test_dl, layer_module, device, out_dir, donor_dl=donor_test_dl, mode="paired", hs_index=hs_idx, target_class_idx=0, out_path=f"patching_results_test_layer{layer_idx}.json", random_donor=False, seed=42, data="control(wrong-layer)")
         plot_transition_heatmap_from_json(json_path=out_dir / f"patching_results_test_layer{layer_idx}.json", out_path=out_dir / f"transition_heatmap_counts_test_layer{layer_idx}.png", class_names=["1(polite)", "2", "3", "4(casual)"], normalize=None, name=f"Wrong Patch at layer {count + 1}")
         count += 1
+    """
 
 
 if __name__ == "__main__":
-    # Avoid creating a path whose parent becomes the current directory
     ROOT = Path(__file__).resolve().parents[1]
     CONFIG_PATH = ROOT / "config.yaml"
     cfg = load_yaml(CONFIG_PATH)
+    base_out_dir = Path(cfg["experiment"]["output_dir"]).resolve()
 
-    # resolve() avoids creating a path whose parent becomes the current directory
-    out_dir = Path(cfg["experiment"]["output_dir"]).resolve()
-    create_dir(out_dir)
+    # Run one seed at a time (fixed C=0.01). Uncomment the seed you want to run.
+    # Seed 0
+    # cfg["experiment"]["seed"] = 0
+    # cfg["experiment"]["output_dir"] = str(base_out_dir / "seed_0")
+    # cfg["experiment"]["checkpoint_path"] = str(ROOT / "checkpoints" / "baseline_seed0.pt")
+    # create_dir(Path(cfg["experiment"]["output_dir"]))
+    # run_line(cfg)
 
+    # Seed 1
+    # cfg["experiment"]["seed"] = 1
+    # cfg["experiment"]["output_dir"] = str(base_out_dir / "seed_1")
+    # cfg["experiment"]["checkpoint_path"] = str(ROOT / "checkpoints" / "baseline_seed1.pt")
+    # create_dir(Path(cfg["experiment"]["output_dir"]))
+    # run_line(cfg)
+
+    # Seed 2
+    # cfg["experiment"]["seed"] = 2
+    # cfg["experiment"]["output_dir"] = str(base_out_dir / "seed_2")
+    # cfg["experiment"]["checkpoint_path"] = str(ROOT / "checkpoints" / "baseline_seed2.pt")
+    # create_dir(Path(cfg["experiment"]["output_dir"]))
+    # run_line(cfg)
+
+    # Seed 3
+    # cfg["experiment"]["seed"] = 3
+    # cfg["experiment"]["output_dir"] = str(base_out_dir / "seed_3")
+    # cfg["experiment"]["checkpoint_path"] = str(ROOT / "checkpoints" / "baseline_seed3.pt")
+    # create_dir(Path(cfg["experiment"]["output_dir"]))
+    # run_line(cfg)
+
+    # Seed 4
+    cfg["experiment"]["seed"] = 4
+    cfg["experiment"]["output_dir"] = str(base_out_dir / "seed_4")
+    cfg["experiment"]["checkpoint_path"] = str(ROOT / "checkpoints" / "baseline_seed4.pt")
+    create_dir(Path(cfg["experiment"]["output_dir"]))
     run_line(cfg)
