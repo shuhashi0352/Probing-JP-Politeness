@@ -73,9 +73,7 @@ def run_line(cfg):
 
     #10. Test on the best layer
     X_test_layers, y_test = extract_cls_by_layer(test_dl, model, device, desc="Extract test")
-    probe, accuracy_pr, macro_f1_pr = train_trdev_probe_and_eval_test(
-        X_train_layers, y_train, X_test_layers, y_test, out_dir, best_layer=best_layer, C=best_C
-    )
+    probe, accuracy_pr, macro_f1_pr = train_trdev_probe_and_eval_test(X_train_layers, y_train, X_test_layers, y_test, out_dir, best_layer=best_layer, C=0.1)
 
     #11. Compare the probing score (best layer) to the finetune test score (all layers passed)
     compare_ft_vs_probe_bar(accuracy_ft, macro_f1_ft, accuracy_pr, macro_f1_pr, out_path=out_dir / "ft_vs_probe_bar.png")
