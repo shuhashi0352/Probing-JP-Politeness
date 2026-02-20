@@ -27,6 +27,15 @@ def load_yaml(path): # "config.yaml"
     with open(path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
 
+# Freeze the encoder parameters
+def freeze_encoder_only(model):
+    for p in model.distilbert.parameters():
+        p.requires_grad = False
+    for p in model.pre_classifier.parameters():
+        p.requires_grad = True
+    for p in model.classifier.parameters():
+        p.requires_grad = True
+
 def prepare_model(cfg, train_enc, dev_enc, test_enc, train_labels, dev_labels, test_labels):
 
     bert = cfg["model"]
@@ -34,6 +43,7 @@ def prepare_model(cfg, train_enc, dev_enc, test_enc, train_labels, dev_labels, t
     LineDistilBERT = bert["name"]
     num_labels = bert["num_labels"]
     seed = cfg["experiment"]["seed"]
+    freeze_encoder = cfg["task"]["freeze_encoder"]
 
     g = torch.Generator()
     g.manual_seed(seed)
@@ -49,6 +59,9 @@ def prepare_model(cfg, train_enc, dev_enc, test_enc, train_labels, dev_labels, t
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
     model = AutoModelForSequenceClassification.from_pretrained(LineDistilBERT, num_labels=num_labels)
+    if freeze_encoder:
+        freeze_encoder_only(model)
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
     model_num_layers = len(model.distilbert.transformer.layer)
@@ -70,7 +83,7 @@ def train(cfg, train_dl, model, device):
     lr = cfg["task"]["learning_rate"]
     num_training_steps = len(train_dl) * epochs
 
-    optimizer = AdamW(model.parameters(), lr=lr)
+    optimizer = AdamW((p for p in model.parameters() if p.requires_grad), lr=lr)
 
     lr_scheduler = get_scheduler(
         sched_name, 
@@ -81,7 +94,7 @@ def train(cfg, train_dl, model, device):
     # Define loss function (CrossEntropy for classification)
     loss_fn = torch.nn.CrossEntropyLoss()
 
-    ckpt_path = "checkpoints/baseline.pt"
+    ckpt_path = "checkpoints/head_finetuned.pt"
 
     start_epoch = 0
     global_step = 0

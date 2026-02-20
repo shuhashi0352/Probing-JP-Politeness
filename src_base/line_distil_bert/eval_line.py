@@ -18,8 +18,13 @@ def dev(dev_dl, model, device):
             outputs = model(**batch)
 
             # Convert the tensor to the numpy array for the sake of scikit-learn
-            preds = torch.argmax(outputs.logits, dim=1).numpy()
-            labels = batch["labels"].numpy()
+            preds = torch.argmax(outputs.logits, dim=1)
+            labels = batch["labels"]
+
+            # Json module doesn't understand Numpy integer (int64)
+            # Converts them to python int
+            all_preds.extend([int(x) for x in preds.detach().cpu().tolist()])
+            all_labels.extend([int(x) for x in labels.detach().cpu().tolist()])
 
             all_preds.extend(preds)
             all_labels.extend(labels)

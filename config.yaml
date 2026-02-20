@@ -43,6 +43,7 @@ task:
   num_epochs: 5
   learning_rate: 1.0e-5
   clean_text: False
+  freeze_encoder: True
 
 tokenizer:
   name: "line-corporation/line-distilbert-base-japanese"

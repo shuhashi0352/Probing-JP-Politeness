@@ -66,7 +66,7 @@ def load_checkpoint(path, model, optimizer=None, scheduler=None, device="cpu", s
     step = ckpt.get("step", 0)
     return start_epoch, step
 
-def inspect_checkpoint(ckpt_path="checkpoints/baseline.pt", map_location="cpu"):
+def inspect_checkpoint(ckpt_path="checkpoints/head_finetuned.pt", map_location="cpu"):
     p = Path(ckpt_path)
     if not p.exists():
         print(f"[inspect_checkpoint] Not found: {p}")
