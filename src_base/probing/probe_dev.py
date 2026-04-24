@@ -5,27 +5,42 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score
 from tqdm import tqdm
 
-def layerwise_logreg_scores(X_train_layers, y_train, X_dev_layers, y_dev, C=0.1, desc="Layerwise probes"):
+def layerwise_logreg_scores(
+    X_train_layers,
+    y_train,
+    X_dev_layers,
+    y_dev,
+    C=0.1,
+    seed=42,
+    desc="Layerwise probes",
+):
     print("\nSelecting the best layer..\n")
+
+    probes = []
     dev_f1_macro = []
+
     for l in tqdm(range(len(X_train_layers)), desc=desc, unit="layer"):
         clf = make_pipeline(
             StandardScaler(),
             LogisticRegression(
                 penalty="l2",
                 solver="lbfgs",
-                multi_class="multinomial",
                 max_iter=2000,
                 C=C,
+                random_state=seed,
             )
         )
+
         clf.fit(X_train_layers[l], y_train)
         pred = clf.predict(X_dev_layers[l])
+
+        probes.append(clf)
         dev_f1_macro.append(f1_score(y_dev, pred, average="macro"))
 
-    dev_f1_macro_by_layer = np.array(dev_f1_macro) # shape: (num_layers,)
+    dev_f1_macro_by_layer = np.array(dev_f1_macro)
 
     best_layer = int(np.argmax(dev_f1_macro_by_layer))
     best_score = float(dev_f1_macro_by_layer[best_layer])
+    best_probe = probes[best_layer]
 
-    return dev_f1_macro_by_layer, best_layer, best_score
+    return probes, dev_f1_macro_by_layer, best_layer, best_score, best_probe

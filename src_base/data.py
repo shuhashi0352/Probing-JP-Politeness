@@ -3,59 +3,12 @@ import os
 import pandas as pd
 import yaml
 from sklearn.model_selection import train_test_split
-
 import json
 from pathlib import Path
 
 def load_yaml(path): # "config.yaml"
     with open(path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
-
-def pull_data(cfg):
-    """
-    Pull and save data from Keico corpus to a .csv file
-    """
-
-    url = cfg["data"]["url"]
-    file_name = url.split('/')[-1]
-
-    save_dir = "data"
-    os.makedirs(save_dir, exist_ok=True)
-    file_path = os.path.join(save_dir, file_name)
-
-    if not os.path.exists(file_path):
-        print("\nDownloading data...\n")
-        with requests.get(url) as r:
-            with open(file_path, 'wb') as f:
-                f.write(r.content)
-        
-        print('Download successful')
-    
-    else:
-        print("\nData already exists. Skip downloading...\n")
-    
-    return file_path
-
-def read_data(file_path):
-    return pd.read_csv(file_path)
-
-def split_df(cfg, df):
-
-    text = cfg["data"]["text_col"]
-    label = cfg["data"]["label_col"]
-    train_size = cfg["experiment"]["train_size"]
-    ratio_dev_test = cfg["experiment"]["ratio_dev_test"]
-    seed = cfg["experiment"]["seed"]
-
-    # Raise Error if data lacks any required columns
-    missing = [c for c in [text, label] if c not in df.columns]
-    if missing:
-        raise ValueError(f"Missing required columns: {missing}")
-    
-    train, temporary = train_test_split(df, train_size=train_size, random_state=seed, stratify=df[label])
-    test, dev = train_test_split(temporary, train_size=ratio_dev_test, random_state=seed, stratify=temporary[label])
-
-    return train, dev, test, text, label
 
 def split_donor_receiver_df(df, label_col, donor_label=0, receiver_label=3):
 
@@ -279,13 +232,233 @@ def convert_dataset(cfg, role_map=None):
 
         json.dump(converted_min, f, ensure_ascii=False, indent=2)
 
-    print(converted_min)
-
     return converted_full, converted_min
 
 
+def load_politeness_json(json_path):
+    """
+    Load the current politeness_min JSON file.
 
-    
+    Expected format:
+    [
+        {"id": "train_001", "text": "...", "label": "unnatural"},
+        ...
+    ]
+    """
+    json_path = Path(json_path)
 
+    with json_path.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    if not isinstance(data, list):
+        raise ValueError("Expected JSON root to be a list of examples.")
+
+    df = pd.DataFrame(data)
+
+    required_cols = ["id", "text", "label"]
+    missing = [c for c in required_cols if c not in df.columns]
+    if missing:
+        raise ValueError(f"Missing required columns: {missing}")
+
+    return df
+
+
+def add_label_ids(df):
+    """
+    Add integer labels for modeling.
+    """
+    label2id = {
+        "unnatural": 0,
+        "natural": 1,
+    }
+
+    unknown = sorted(set(df["label"]) - set(label2id))
+    if unknown:
+        raise ValueError(f"Unknown labels found: {unknown}")
+
+    df = df.copy()
+    df["label_id"] = df["label"].map(label2id)
+
+    return df, label2id
+
+
+def add_pair_group_id(df):
+    """
+    Create pair-wise group IDs.
+
+    Assumption for current dataset:
+    - train_001 pairs with train_501
+    - train_002 pairs with train_502
+    - ...
+    - train_500 pairs with train_1000
+
+    This keeps casual/polite counterparts in the same split.
+    """
+    df = df.copy()
+
+    def parse_num(example_id):
+        prefix, num = example_id.split("_")
+        if prefix != "train":
+            raise ValueError(f"Unexpected ID prefix in {example_id}")
+        return int(num)
+
+    df["item_num"] = df["id"].apply(parse_num)
+
+    if df["item_num"].min() != 1 or df["item_num"].max() != 1000:
+        raise ValueError(
+            f"Expected item numbers from 1 to 1000, "
+            f"but got {df['item_num'].min()} to {df['item_num'].max()}"
+        )
+
+    if len(df) != 1000:
+        raise ValueError(f"Expected 1000 rows, but got {len(df)}")
+
+    # 1 and 501 -> 1
+    # 2 and 502 -> 2
+    # ...
+    # 500 and 1000 -> 500
+    df["pair_group_id"] = ((df["item_num"] - 1) % 500) + 1
+
+    # Sanity check: each group should have exactly 2 rows
+    group_sizes = df.groupby("pair_group_id").size()
+    bad_groups = group_sizes[group_sizes != 2]
+
+    if len(bad_groups) > 0:
+        raise ValueError(
+            "Some pair groups do not have exactly 2 rows:\n"
+            f"{bad_groups.head(20)}"
+        )
+
+    return df
+
+
+def split_by_pair_group(
+    df,
+    train_size=0.70,
+    dev_size=0.15,
+    test_size=0.15,
+    seed=42,
+):
+    """
+    Split the dataset by pair_group_id.
+
+    Returns:
+        train_df, dev_df, test_df
+
+    Each pair_group_id appears in exactly one split.
+    """
+
+    total = train_size + dev_size + test_size
+    if abs(total - 1.0) > 1e-8:
+        raise ValueError(
+            f"train_size + dev_size + test_size must equal 1.0, got {total}"
+        )
+
+    if "pair_group_id" not in df.columns:
+        raise ValueError("Missing pair_group_id. Run add_pair_group_id(df) first.")
+
+    groups = sorted(df["pair_group_id"].unique())
+
+    train_groups, temp_groups = train_test_split(
+        groups,
+        train_size=train_size,
+        random_state=seed,
+        shuffle=True,
+    )
+
+    relative_dev_size = dev_size / (dev_size + test_size)
+
+    dev_groups, test_groups = train_test_split(
+        temp_groups,
+        train_size=relative_dev_size,
+        random_state=seed,
+        shuffle=True,
+    )
+
+    train_groups = set(train_groups)
+    dev_groups = set(dev_groups)
+    test_groups = set(test_groups)
+
+    train_df = df[df["pair_group_id"].isin(train_groups)].copy()
+    dev_df = df[df["pair_group_id"].isin(dev_groups)].copy()
+    test_df = df[df["pair_group_id"].isin(test_groups)].copy()
+
+    _check_no_group_leakage(train_df, dev_df, test_df)
+    _report_split_stats(train_df, dev_df, test_df)
+
+    return train_df, dev_df, test_df
+
+
+def _check_no_group_leakage(train_df, dev_df, test_df):
+    """
+    Ensure no pair_group_id appears in multiple splits.
+    """
+    train_groups = set(train_df["pair_group_id"])
+    dev_groups = set(dev_df["pair_group_id"])
+    test_groups = set(test_df["pair_group_id"])
+
+    if train_groups & dev_groups:
+        raise ValueError("Group leakage found between train and dev.")
+
+    if train_groups & test_groups:
+        raise ValueError("Group leakage found between train and test.")
+
+    if dev_groups & test_groups:
+        raise ValueError("Group leakage found between dev and test.")
+
+
+def _report_split_stats(train_df, dev_df, test_df):
+    """
+    Print basic split statistics.
+    """
+    for name, split in [
+        ("train", train_df),
+        ("dev", dev_df),
+        ("test", test_df),
+    ]:
+        print(f"\n{name.upper()}")
+        print(f"rows: {len(split)}")
+        print(f"pair groups: {split['pair_group_id'].nunique()}")
+        print("label counts:")
+        print(split["label"].value_counts().sort_index())
+
+
+def split_data(cfg):
+    json_path = cfg["data"]["binary_min_out"]
+    text_col = cfg["data"].get("text_col", "text")
+    label_col = cfg["data"].get("label_col", "label")
+
+    train_size = cfg["experiment"].get("train_size", 0.70)
+    dev_size = cfg["experiment"].get("dev_size", 0.15)
+    test_size = cfg["experiment"].get("test_size", 0.15)
+    seed = cfg["experiment"].get("seed", 42)
+
+    df = load_politeness_json(json_path)
+
+    if text_col not in df.columns:
+        raise ValueError(f"Text column not found: {text_col}")
+
+    if label_col not in df.columns:
+        raise ValueError(f"Label column not found: {label_col}")
+
+    # Standardize internal column names if needed
+    if text_col != "text":
+        df = df.rename(columns={text_col: "text"})
+
+    if label_col != "label":
+        df = df.rename(columns={label_col: "label"})
+
+    df, label2id = add_label_ids(df)
+    df = add_pair_group_id(df)
+
+    train_df, dev_df, test_df = split_by_pair_group(
+        df,
+        train_size=train_size,
+        dev_size=dev_size,
+        test_size=test_size,
+        seed=seed,
+    )
+
+    return train_df, dev_df, test_df, label2id
 
     

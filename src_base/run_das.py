@@ -1,11 +1,11 @@
 from pathlib import Path
 import yaml
-from data import pull_data, read_data, split_df, split_donor_receiver_df, convert_dataset
+from data import split_donor_receiver_df, convert_dataset, split_data
 from preprocess import build_tokenizer
 from line_distil_bert.train_line import prepare_model, make_dataloader, train
 from line_distil_bert.eval_line import dev, test
 from line_distil_bert.checkpoint import inspect_checkpoint
-from probing.extract_cls import extract_cls_by_layer, extract_cls_at_layer
+from probing.extract_cls import run_extraction
 from probing.visual import line_graph, heatmap, compare_ft_vs_probe_bar, plot_transition_heatmap_from_json
 from probing.probe_dev import layerwise_logreg_scores
 from probing.probe_test_bestLayer import train_trdev_probe_and_eval_test
@@ -21,6 +21,12 @@ def create_dir(p):
 
 def run_das(cfg):
     converted_full, converted_min = convert_dataset(cfg, role_map=None)
+    train_df, dev_df, test_df, label2id = split_data(cfg)
+
+    train_enc, dev_enc, test_enc, train_labels, dev_labels, test_labels = build_tokenizer(cfg, train_df, dev_df, test_df)
+    train_dataloader, dev_dataloader, test_dataloader, model, device, model_num_layers = prepare_model(cfg, train_enc, dev_enc, test_enc, train_labels, dev_labels, test_labels)
+
+    x_train_layers = run_extraction(train_dataloader, model, device, desc="Train hidden states")
 
 
 

@@ -8,48 +8,53 @@ def load_yaml(path): # "config.yaml"
     with open(path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
 
-def build_tokenizer(cfg, train, dev, test, text, label, df):
+def build_tokenizer(cfg, train_df, dev_df, test_df):
+    tok = cfg["tokenizer"]
 
-    tokenizer = cfg["tokenizer"]
-    truncation = tokenizer["truncation"]
-    return_tensors = tokenizer["return_tensors"]
-    LineTokenizer = tokenizer["name"]
-    trust_remote_code = tokenizer["trust_remote_code"]
-    padding = tokenizer["padding_strategy"]
+    truncation = tok["truncation"]
+    return_tensors = tok["return_tensors"]
+    model_name = tok["name"]
+    trust_remote_code = tok["trust_remote_code"]
+    padding = tok["padding_strategy"]
+    max_length = tok["max_length"]
 
+    text_col = cfg["data"]["text_col"]
+    label_col = cfg["data"]["label_id_col"]
 
-    dtype = torch.long
+    tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=trust_remote_code,)
 
-    tok = AutoTokenizer.from_pretrained(LineTokenizer, trust_remote_code=trust_remote_code)
-    sentence_lengths = [len(tok.tokenize(sent)) for sent in df[text].dropna()]
-    max_padding_length = int(np.percentile(sentence_lengths, 95))
+    for name, split in [("train", train_df), ("dev", dev_df), ("test", test_df)]:
+        if split[text_col].isna().any():
+            raise ValueError(f"{name} split contains missing text values.")
+        if split[label_col].isna().any():
+            raise ValueError(f"{name} split contains missing label values.")
 
-    train_enc = tok(
-        list(train[text].dropna()),
+    train_enc = tokenizer(
+        list(train_df[text_col]),
         padding=padding,
         truncation=truncation, 
-        max_length=max_padding_length, 
+        max_length=max_length, 
         return_tensors=return_tensors)
 
-    dev_enc = tok(
-        list(dev[text].dropna()), 
+    dev_enc = tokenizer(
+        list(dev_df[text_col]), 
         padding=padding, 
         truncation=truncation, 
-        max_length=max_padding_length, 
+        max_length=max_length, 
         return_tensors=return_tensors)  
 
-    test_enc = tok(
-        list(test[text].dropna()), 
+    test_enc = tokenizer(
+        list(test_df[text_col]), 
         padding=padding, 
         truncation=truncation, 
-        max_length=max_padding_length, 
+        max_length=max_length, 
         return_tensors=return_tensors)  
     
-    # Pytorch expects 4 classes RANGED FROM 0 to 3
-    # NOT 1 to 4 as labeled in the dataset
-    # So -1 for every label
-    train_labels = torch.tensor(list(train[label]), dtype=dtype) - 1
-    dev_labels = torch.tensor(list(dev[label]), dtype=dtype) - 1
-    test_labels = torch.tensor(list(test[label]), dtype=dtype) - 1
+    train_labels = torch.tensor(train_df[label_col].tolist(), dtype=torch.long)
+    dev_labels = torch.tensor(dev_df[label_col].tolist(), dtype=torch.long)
+    test_labels = torch.tensor(test_df[label_col].tolist(), dtype=torch.long)
+
+    print(train_enc)
+    print(train_labels.shape)
 
     return train_enc, dev_enc, test_enc, train_labels, dev_labels, test_labels

@@ -3,15 +3,17 @@ experiment:
   name: "baseline-classification-LineDistilBERT"
   output_dir: "./results_lineDistilBERT"
   seed: 42
-  train_size: 0.8
-  ratio_dev_test: 0.5
+  train_size: 0.7
+  dev_size: 0.15
+  test_size: 0.15
 
 # Data
 data:
   url: "https://raw.githubusercontent.com/Liumx2020/KeiCO-corpus/main/keico_corpus(forLREC)-OldVersion.csv"
   root_dir: "./data/"
-  text_col: "本文"
-  label_col: "Level"
+  text_col: "text"
+  label_col: "label"
+  label_id_col: "label_id"
   honorific_col: "尊敬語"
   humble_col: "謙譲語"
   polite_col: "丁寧語"
@@ -54,4 +56,5 @@ tokenizer:
   return_tensors: "pt"
   trust_remote_code: True
   padding_strategy: "max_length"
+  max_length: 128
 
