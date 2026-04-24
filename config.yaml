@@ -16,6 +16,9 @@ data:
   humble_col: "謙譲語"
   polite_col: "丁寧語"
   field_col: "フィールド"
+  binary_data: "./data/das/politeness_dataset_1000_examples.json"
+  binary_full_out: "./data/das/politeness_full.json"
+  binary_min_out: "./data/das/politeness_min.json"
 
 # Models
 model:
