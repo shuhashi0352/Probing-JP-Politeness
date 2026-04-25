@@ -26,7 +26,7 @@ def run_das(cfg):
     train_enc, dev_enc, test_enc, train_labels, dev_labels, test_labels = build_tokenizer(cfg, train_df, dev_df, test_df)
     train_dataloader, dev_dataloader, test_dataloader, model, device, model_num_layers = prepare_model(cfg, train_enc, dev_enc, test_enc, train_labels, dev_labels, test_labels)
 
-    x_train_layers = run_extraction(train_dataloader, model, device, desc="Train hidden states")
+    x_train_layers, y_train = run_extraction(train_dataloader, model, device, desc="Train hidden states")
 
 
 

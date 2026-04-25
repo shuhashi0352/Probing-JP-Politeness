@@ -2,7 +2,6 @@ import numpy as np
 import torch
 from tqdm import tqdm
 
-
 def extract_hs_by_layer(dataloader, model, device, desc="Extract hidden states"):
     print("\nExtracting full hidden states by layer...\n")
 
@@ -64,4 +63,4 @@ def run_extraction(dataloader, model, device):
     x_train_layers_full, train_masks, y_train = extract_hs_by_layer(dataloader, model, device, desc="Train hidden states")
     x_train_layers = [mean_pool_hs(h, train_masks)for h in x_train_layers_full]
 
-    return x_train_layers
+    return x_train_layers, y_train
