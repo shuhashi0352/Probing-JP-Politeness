@@ -19,8 +19,8 @@ data:
   polite_col: "丁寧語"
   field_col: "フィールド"
   binary_data: "./data/das/politeness_dataset_1000_examples.json"
-  binary_full_out: "./data/das/politeness_full.json"
-  binary_min_out: "./data/das/politeness_min.json"
+  binary_full_out: "./data/das/politeness_full_4800.json"
+  binary_min_out: "./data/das/politeness_min_4800.json"
   das_out_dir: "./results_das"
   das_out_dev_name: "das_dev_results.json"
 
@@ -66,8 +66,8 @@ das:
   epochs: 20
 
 tr_probe:
-  lr: 0.001
-  epochs: 15
-  batch_size: 4
+  lr: 0.0001
+  epochs: 100
+  batch_size: 16
   weight_decay: 0.01
 

@@ -86,20 +86,6 @@ def make_dataloader(enc, labels, cfg, shuffle=False):
     ds = PolitenessDataset(enc, labels)
     return DataLoader(ds, batch_size=cfg["task"]["batch_size"], shuffle=shuffle)
 
-def split_donor_receiver_df(df, label_col, donor_label=0, receiver_label=3):
-
-    # donor/receiver extraction
-    donor_df = df[df[label_col] == donor_label].copy()
-    receiver_df = df[df[label_col] == receiver_label].copy()
-
-    # Sanity check
-    if len(donor_df) == 0:
-        raise ValueError(f"No donor instances found for label={donor_label}")
-    if len(receiver_df) == 0:
-        raise ValueError(f"No receiver instances found for label={receiver_label}")
-
-    return donor_df, receiver_df # Don't return the base df since it won't be used for causality tests
-
 
 ######### DAS ###########
 
@@ -312,15 +298,6 @@ def convert_dataset(cfg, role_map=None):
 
 
 def load_politeness_json(json_path):
-    """
-    Load the current politeness_min JSON file.
-
-    Expected format:
-    [
-        {"id": "train_001", "text": "...", "label": "unnatural"},
-        ...
-    ]
-    """
     json_path = Path(json_path)
 
     with json_path.open("r", encoding="utf-8") as f:
@@ -358,82 +335,37 @@ def add_label_ids(df):
     return df, label2id
 
 
-def add_pair_group_id(df):
-    """
-    Create pair-wise group IDs.
-
-    Assumption for current dataset:
-    - train_001 pairs with train_501
-    - train_002 pairs with train_502
-    - ...
-    - train_500 pairs with train_1000
-
-    This keeps casual/polite counterparts in the same split.
-    """
+def add_utterance_group_id(df):
     df = df.copy()
 
-    def parse_num(example_id):
-        prefix, num = example_id.split("_")
-        if prefix != "train":
-            raise ValueError(f"Unexpected ID prefix in {example_id}")
-        return int(num)
+    def extract_utterance(text):
+        start = text.find("「")
+        end = text.find("」")
+        if start == -1 or end == -1 or end <= start:
+            raise ValueError(f"Invalid text format: {text}")
+        return text[start + 1:end]
 
-    df["item_num"] = df["id"].apply(parse_num)
-
-    if df["item_num"].min() != 1 or df["item_num"].max() != 1000:
-        raise ValueError(
-            f"Expected item numbers from 1 to 1000, "
-            f"but got {df['item_num'].min()} to {df['item_num'].max()}"
-        )
-
-    if len(df) != 1000:
-        raise ValueError(f"Expected 1000 rows, but got {len(df)}")
-
-    # 1 and 501 -> 1
-    # 2 and 502 -> 2
-    # ...
-    # 500 and 1000 -> 500
-    df["pair_group_id"] = ((df["item_num"] - 1) % 500) + 1
-
-    # Sanity check: each group should have exactly 2 rows
-    group_sizes = df.groupby("pair_group_id").size()
-    bad_groups = group_sizes[group_sizes != 2]
-
-    if len(bad_groups) > 0:
-        raise ValueError(
-            "Some pair groups do not have exactly 2 rows:\n"
-            f"{bad_groups.head(20)}"
-        )
+    df["utterance"] = df["text"].apply(extract_utterance)
+    df["utterance_group_id"] = pd.factorize(df["utterance"])[0] + 1
 
     return df
 
 
-def split_by_pair_group(
+def split_by_utterance_group(
     df,
     train_size=0.70,
     dev_size=0.15,
     test_size=0.15,
     seed=42,
 ):
-    """
-    Split the dataset by pair_group_id.
-
-    Returns:
-        train_df, dev_df, test_df
-
-    Each pair_group_id appears in exactly one split.
-    """
-
     total = train_size + dev_size + test_size
     if abs(total - 1.0) > 1e-8:
-        raise ValueError(
-            f"train_size + dev_size + test_size must equal 1.0, got {total}"
-        )
+        raise ValueError(f"train/dev/test must sum to 1.0, got {total}")
 
-    if "pair_group_id" not in df.columns:
-        raise ValueError("Missing pair_group_id. Run add_pair_group_id(df) first.")
+    if "utterance_group_id" not in df.columns:
+        raise ValueError("Missing utterance_group_id. Run add_utterance_group_id(df) first.")
 
-    groups = sorted(df["pair_group_id"].unique())
+    groups = sorted(df["utterance_group_id"].unique())
 
     train_groups, temp_groups = train_test_split(
         groups,
@@ -455,46 +387,34 @@ def split_by_pair_group(
     dev_groups = set(dev_groups)
     test_groups = set(test_groups)
 
-    train_df = df[df["pair_group_id"].isin(train_groups)].copy()
-    dev_df = df[df["pair_group_id"].isin(dev_groups)].copy()
-    test_df = df[df["pair_group_id"].isin(test_groups)].copy()
+    train_df = df[df["utterance_group_id"].isin(train_groups)].copy()
+    dev_df = df[df["utterance_group_id"].isin(dev_groups)].copy()
+    test_df = df[df["utterance_group_id"].isin(test_groups)].copy()
 
-    _check_no_group_leakage(train_df, dev_df, test_df)
+    _check_no_utterance_group_leakage(train_df, dev_df, test_df)
     _report_split_stats(train_df, dev_df, test_df)
 
     return train_df, dev_df, test_df
 
 
-def _check_no_group_leakage(train_df, dev_df, test_df):
-    """
-    Ensure no pair_group_id appears in multiple splits.
-    """
-    train_groups = set(train_df["pair_group_id"])
-    dev_groups = set(dev_df["pair_group_id"])
-    test_groups = set(test_df["pair_group_id"])
+def _check_no_utterance_group_leakage(train_df, dev_df, test_df):
+    train_groups = set(train_df["utterance_group_id"])
+    dev_groups = set(dev_df["utterance_group_id"])
+    test_groups = set(test_df["utterance_group_id"])
 
     if train_groups & dev_groups:
-        raise ValueError("Group leakage found between train and dev.")
-
+        raise ValueError("Utterance leakage found between train and dev.")
     if train_groups & test_groups:
-        raise ValueError("Group leakage found between train and test.")
-
+        raise ValueError("Utterance leakage found between train and test.")
     if dev_groups & test_groups:
-        raise ValueError("Group leakage found between dev and test.")
+        raise ValueError("Utterance leakage found between dev and test.")
 
 
 def _report_split_stats(train_df, dev_df, test_df):
-    """
-    Print basic split statistics.
-    """
-    for name, split in [
-        ("train", train_df),
-        ("dev", dev_df),
-        ("test", test_df),
-    ]:
+    for name, split in [("train", train_df), ("dev", dev_df), ("test", test_df)]:
         print(f"\n{name.upper()}")
         print(f"rows: {len(split)}")
-        print(f"pair groups: {split['pair_group_id'].nunique()}")
+        print(f"utterance groups: {split['utterance_group_id'].nunique()}")
         print("label counts:")
         print(split["label"].value_counts().sort_index())
 
@@ -525,9 +445,9 @@ def split_data(cfg):
         df = df.rename(columns={label_col: "label"})
 
     df, label2id = add_label_ids(df)
-    df = add_pair_group_id(df)
+    df = add_utterance_group_id(df)
 
-    train_df, dev_df, test_df = split_by_pair_group(
+    train_df, dev_df, test_df = split_by_utterance_group(
         df,
         train_size=train_size,
         dev_size=dev_size,
@@ -537,36 +457,29 @@ def split_data(cfg):
 
     return train_df, dev_df, test_df, label2id
 
-def add_counterpart_id(df):
-    df = df.copy()
-
-    def get_counterpart(example_id):
-        n = int(example_id.split("_")[1])
-        if n <= 500:
-            return f"train_{n + 500:03d}"
-        else:
-            return f"train_{n - 500:03d}"
-
-    df["counterpart_id"] = df["id"].apply(get_counterpart)
-    return df
-
-
 def make_aligned_das_dfs(split_df):
-    split_df = add_counterpart_id(split_df)
-
-    id_to_row = {row["id"]: row for _, row in split_df.iterrows()}
-
     receiver_rows = []
     donor_rows = []
 
-    for _, row in split_df.iterrows():
-        cid = row["counterpart_id"]
+    for _, group in split_df.groupby("utterance_group_id"):
+        natural = group[group["label_id"] == 1]
+        unnatural = group[group["label_id"] == 0]
 
-        if cid not in id_to_row:
+        if len(natural) == 0 or len(unnatural) == 0:
             continue
 
-        receiver_rows.append(row)
-        donor_rows.append(id_to_row[cid])
+        n = min(len(natural), len(unnatural))
+
+        natural = natural.sample(n=n, random_state=42).reset_index(drop=True)
+        unnatural = unnatural.sample(n=n, random_state=42).reset_index(drop=True)
+
+        # unnatural receiver -> natural donor
+        receiver_rows.extend(unnatural.to_dict("records"))
+        donor_rows.extend(natural.to_dict("records"))
+
+        # natural receiver -> unnatural donor
+        receiver_rows.extend(natural.to_dict("records"))
+        donor_rows.extend(unnatural.to_dict("records"))
 
     receiver_df = pd.DataFrame(receiver_rows).reset_index(drop=True)
     donor_df = pd.DataFrame(donor_rows).reset_index(drop=True)

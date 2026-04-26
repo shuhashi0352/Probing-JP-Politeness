@@ -1,18 +1,25 @@
 from pathlib import Path
 import yaml
-from data import convert_dataset, split_data, prepare_model, make_das_dataloaders
+from data import split_data, prepare_model, make_das_dataloaders
 from preprocess import build_tokenizer
-from line_distil_bert.train_line import train
-from line_distil_bert.eval_line import dev, test
-from line_distil_bert.checkpoint import inspect_checkpoint
-from probing.extract_hs import run_extraction, build_context_quote_masks
-from probing.visual import line_graph, heatmap, compare_ft_vs_probe_bar, plot_transition_heatmap_from_json
+from probing.extract_hs import run_extraction
 from probing.probe_dev import layerwise_logreg_scores
 from probing.probe_test_bestLayer import train_trdev_probe_and_eval_test
 from probing.utils import get_encoder_layer_module
 from probing.patching import causal_cls_patching
 from line_distil_bert.das import get_distilbert_layer_module, train_das, eval_das
 from line_distil_bert.train_das_probe import StandardizedLinearProbe, train_pooled_vector_probe, eval_pooled_vector_probe, apply_standardizer
+
+# For finetuning (if needed)
+from line_distil_bert.train_line import train
+from line_distil_bert.eval_line import dev, test
+
+# If the checkpoint setting exists
+from line_distil_bert.checkpoint import inspect_checkpoint
+
+# Visualization
+from probing.visual import line_graph, plot_transition_heatmap_from_json
+
 
 def load_yaml(path): # "config.yaml"
     with open(path, "r", encoding="utf-8") as f:
@@ -22,7 +29,6 @@ def create_dir(p):
     p.mkdir(parents=True, exist_ok=True)
 
 def run_das(cfg):
-    converted_full, converted_min = convert_dataset(cfg, role_map=None)
     train_df, dev_df, test_df, label2id = split_data(cfg)
 
     tokenizer, train_enc, dev_enc, test_enc, train_labels, dev_labels, test_labels = build_tokenizer(cfg, train_df, dev_df, test_df)
