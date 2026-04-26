@@ -1,16 +1,18 @@
 from pathlib import Path
 import yaml
-from data import split_donor_receiver_df, convert_dataset, split_data
+from data import convert_dataset, split_data, prepare_model, make_das_dataloaders
 from preprocess import build_tokenizer
-from line_distil_bert.train_line import prepare_model, make_dataloader, train
+from line_distil_bert.train_line import train
 from line_distil_bert.eval_line import dev, test
 from line_distil_bert.checkpoint import inspect_checkpoint
-from probing.extract_cls import run_extraction
+from probing.extract_cls import run_extraction, mean_pool_hs
 from probing.visual import line_graph, heatmap, compare_ft_vs_probe_bar, plot_transition_heatmap_from_json
 from probing.probe_dev import layerwise_logreg_scores
 from probing.probe_test_bestLayer import train_trdev_probe_and_eval_test
 from probing.utils import get_encoder_layer_module
 from probing.patching import causal_cls_patching
+from line_distil_bert.das import get_distilbert_layer_module, train_das, eval_das
+from line_distil_bert.train_das_probe import StandardizedLinearProbe, train_pooled_vector_probe, eval_pooled_vector_probe, apply_standardizer
 
 def load_yaml(path): # "config.yaml"
     with open(path, "r", encoding="utf-8") as f:
@@ -23,10 +25,39 @@ def run_das(cfg):
     converted_full, converted_min = convert_dataset(cfg, role_map=None)
     train_df, dev_df, test_df, label2id = split_data(cfg)
 
-    train_enc, dev_enc, test_enc, train_labels, dev_labels, test_labels = build_tokenizer(cfg, train_df, dev_df, test_df)
+    tokenizer, train_enc, dev_enc, test_enc, train_labels, dev_labels, test_labels = build_tokenizer(cfg, train_df, dev_df, test_df)
     train_dataloader, dev_dataloader, test_dataloader, model, device, model_num_layers = prepare_model(cfg, train_enc, dev_enc, test_enc, train_labels, dev_labels, test_labels)
 
-    x_train_layers, y_train = run_extraction(train_dataloader, model, device, desc="Train hidden states")
+    x_train_layers, x_train_layers_full, train_masks, y_train, train_quote_masks, x_train_quote_layers = run_extraction(train_dataloader, model, device, train_df["text"].tolist(), train_enc, tokenizer, desc="Train hidden states")
+    x_dev_layers, x_dev_layers_full, dev_masks, y_dev, dev_quote_masks, x_dev_quote_layers = run_extraction(dev_dataloader, model, device, dev_df["text"].tolist(), dev_enc, tokenizer, desc="Dev hidden states")
+    x_test_layers, x_test_layers_full, test_masks, y_test, test_quote_masks, x_test_quote_layers = run_extraction(test_dataloader, model, device, test_df["text"].tolist(), test_enc, tokenizer, desc="Test hidden states")
+
+    probes, dev_scores, best_layer, best_score, best_probe = layerwise_logreg_scores(x_train_layers, y_train, x_dev_layers, y_dev, C=0.1, seed=cfg["experiment"]["seed"])
+    probes_q, dev_scores_q, best_layer_q, best_score_q, best_probe_q = layerwise_logreg_scores(x_train_quote_layers, y_train, x_dev_quote_layers, y_dev, C=0.1, seed=cfg["experiment"]["seed"])
+    print("best_layer: ", best_layer, "best_score: ", best_score)
+    print(dev_scores)
+    # baseline: use tokens only within quotes (No speaker/listener contexts)
+    print("best_laye_q: ", best_layer_q, "best_score_q: ", best_score_q)
+    print(dev_scores_q)
+
+    hidden_size = model.config.dim
+
+    torch_probe = StandardizedLinearProbe(hidden_size=hidden_size, num_labels=2)
+    torch_probe, probe_mean, probe_std = train_pooled_vector_probe(cfg, torch_probe, x_train_layers[best_layer], y_train, device)
+    dev_probe_results = eval_pooled_vector_probe(cfg, torch_probe, x_dev_layers[best_layer], y_dev, device, probe_mean, probe_std)
+    print("PyTorch pooled-vector probe dev:", dev_probe_results["accuracy"])
+
+    ##### DAS #####
+
+    train_receiver_dl, train_donor_dl, train_receiver_df, train_donor_df = make_das_dataloaders(train_df, tokenizer, batch_size=cfg["task"]["batch_size"], max_length=cfg["tokenizer"]["max_length"])
+
+    dev_receiver_dl, dev_donor_dl, dev_receiver_df, dev_donor_df = make_das_dataloaders(dev_df, tokenizer, batch_size=cfg["task"]["batch_size"], max_length=cfg["tokenizer"]["max_length"])
+
+    layer_module = get_distilbert_layer_module(model, best_layer)
+
+    das = train_das(cfg, model, torch_probe, probe_mean, probe_std, train_receiver_dl, train_donor_dl, layer_module, best_layer, hidden_size, device)
+    dev_das_results = eval_das(cfg, model, torch_probe, probe_mean, probe_std, dev_receiver_dl, dev_donor_dl, layer_module, best_layer, das, device)
+    print(dev_das_results)
 
 
 
@@ -164,7 +195,7 @@ if __name__ == "__main__":
     cfg = load_yaml(CONFIG_PATH)
 
     # resolve() avoids creating a path whose parent becomes the current directory
-    out_dir = Path(cfg["experiment"]["output_dir"]).resolve()
+    out_dir = Path(cfg["data"]["das_out_dir"]).resolve()
     create_dir(out_dir)
 
     run_das(cfg)

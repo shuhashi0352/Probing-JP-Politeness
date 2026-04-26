@@ -21,11 +21,13 @@ data:
   binary_data: "./data/das/politeness_dataset_1000_examples.json"
   binary_full_out: "./data/das/politeness_full.json"
   binary_min_out: "./data/das/politeness_min.json"
+  das_out_dir: "./results_das"
+  das_out_dev_name: "das_dev_results.json"
 
 # Models
 model:
   name: "line-corporation/line-distilbert-base-japanese"
-  num_labels: 4
+  num_labels: 2
 
 # for pytorch
 torch:
@@ -42,10 +44,10 @@ scheduler:
 
 # Training
 task:
-  num_classes: 4
+  num_classes: 2
   num_warmsteps: 0
   batch_size: 16
-  num_epochs: 5
+  num_epochs: 20
   learning_rate: 1.0e-5
   clean_text: False
   freeze_encoder: True
@@ -57,4 +59,15 @@ tokenizer:
   trust_remote_code: True
   padding_strategy: "max_length"
   max_length: 128
+
+das:
+  k: 32
+  lr: 0.001
+  epochs: 20
+
+tr_probe:
+  lr: 0.001
+  epochs: 15
+  batch_size: 4
+  weight_decay: 0.01
 

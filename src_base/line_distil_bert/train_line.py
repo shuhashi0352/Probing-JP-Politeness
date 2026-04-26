@@ -1,78 +1,13 @@
-from torch.utils.data import Dataset, DataLoader
 import yaml
 from transformers import get_scheduler
 from tqdm import tqdm
 from torch.optim import AdamW
-from transformers import AutoModelForSequenceClassification
 import torch
 from pathlib import Path
-from line_distil_bert.checkpoint import save_checkpoint, load_checkpoint
-
-class PolitenessDataset(Dataset):
-    def __init__(self, encodings, labels):
-        self.encodings = encodings
-        self.labels = labels
-    
-    def __len__(self):
-        return len(self.labels)
-    
-    def __getitem__(self, idx):
-        # Get tokenized inputs
-        item = {key: val[idx] for key, val in self.encodings.items()} 
-        # Add corresponding label
-        item["labels"] = self.labels[idx] 
-        return item
     
 def load_yaml(path): # "config.yaml"
     with open(path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
-
-# Freeze the encoder parameters
-def freeze_encoder_only(model):
-    for p in model.distilbert.parameters():
-        p.requires_grad = False
-    for p in model.pre_classifier.parameters():
-        p.requires_grad = True
-    for p in model.classifier.parameters():
-        p.requires_grad = True
-
-def prepare_model(cfg, train_enc, dev_enc, test_enc, train_labels, dev_labels, test_labels):
-
-    bert = cfg["model"]
-    batch_size = cfg["task"]["batch_size"]
-    LineDistilBERT = bert["name"]
-    num_labels = bert["num_labels"]
-    seed = cfg["experiment"]["seed"]
-    freeze_encoder = cfg["task"]["freeze_encoder"]
-
-    g = torch.Generator()
-    g.manual_seed(seed)
-
-    # Create datasets
-    train_dataset = PolitenessDataset(train_enc, train_labels)
-    dev_dataset = PolitenessDataset(dev_enc, dev_labels)
-    test_dataset = PolitenessDataset(test_enc, test_labels)
-
-    # Create DataLoaders for batch training
-    train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, generator=g)
-    dev_dataloader = DataLoader(dev_dataset, batch_size=batch_size, shuffle=False)
-    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
-
-    model = AutoModelForSequenceClassification.from_pretrained(LineDistilBERT, num_labels=num_labels)
-    if freeze_encoder:
-        freeze_encoder_only(model)
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = model.to(device)
-    model_num_layers = len(model.distilbert.transformer.layer)
-
-    print("\nModel successfully set up\n")
-
-    return train_dataloader, dev_dataloader, test_dataloader, model, device, model_num_layers
-
-def make_dataloader(enc, labels, cfg, shuffle=False):
-    ds = PolitenessDataset(enc, labels)
-    return DataLoader(ds, batch_size=cfg["task"]["batch_size"], shuffle=shuffle)
 
 def train(cfg, train_dl, model, device):
 
@@ -90,20 +25,9 @@ def train(cfg, train_dl, model, device):
         optimizer=optimizer, 
         num_warmup_steps=num_warmup_steps, 
         num_training_steps=num_training_steps)  
-    
-    # Define loss function (CrossEntropy for classification)
-    loss_fn = torch.nn.CrossEntropyLoss()
-
-    ckpt_path = "checkpoints/head_finetuned.pt"
 
     start_epoch = 0
     global_step = 0
-
-    if Path(ckpt_path).exists():
-        start_epoch, global_step = load_checkpoint(
-            ckpt_path, model, optimizer, lr_scheduler, device=device
-        )
-        print("Resuming from epoch:", start_epoch, "step:", global_step)
 
     for epoch in range(start_epoch, epochs):
         # set the model to training mode
@@ -111,14 +35,15 @@ def train(cfg, train_dl, model, device):
         total_loss = 0
         
         for batch in tqdm(train_dl, desc="Train Per Batch", unit="batch"):
-            batch = {k: v.to(device) for k, v in batch.items()}
+            batch = {k: v.to(device) for k, v in batch.items() if k != "offset_mapping"}
+
+            # reset the gradient descent
+            optimizer.zero_grad()
+
             outputs = model(**batch)
 
             loss = outputs.loss
             total_loss += loss.item()
-
-            # reset the gradient descent
-            optimizer.zero_grad()
 
             # Backpropagation
             loss.backward()
@@ -128,15 +53,6 @@ def train(cfg, train_dl, model, device):
             lr_scheduler.step()
 
             global_step += 1
-        
-        save_checkpoint(
-            ckpt_path,
-            model=model,
-            optimizer=optimizer,
-            scheduler=lr_scheduler,
-            epoch=epoch,
-            step=global_step,
-        )
         
         avg_loss = total_loss / len(train_dl)
         print(f"Epoch {epoch+1}, Training Loss: {avg_loss:.4f}")

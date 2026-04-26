@@ -6,9 +6,70 @@ from sklearn.model_selection import train_test_split
 import json
 from pathlib import Path
 
+from torch.utils.data import Dataset, DataLoader
+from transformers import AutoModelForSequenceClassification
+import torch
+
+class PolitenessDataset(Dataset):
+    def __init__(self, encodings, labels):
+        self.encodings = encodings
+        self.labels = labels
+    
+    def __len__(self):
+        return len(self.labels)
+    
+    def __getitem__(self, idx):
+        # Get tokenized inputs
+        item = {key: val[idx] for key, val in self.encodings.items()} 
+        # Add corresponding label
+        item["labels"] = self.labels[idx] 
+        return item
+
 def load_yaml(path): # "config.yaml"
     with open(path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
+    
+# Freeze the encoder parameters
+def freeze_model(model):
+    for p in model.parameters():
+        p.requires_grad = False
+    
+def prepare_model(cfg, train_enc, dev_enc, test_enc, train_labels, dev_labels, test_labels):
+
+    bert = cfg["model"]
+    batch_size = cfg["task"]["batch_size"]
+    LineDistilBERT = bert["name"]
+    num_labels = bert["num_labels"]
+    seed = cfg["experiment"]["seed"]
+
+    g = torch.Generator()
+    g.manual_seed(seed)
+
+    # Create datasets
+    train_dataset = PolitenessDataset(train_enc, train_labels)
+    dev_dataset = PolitenessDataset(dev_enc, dev_labels)
+    test_dataset = PolitenessDataset(test_enc, test_labels)
+
+    # Create DataLoaders for batch training
+    train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=False, generator=g)
+    dev_dataloader = DataLoader(dev_dataset, batch_size=batch_size, shuffle=False)
+    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+
+    model = AutoModelForSequenceClassification.from_pretrained(LineDistilBERT, num_labels=num_labels, output_hidden_states=True)
+    freeze_model(model)
+    model.eval()
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = model.to(device)
+    model_num_layers = len(model.distilbert.transformer.layer)
+
+    print("\nModel successfully set up\n")
+
+    return train_dataloader, dev_dataloader, test_dataloader, model, device, model_num_layers
+
+def make_dataloader(enc, labels, cfg, shuffle=False):
+    ds = PolitenessDataset(enc, labels)
+    return DataLoader(ds, batch_size=cfg["task"]["batch_size"], shuffle=shuffle)
 
 def split_donor_receiver_df(df, label_col, donor_label=0, receiver_label=3):
 
@@ -461,4 +522,68 @@ def split_data(cfg):
 
     return train_df, dev_df, test_df, label2id
 
+def add_counterpart_id(df):
+    df = df.copy()
+
+    def get_counterpart(example_id):
+        n = int(example_id.split("_")[1])
+        if n <= 500:
+            return f"train_{n + 500:03d}"
+        else:
+            return f"train_{n - 500:03d}"
+
+    df["counterpart_id"] = df["id"].apply(get_counterpart)
+    return df
+
+
+def make_aligned_das_dfs(split_df):
+    split_df = add_counterpart_id(split_df)
+
+    id_to_row = {row["id"]: row for _, row in split_df.iterrows()}
+
+    receiver_rows = []
+    donor_rows = []
+
+    for _, row in split_df.iterrows():
+        cid = row["counterpart_id"]
+
+        if cid not in id_to_row:
+            continue
+
+        receiver_rows.append(row)
+        donor_rows.append(id_to_row[cid])
+
+    receiver_df = pd.DataFrame(receiver_rows).reset_index(drop=True)
+    donor_df = pd.DataFrame(donor_rows).reset_index(drop=True)
+
+    return receiver_df, donor_df
+
+def encode_df(df, tokenizer, max_length=128):
+    return tokenizer(
+        df["text"].tolist(),
+        padding=True,
+        truncation=True,
+        max_length=max_length,
+        return_tensors="pt",
+    )
+
+def make_labels(df):
+    return torch.tensor(df["label_id"].tolist(), dtype=torch.long)
+
+def make_das_dataloaders(split_df, tokenizer, batch_size=16, max_length=128):
+    receiver_df, donor_df = make_aligned_das_dfs(split_df)
+
+    receiver_enc = encode_df(receiver_df, tokenizer, max_length=max_length)
+    donor_enc = encode_df(donor_df, tokenizer, max_length=max_length)
+
+    receiver_labels = make_labels(receiver_df)
+    donor_labels = make_labels(donor_df)
+
+    receiver_ds = PolitenessDataset(receiver_enc, receiver_labels)
+    donor_ds = PolitenessDataset(donor_enc, donor_labels)
+
+    receiver_dl = DataLoader(receiver_ds, batch_size=batch_size, shuffle=False)
+    donor_dl = DataLoader(donor_ds, batch_size=batch_size, shuffle=False)
+
+    return receiver_dl, donor_dl, receiver_df, donor_df
     

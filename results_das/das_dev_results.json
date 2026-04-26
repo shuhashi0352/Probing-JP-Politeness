@@ -1,0 +1,17 @@
+{
+  "n": 150,
+  "patched_target_accuracy": 0.52,
+  "flip_rate": 0.38666666666666666,
+  "transition_counts": [
+    [
+      59,
+      20
+    ],
+    [
+      38,
+      33
+    ]
+  ],
+  "hs_index": 2,
+  "k": 64
+}

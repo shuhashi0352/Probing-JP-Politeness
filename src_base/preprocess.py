@@ -21,7 +21,7 @@ def build_tokenizer(cfg, train_df, dev_df, test_df):
     text_col = cfg["data"]["text_col"]
     label_col = cfg["data"]["label_id_col"]
 
-    tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=trust_remote_code,)
+    tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=trust_remote_code)
 
     for name, split in [("train", train_df), ("dev", dev_df), ("test", test_df)]:
         if split[text_col].isna().any():
@@ -57,4 +57,4 @@ def build_tokenizer(cfg, train_df, dev_df, test_df):
     print(train_enc)
     print(train_labels.shape)
 
-    return train_enc, dev_enc, test_enc, train_labels, dev_labels, test_labels
+    return tokenizer, train_enc, dev_enc, test_enc, train_labels, dev_labels, test_labels

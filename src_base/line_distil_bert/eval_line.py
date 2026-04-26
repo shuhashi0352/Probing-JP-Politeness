@@ -2,6 +2,7 @@ from tqdm import tqdm
 import torch
 from sklearn.metrics import accuracy_score, f1_score
 import json
+from pathlib import Path
 
 def dev(dev_dl, model, device):
     # set the model to evaluating mode
@@ -33,7 +34,9 @@ def dev(dev_dl, model, device):
     accuracy = accuracy_score(all_labels, all_preds)
     print(f"Validation Accuracy: {accuracy:.4f}")
 
-def test(test_dl, model, out_dir, device=None):
+def test(cfg, test_dl, model, device=None):
+    out_dir = Path(cfg["data"]["das_out_dir"])
+
     model.eval()
     if device is None:
         device = next(model.parameters()).device
@@ -69,7 +72,7 @@ def test(test_dl, model, out_dir, device=None):
         "y_pred": all_preds,
     }
 
-    out_path = out_dir / "finetune_results.json"
+    out_path = out_dir / "das_finetune_results.json"
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
 
