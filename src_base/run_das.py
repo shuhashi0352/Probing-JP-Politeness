@@ -5,7 +5,7 @@ from preprocess import build_tokenizer
 from line_distil_bert.train_line import train
 from line_distil_bert.eval_line import dev, test
 from line_distil_bert.checkpoint import inspect_checkpoint
-from probing.extract_cls import run_extraction, mean_pool_hs
+from probing.extract_hs import run_extraction, build_context_quote_masks
 from probing.visual import line_graph, heatmap, compare_ft_vs_probe_bar, plot_transition_heatmap_from_json
 from probing.probe_dev import layerwise_logreg_scores
 from probing.probe_test_bestLayer import train_trdev_probe_and_eval_test
@@ -28,23 +28,19 @@ def run_das(cfg):
     tokenizer, train_enc, dev_enc, test_enc, train_labels, dev_labels, test_labels = build_tokenizer(cfg, train_df, dev_df, test_df)
     train_dataloader, dev_dataloader, test_dataloader, model, device, model_num_layers = prepare_model(cfg, train_enc, dev_enc, test_enc, train_labels, dev_labels, test_labels)
 
-    x_train_layers, x_train_layers_full, train_masks, y_train, train_quote_masks, x_train_quote_layers = run_extraction(train_dataloader, model, device, train_df["text"].tolist(), train_enc, tokenizer, desc="Train hidden states")
-    x_dev_layers, x_dev_layers_full, dev_masks, y_dev, dev_quote_masks, x_dev_quote_layers = run_extraction(dev_dataloader, model, device, dev_df["text"].tolist(), dev_enc, tokenizer, desc="Dev hidden states")
-    x_test_layers, x_test_layers_full, test_masks, y_test, test_quote_masks, x_test_quote_layers = run_extraction(test_dataloader, model, device, test_df["text"].tolist(), test_enc, tokenizer, desc="Test hidden states")
+    (x_train_layers, x_train_layers_full, train_masks, y_train, train_context_masks, train_quote_masks, x_train_cq_layers) = run_extraction(train_dataloader, model, device, train_df["text"].tolist(), train_enc, tokenizer, desc="Train hidden states")
+    (x_dev_layers, x_dev_layers_full, dev_masks,y_dev, dev_context_masks, dev_quote_masks, x_dev_cq_layers) = run_extraction(dev_dataloader, model, device, dev_df["text"].tolist(), dev_enc, tokenizer, desc="Dev hidden states")
+    (x_test_layers, x_test_layers_full, test_masks, y_test, test_context_masks, test_quote_masks, x_test_cq_layers) = run_extraction(test_dataloader, model, device, test_df["text"].tolist(), test_enc, tokenizer, desc="Test hidden states")
 
-    probes, dev_scores, best_layer, best_score, best_probe = layerwise_logreg_scores(x_train_layers, y_train, x_dev_layers, y_dev, C=0.1, seed=cfg["experiment"]["seed"])
-    probes_q, dev_scores_q, best_layer_q, best_score_q, best_probe_q = layerwise_logreg_scores(x_train_quote_layers, y_train, x_dev_quote_layers, y_dev, C=0.1, seed=cfg["experiment"]["seed"])
-    print("best_layer: ", best_layer, "best_score: ", best_score)
-    print(dev_scores)
-    # baseline: use tokens only within quotes (No speaker/listener contexts)
-    print("best_laye_q: ", best_layer_q, "best_score_q: ", best_score_q)
-    print(dev_scores_q)
+    probes_cq, dev_scores_cq, best_layer_cq, best_score_cq, best_probe_cq = layerwise_logreg_scores(x_train_cq_layers, y_train, x_dev_cq_layers, y_dev, C=0.1, seed=cfg["experiment"]["seed"])
+    print("best_laye_q: ", best_layer_cq, "best_score_q: ", best_score_cq)
+    print(dev_scores_cq)
 
-    hidden_size = model.config.dim
+    hidden_size = model.config.dim * 2
 
-    torch_probe = StandardizedLinearProbe(hidden_size=hidden_size, num_labels=2)
-    torch_probe, probe_mean, probe_std = train_pooled_vector_probe(cfg, torch_probe, x_train_layers[best_layer], y_train, device)
-    dev_probe_results = eval_pooled_vector_probe(cfg, torch_probe, x_dev_layers[best_layer], y_dev, device, probe_mean, probe_std)
+    torch_probe = StandardizedLinearProbe(hidden_size, num_labels=2)
+    torch_probe, probe_mean, probe_std = train_pooled_vector_probe(cfg, torch_probe, x_train_cq_layers[best_layer_cq], y_train, device)
+    dev_probe_results = eval_pooled_vector_probe(cfg, torch_probe, x_dev_cq_layers[best_layer_cq], y_dev, device, probe_mean, probe_std)
     print("PyTorch pooled-vector probe dev:", dev_probe_results["accuracy"])
 
     ##### DAS #####
@@ -53,10 +49,10 @@ def run_das(cfg):
 
     dev_receiver_dl, dev_donor_dl, dev_receiver_df, dev_donor_df = make_das_dataloaders(dev_df, tokenizer, batch_size=cfg["task"]["batch_size"], max_length=cfg["tokenizer"]["max_length"])
 
-    layer_module = get_distilbert_layer_module(model, best_layer)
+    layer_module = get_distilbert_layer_module(model, best_layer_cq)
 
-    das = train_das(cfg, model, torch_probe, probe_mean, probe_std, train_receiver_dl, train_donor_dl, layer_module, best_layer, hidden_size, device)
-    dev_das_results = eval_das(cfg, model, torch_probe, probe_mean, probe_std, dev_receiver_dl, dev_donor_dl, layer_module, best_layer, das, device)
+    das = train_das(cfg, model, torch_probe, probe_mean, probe_std, train_receiver_dl, train_donor_dl, layer_module, best_layer_cq, hidden_size, device)
+    dev_das_results = eval_das(cfg, model, torch_probe, probe_mean, probe_std, dev_receiver_dl, dev_donor_dl, layer_module, best_layer_cq, das, device)
     print(dev_das_results)
 
 

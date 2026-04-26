@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from tqdm import tqdm
 import yaml
 from pathlib import Path
-from line_distil_bert.train_das_probe import mean_pool_hidden_torch
+from probing.extract_hs import context_quote_rep_torch
 
 def load_yaml(path): # "config.yaml"
     with open(path, "r", encoding="utf-8") as f:
@@ -42,50 +42,8 @@ class DASSubspace(nn.Module):
         mixed = z_mix @ R.T
         return mixed
     
-def run_with_das_patch_return_hidden(
-    model,
-    receiver_no_labels,
-    donor_no_labels,
-    layer_module,
-    hs_index,
-    das_module,
-):
-    with torch.no_grad():
-        donor_out = model(
-            **donor_no_labels,
-            output_hidden_states=True,
-            return_dict=True,
-        )
-        donor_hidden = donor_out.hidden_states[hs_index].detach()  # (B, T, H)
-
-    patched_hidden_container = {}
-
-    def hook(module, inputs, output):
-        hs = output[0] if isinstance(output, tuple) else output  # (B, T, H)
-
-        # all-token DAS mix
-        mixed_hs = das_module.mix(
-            hs,
-            donor_hidden.to(hs.device),
-        )  # (B, T, H)
-
-        # keep padding positions unchanged
-        attn = receiver_no_labels["attention_mask"].to(hs.device).unsqueeze(-1).float()
-        patched_hs = mixed_hs * attn + hs * (1.0 - attn)
-
-        patched_hidden_container["hidden"] = patched_hs
-
-        if isinstance(output, tuple):
-            return (patched_hs,) + output[1:]
-        return patched_hs
-
-    handle = layer_module.register_forward_hook(hook)
-    try:
-        _ = model(**receiver_no_labels, return_dict=True)
-    finally:
-        handle.remove()
-
-    return patched_hidden_container["hidden"]
+def run_with_das_on_context_quote_reps(receiver_rep, donor_rep, das):
+    return das.mix(receiver_rep, donor_rep)
 
 def train_das(cfg, model, torch_probe, probe_mean, probe_std, receiver_dl, donor_dl, layer_module, hs_index, hidden_size, device):
     """
@@ -100,7 +58,7 @@ def train_das(cfg, model, torch_probe, probe_mean, probe_std, receiver_dl, donor
     lr = cfg["das"]["lr"]
     epochs = cfg["das"]["epochs"]
 
-    das = DASSubspace(hidden_size=hidden_size, k=k).to(device)
+    das = DASSubspace(hidden_size=model.config.dim * 2, k=k).to(device)
     optimizer = torch.optim.AdamW(das.parameters(), lr=lr)
 
     model.eval()
@@ -109,6 +67,9 @@ def train_das(cfg, model, torch_probe, probe_mean, probe_std, receiver_dl, donor
         p.requires_grad = False
     for p in torch_probe.parameters():
         p.requires_grad = False
+
+    probe_mean = probe_mean.to(device)
+    probe_std = probe_std.to(device)
 
     for epoch in range(epochs):
         total_loss = 0.0
@@ -129,11 +90,11 @@ def train_das(cfg, model, torch_probe, probe_mean, probe_std, receiver_dl, donor
 
             receiver_no_labels = {
                 k: v for k, v in receiver_batch.items()
-                if k not in ["labels", "offset_mapping"]
+                if k not in ["labels", "offset_mapping", "context_mask", "quote_mask"]
             }
             donor_no_labels = {
                 k: v for k, v in donor_batch.items()
-                if k not in ["labels", "offset_mapping"]
+                if k not in ["labels", "offset_mapping", "context_mask", "quote_mask"]
             }
 
             target_labels = donor_batch["labels"]
@@ -146,13 +107,20 @@ def train_das(cfg, model, torch_probe, probe_mean, probe_std, receiver_dl, donor
 
             optimizer.zero_grad()
 
-            patched_hidden = run_with_das_patch_return_hidden(model, receiver_no_labels, donor_no_labels, layer_module, hs_index, das)
+            receiver_hidden = get_hs_at_layer(model, receiver_no_labels, hs_index)
+            donor_hidden = get_hs_at_layer(model, donor_no_labels, hs_index)
 
-            patched_vec = mean_pool_hidden_torch(patched_hidden, receiver_no_labels["attention_mask"])
-            probe_mean = probe_mean.to(device)
-            probe_std = probe_std.to(device)
-            patched_vec = (patched_vec - probe_mean) / probe_std
-            logits = torch_probe(patched_vec)
+            receiver_context_mask = receiver_batch["context_mask"][:B]
+            receiver_quote_mask = receiver_batch["quote_mask"][:B]
+            donor_context_mask = donor_batch["context_mask"][:B]
+            donor_quote_mask = donor_batch["quote_mask"][:B]
+
+            receiver_rep = context_quote_rep_torch(receiver_hidden, receiver_context_mask, receiver_quote_mask)
+            donor_rep = context_quote_rep_torch(donor_hidden, donor_context_mask, donor_quote_mask)
+
+            patched_rep = das.mix(receiver_rep, donor_rep)
+            patched_rep = (patched_rep - probe_mean) / probe_std
+            logits = torch_probe(patched_rep)
             loss = F.cross_entropy(logits, target_labels)
 
             loss.backward()
@@ -194,6 +162,9 @@ def eval_das(cfg, model, torch_probe, probe_mean, probe_std, receiver_dl, donor_
 
     donor_iter = iter(donor_dl)
 
+    probe_mean = probe_mean.to(device)
+    probe_std = probe_std.to(device)
+
     with torch.no_grad():
         for receiver_batch in tqdm(receiver_dl, desc="Evaluating DAS"):
             try:
@@ -207,11 +178,11 @@ def eval_das(cfg, model, torch_probe, probe_mean, probe_std, receiver_dl, donor_
 
             receiver_no_labels = {
                 k: v for k, v in receiver_batch.items()
-                if k not in ["labels", "offset_mapping"]
+                if k not in ["labels", "offset_mapping", "context_mask", "quote_mask"]
             }
             donor_no_labels = {
                 k: v for k, v in donor_batch.items()
-                if k not in ["labels", "offset_mapping"]
+                if k not in ["labels", "offset_mapping", "context_mask", "quote_mask"]
             }
 
             target_labels = donor_batch["labels"]
@@ -222,18 +193,23 @@ def eval_das(cfg, model, torch_probe, probe_mean, probe_std, receiver_dl, donor_
             donor_no_labels = {k: v[:B] for k, v in donor_no_labels.items()}
             target_labels = target_labels[:B]
 
-            base_hidden = get_hs_at_layer(model, receiver_no_labels, hs_index)
-            base_vec = mean_pool_hidden_torch(base_hidden, receiver_no_labels["attention_mask"])
-            probe_mean = probe_mean.to(device)
-            probe_std = probe_std.to(device)
-            base_vec = (base_vec - probe_mean) / probe_std
-            base_logits = torch_probe(base_vec)
+            receiver_context_mask = receiver_batch["context_mask"][:B]
+            receiver_quote_mask = receiver_batch["quote_mask"][:B]
+            donor_context_mask = donor_batch["context_mask"][:B]
+            donor_quote_mask = donor_batch["quote_mask"][:B]
+
+            receiver_hidden = get_hs_at_layer(model, receiver_no_labels, hs_index)
+            donor_hidden = get_hs_at_layer(model, donor_no_labels, hs_index)
+
+            receiver_rep = context_quote_rep_torch(receiver_hidden, receiver_context_mask, receiver_quote_mask)
+            donor_rep = context_quote_rep_torch(donor_hidden, donor_context_mask, donor_quote_mask)
+
+            base_logits = torch_probe((receiver_rep - probe_mean) / probe_std)
             base_pred = base_logits.argmax(dim=1)
 
-            patched_hidden = run_with_das_patch_return_hidden(model, receiver_no_labels, donor_no_labels, layer_module, hs_index, das)
-            patched_vec = mean_pool_hidden_torch(patched_hidden, receiver_no_labels["attention_mask"])
-            patched_vec = (patched_vec - probe_mean) / probe_std
-            patched_logits = torch_probe(patched_vec)
+            patched_rep = das.mix(receiver_rep, donor_rep)
+
+            patched_logits = torch_probe((patched_rep - probe_mean) / probe_std)
             patched_pred = patched_logits.argmax(dim=1)
 
             total_correct += (patched_pred == target_labels).sum().item()
@@ -276,32 +252,3 @@ def get_distilbert_layer_module(model, layer_idx):
         raise ValueError("DAS patching at embedding layer not implemented here.")
 
     return model.distilbert.transformer.layer[layer_idx - 1]
-
-def run_das(model, device, best_layer, train_receiver_dl, train_donor_dl, dev_receiver_dl, dev_donor_dl):
-    hs_index = best_layer  # e.g. 2
-    layer_module = get_distilbert_layer_module(model, hs_index)
-
-    hidden_size = model.config.dim  # DistilBERT hidden size
-
-    das = train_das(
-        model=model,
-        receiver_dl=train_receiver_dl,
-        donor_dl=train_donor_dl,
-        layer_module=layer_module,
-        hs_index=hs_index,
-        hidden_size=hidden_size,
-        k=8,
-        device=device,
-        lr=1e-3,
-        epochs=10,
-    )
-
-    dev_results = eval_das(
-        model=model,
-        receiver_dl=dev_receiver_dl,
-        donor_dl=dev_donor_dl,
-        layer_module=layer_module,
-        hs_index=hs_index,
-        das=das,
-        device=device,
-    )

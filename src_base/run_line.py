@@ -5,7 +5,7 @@ from preprocess import build_tokenizer
 from line_distil_bert.train_line import prepare_model, make_dataloader, train
 from line_distil_bert.eval_line import dev, test
 from line_distil_bert.checkpoint import inspect_checkpoint
-from probing.extract_cls import extract_cls_by_layer, extract_cls_at_layer
+from src_base.probing.extract_hs import extract_cls_by_layer, extract_cls_at_layer
 from probing.visual import line_graph, heatmap, compare_ft_vs_probe_bar, plot_transition_heatmap_from_json
 from probing.probe_dev import layerwise_logreg_scores
 from probing.probe_test_bestLayer import train_trdev_probe_and_eval_test

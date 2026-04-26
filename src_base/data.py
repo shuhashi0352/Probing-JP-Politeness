@@ -1,5 +1,3 @@
-import requests
-import os
 import pandas as pd
 import yaml
 from sklearn.model_selection import train_test_split
@@ -10,6 +8,8 @@ from torch.utils.data import Dataset, DataLoader
 from transformers import AutoModelForSequenceClassification
 import torch
 
+from probing.extract_hs import build_context_quote_masks
+
 class PolitenessDataset(Dataset):
     def __init__(self, encodings, labels):
         self.encodings = encodings
@@ -19,10 +19,25 @@ class PolitenessDataset(Dataset):
         return len(self.labels)
     
     def __getitem__(self, idx):
-        # Get tokenized inputs
-        item = {key: val[idx] for key, val in self.encodings.items()} 
-        # Add corresponding label
-        item["labels"] = self.labels[idx] 
+        item = {key: val[idx] for key, val in self.encodings.items()}
+        item["labels"] = self.labels[idx]
+        return item
+
+class DASPolitenessDataset(Dataset):
+    def __init__(self, encodings, labels, context_masks, quote_masks):
+        self.encodings = encodings
+        self.labels = labels
+        self.context_masks = torch.tensor(context_masks, dtype=torch.long)
+        self.quote_masks = torch.tensor(quote_masks, dtype=torch.long)
+
+    def __len__(self):
+        return len(self.labels)
+
+    def __getitem__(self, idx):
+        item = {key: val[idx] for key, val in self.encodings.items()}
+        item["labels"] = self.labels[idx]
+        item["context_mask"] = self.context_masks[idx]
+        item["quote_mask"] = self.quote_masks[idx]
         return item
 
 def load_yaml(path): # "config.yaml"
@@ -579,8 +594,31 @@ def make_das_dataloaders(split_df, tokenizer, batch_size=16, max_length=128):
     receiver_labels = make_labels(receiver_df)
     donor_labels = make_labels(donor_df)
 
-    receiver_ds = PolitenessDataset(receiver_enc, receiver_labels)
-    donor_ds = PolitenessDataset(donor_enc, donor_labels)
+    receiver_context_masks, receiver_quote_masks = build_context_quote_masks(
+        receiver_df["text"].tolist(),
+        receiver_enc,
+        tokenizer,
+    )
+
+    donor_context_masks, donor_quote_masks = build_context_quote_masks(
+        donor_df["text"].tolist(),
+        donor_enc,
+        tokenizer,
+    )
+
+    receiver_ds = DASPolitenessDataset(
+        receiver_enc,
+        receiver_labels,
+        receiver_context_masks,
+        receiver_quote_masks,
+    )
+
+    donor_ds = DASPolitenessDataset(
+        donor_enc,
+        donor_labels,
+        donor_context_masks,
+        donor_quote_masks,
+    )
 
     receiver_dl = DataLoader(receiver_ds, batch_size=batch_size, shuffle=False)
     donor_dl = DataLoader(donor_ds, batch_size=batch_size, shuffle=False)
