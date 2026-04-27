@@ -1,0 +1,5002 @@
+[
+  {
+    "id": "train_001",
+    "text": "依頼人は弁護士に「ここで待って。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_002",
+    "text": "銀行員は銀行の客に「ここで待って。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_003",
+    "text": "常連客はバーテンダーに「ここで待って。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_004",
+    "text": "合唱団の指揮者は合唱団員に「ここで待って。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_005",
+    "text": "ボランティアはイベントコーディネーターに「そこに座れ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_006",
+    "text": "俳優は監督に「そこに座れ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_007",
+    "text": "部の役員は部員に「そこに座れ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_008",
+    "text": "プロジェクトリーダーはチームメンバーに「そこに座れ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_009",
+    "text": "俳優は監督に「それに触るな。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_010",
+    "text": "美術館来館者はツアーガイドに「それに触るな。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_011",
+    "text": "店長は販売員に「それに触るな。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_012",
+    "text": "friend_aはfriend_bに「それに触るな。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_013",
+    "text": "店員は客に「先に行く。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_014",
+    "text": "配送ドライバーは飲食店の店長に「先に行く。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_015",
+    "text": "キャプテンはチームメイトに「先に行く。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_016",
+    "text": "店長は販売員に「先に行く。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_017",
+    "text": "運転手は駐車場係員に「もう着いた。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_018",
+    "text": "インターンはマネージャーに「もう着いた。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_019",
+    "text": "後輩インターンは先輩インターンに「もう着いた。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_020",
+    "text": "シェフは厨房スタッフに「もう着いた。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_021",
+    "text": "客は店員に「遅れない。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_022",
+    "text": "図書館利用者は司書に「遅れない。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_023",
+    "text": "バンドリーダーはバンドメンバーに「遅れない。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_024",
+    "text": "常連客はバーテンダーに「遅れない。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_025",
+    "text": "ウェイターは食事客に「そろそろ始めよう。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_026",
+    "text": "ツアーガイドは観光客に「そろそろ始めよう。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_027",
+    "text": "父は息子に「そろそろ始めよう。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_028",
+    "text": "キャプテンはチームメイトに「そろそろ始めよう。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_029",
+    "text": "スタジオ会員はダンス講師に「もう来てる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_030",
+    "text": "ツアーガイドは観光客に「もう来てる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_031",
+    "text": "友だちの親は幼稚園児に「もう来てる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_032",
+    "text": "研究指導者は研究補助者に「もう来てる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_033",
+    "text": "選手はコーチに「ちょっと手伝ってくれる？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_034",
+    "text": "買い物客は店員に「ちょっと手伝ってくれる？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_035",
+    "text": "常連客はバーテンダーに「ちょっと手伝ってくれる？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_036",
+    "text": "寮委員長は委員に「ちょっと手伝ってくれる？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_037",
+    "text": "学生は教授に「この資料、見る？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_038",
+    "text": "若手社員は先輩社員に「この資料、見る？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_039",
+    "text": "friend_aはfriend_bに「この資料、見る？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_040",
+    "text": "シェフは厨房スタッフに「この資料、見る？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_041",
+    "text": "ジム会員はフィットネス指導員に「後で詳しく聞くよ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_042",
+    "text": "電話予約の客は予約担当者に「後で詳しく聞くよ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_043",
+    "text": "義父は義息子に「後で詳しく聞くよ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_044",
+    "text": "バーテンダーは常連客に「後で詳しく聞くよ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_045",
+    "text": "宿泊客はフロント係に「先に確かめたら？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_046",
+    "text": "店員は買い物客に「先に確かめたら？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_047",
+    "text": "姉は妹に「先に確かめたら？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_048",
+    "text": "友だちの親は幼稚園児に「先に確かめたら？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_049",
+    "text": "兵士は上官に「先に確認してほしい。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_050",
+    "text": "寮生は寮の指導員に「先に確認してほしい。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_051",
+    "text": "監督は俳優に「先に確認してほしい。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_052",
+    "text": "年上のルームメイトは年下のルームメイトに「先に確認してほしい。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_053",
+    "text": "イベント参加者はイベントスタッフに「これ、試してみて。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_054",
+    "text": "弁護士は依頼人に「これ、試してみて。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_055",
+    "text": "friend_aはfriend_bに「これ、試してみて。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_056",
+    "text": "父は息子に「これ、試してみて。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_057",
+    "text": "契約者はカスタマーサポート担当者に「私が先に案内してあげる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_058",
+    "text": "保護者は担任教師に「私が先に案内してあげる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_059",
+    "text": "シェフは厨房スタッフに「私が先に案内してあげる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_060",
+    "text": "マネージャーはインターンに「私が先に案内してあげる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_061",
+    "text": "学生は教授に「先に入って。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_062",
+    "text": "銀行員は銀行の客に「先に入って。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_063",
+    "text": "部の役員は部員に「先に入って。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_064",
+    "text": "バンドリーダーはバンドメンバーに「先に入って。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_065",
+    "text": "フロント係は宿泊客に「机の上を片づけろ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_066",
+    "text": "コンサート来場者は会場スタッフに「机の上を片づけろ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_067",
+    "text": "同年代のチームメイトはキャプテンに「机の上を片づけろ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_068",
+    "text": "映画監督は撮影助手に「机の上を片づけろ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_069",
+    "text": "観客は案内係に「そのことは忘れるな。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_070",
+    "text": "運転手は駐車場係員に「そのことは忘れるな。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_071",
+    "text": "バーの店長はバーテンダーに「そのことは忘れるな。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_072",
+    "text": "上官は兵士に「そのことは忘れるな。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_073",
+    "text": "イベントスタッフはイベント参加者に「すぐ戻る。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_074",
+    "text": "食事客はウェイターに「すぐ戻る。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_075",
+    "text": "息子は父に「すぐ戻る。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_076",
+    "text": "合唱団の指揮者は合唱団員に「すぐ戻る。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_077",
+    "text": "イベントスタッフはイベント参加者に「もう終わった。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_078",
+    "text": "運転手は駐車場係員に「もう終わった。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_079",
+    "text": "コーチは選手に「もう終わった。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_080",
+    "text": "キャプテンは同年代のチームメイトに「もう終わった。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_081",
+    "text": "徒弟は親方に「そんなに迷わない。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_082",
+    "text": "店員は買い物客に「そんなに迷わない。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_083",
+    "text": "祖母は孫に「そんなに迷わない。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_084",
+    "text": "キャプテンはチームメイトに「そんなに迷わない。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_085",
+    "text": "観光客はツアーガイドに「ここに集まろう。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_086",
+    "text": "銀行員は銀行の客に「ここに集まろう。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_087",
+    "text": "後輩インターンは先輩インターンに「ここに集まろう。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_088",
+    "text": "先輩社員は若手社員に「ここに集まろう。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_089",
+    "text": "キャンプ参加者はキャンプ指導員に「もうそう言ってる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_090",
+    "text": "食事客はウェイターに「もうそう言ってる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_091",
+    "text": "バンドリーダーはバンドメンバーに「もうそう言ってる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_092",
+    "text": "祖母は孫に「もうそう言ってる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_093",
+    "text": "義息子は義父に「後で教えてくれる？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_094",
+    "text": "俳優は監督に「後で教えてくれる？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_095",
+    "text": "先輩インターンは後輩インターンに「後で教えてくれる？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_096",
+    "text": "バーテンダーは常連客に「後で教えてくれる？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_097",
+    "text": "依頼人は弁護士に「これ使う？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_098",
+    "text": "寮生は寮の指導員に「これ使う？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_099",
+    "text": "孫は祖母に「これ使う？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_100",
+    "text": "プロジェクトリーダーはチームメンバーに「これ使う？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_101",
+    "text": "インターンはマネージャーに「あとで訪ねるんだ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_102",
+    "text": "俳優は監督に「あとで訪ねるんだ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_103",
+    "text": "部の役員は部員に「あとで訪ねるんだ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_104",
+    "text": "新聞編集者は記者に「あとで訪ねるんだ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_105",
+    "text": "患者の家族は看護師に「先に比べたら？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_106",
+    "text": "義息子は義父に「先に比べたら？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_107",
+    "text": "friend_bはfriend_aに「先に比べたら？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_108",
+    "text": "息子は父に「先に比べたら？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_109",
+    "text": "客は店員に「先に連絡してほしい。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_110",
+    "text": "図書館利用者は司書に「先に連絡してほしい。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_111",
+    "text": "常連客はバーテンダーに「先に連絡してほしい。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_112",
+    "text": "新聞編集者は記者に「先に連絡してほしい。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_113",
+    "text": "電話予約の客は予約担当者に「まず説明してみて。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_114",
+    "text": "イベント参加者はイベントスタッフに「まず説明してみて。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_115",
+    "text": "バーテンダーは常連客に「まず説明してみて。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_116",
+    "text": "常連客はバーテンダーに「まず説明してみて。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_117",
+    "text": "新入社員は人事担当者に「私が先に準備してあげる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_118",
+    "text": "店員は客に「私が先に準備してあげる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_119",
+    "text": "新聞編集者は記者に「私が先に準備してあげる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_120",
+    "text": "常連客はバーテンダーに「私が先に準備してあげる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_121",
+    "text": "宿泊客はフロント係に「ここに並んで。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_122",
+    "text": "研修生は指導担当者に「ここに並んで。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_123",
+    "text": "義父は義息子に「ここに並んで。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_124",
+    "text": "寮の指導員は寮生に「ここに並んで。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_125",
+    "text": "研修生は指導担当者に「その窓を開けろ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_126",
+    "text": "兵士は上官に「その窓を開けろ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_127",
+    "text": "新聞編集者は記者に「その窓を開けろ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_128",
+    "text": "義父は義息子に「その窓を開けろ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_129",
+    "text": "キャンプ参加者はキャンプ指導員に「ここでは走るな。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_130",
+    "text": "乗客は客室乗務員に「ここでは走るな。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_131",
+    "text": "監督は俳優に「ここでは走るな。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_132",
+    "text": "年下のルームメイトは年上のルームメイトに「ここでは走るな。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_133",
+    "text": "ジム会員はフィットネス指導員に「少し休む。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_134",
+    "text": "弁護士は依頼人に「少し休む。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_135",
+    "text": "シフト責任者はアルバイトスタッフに「少し休む。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_136",
+    "text": "年上のルームメイトは年下のルームメイトに「少し休む。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_137",
+    "text": "寮生は寮の指導員に「もう届いた。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_138",
+    "text": "客は店員に「もう届いた。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_139",
+    "text": "シフト責任者はアルバイトスタッフに「もう届いた。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_140",
+    "text": "シェフは厨房スタッフに「もう届いた。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_141",
+    "text": "来店客は案内係に「そんなに焦らない。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_142",
+    "text": "ジム会員はフィットネス指導員に「そんなに焦らない。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_143",
+    "text": "指導担当者は研修生に「そんなに焦らない。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_144",
+    "text": "friend_bはfriend_aに「そんなに焦らない。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_145",
+    "text": "来店客は案内係に「このまま続けよう。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_146",
+    "text": "若手社員は先輩社員に「このまま続けよう。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_147",
+    "text": "親方は徒弟に「このまま続けよう。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_148",
+    "text": "店長は販売員に「このまま続けよう。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_149",
+    "text": "患者の家族は看護師に「もう食べてる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_150",
+    "text": "観客は案内係に「もう食べてる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_151",
+    "text": "新聞編集者は記者に「もう食べてる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_152",
+    "text": "年上の家族ぐるみの知人は年下の家族ぐるみの知人に「もう食べてる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_153",
+    "text": "弁護士は依頼人に「その画面、見せてくれる？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_154",
+    "text": "保護者は担任教師に「その画面、見せてくれる？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_155",
+    "text": "シフト責任者はアルバイトスタッフに「その画面、見せてくれる？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_156",
+    "text": "ディベート指導者はディベート部員に「その画面、見せてくれる？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_157",
+    "text": "契約者はカスタマーサポート担当者に「そこに置く？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_158",
+    "text": "イベントスタッフはイベント参加者に「そこに置く？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_159",
+    "text": "年上のルームメイトは年下のルームメイトに「そこに置く？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_160",
+    "text": "店長は販売員に「そこに置く？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_161",
+    "text": "観光客はツアーガイドに「先にそれをもらうんだ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_162",
+    "text": "客室乗務員は乗客に「先にそれをもらうんだ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_163",
+    "text": "先輩インターンは後輩インターンに「先にそれをもらうんだ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_164",
+    "text": "年下の家族ぐるみの知人は年上の家族ぐるみの知人に「先にそれをもらうんだ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_165",
+    "text": "来店客は案内係に「今のうちに直したら？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_166",
+    "text": "食事客はウェイターに「今のうちに直したら？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_167",
+    "text": "年上のルームメイトは年下のルームメイトに「今のうちに直したら？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_168",
+    "text": "妹は姉に「今のうちに直したら？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_169",
+    "text": "ジム会員はフィットネス指導員に「今日中に提出してほしい。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_170",
+    "text": "祭りの参加者はブーススタッフに「今日中に提出してほしい。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_171",
+    "text": "幼稚園児は友だちの親に「今日中に提出してほしい。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_172",
+    "text": "教授は学生に「今日中に提出してほしい。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_173",
+    "text": "宿泊客はフロント係に「ここに記入してみて。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_174",
+    "text": "乗客は客室乗務員に「ここに記入してみて。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_175",
+    "text": "幼稚園児は友だちの親に「ここに記入してみて。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_176",
+    "text": "孫は祖母に「ここに記入してみて。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_177",
+    "text": "客は店員に「私が先に手配してあげる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_178",
+    "text": "ボランティアはイベントコーディネーターに「私が先に手配してあげる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_179",
+    "text": "祖母は孫に「私が先に手配してあげる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_180",
+    "text": "friend_aはfriend_bに「私が先に手配してあげる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_181",
+    "text": "美術館来館者はツアーガイドに「ここで止まって。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_182",
+    "text": "ジム会員はフィットネス指導員に「ここで止まって。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_183",
+    "text": "同年代のチームメイトはキャプテンに「ここで止まって。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_184",
+    "text": "父は息子に「ここで止まって。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_185",
+    "text": "客室乗務員は乗客に「そのドアを閉めろ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_186",
+    "text": "学生は教授に「そのドアを閉めろ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_187",
+    "text": "先輩インターンは後輩インターンに「そのドアを閉めろ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_188",
+    "text": "上官は兵士に「そのドアを閉めろ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_189",
+    "text": "ボランティアはイベントコーディネーターに「そこを押すな。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_190",
+    "text": "観光客はツアーガイドに「そこを押すな。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_191",
+    "text": "妹は姉に「そこを押すな。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_192",
+    "text": "映画監督は撮影助手に「そこを押すな。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_193",
+    "text": "乗客は客室乗務員に「先に動く。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_194",
+    "text": "俳優は監督に「先に動く。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_195",
+    "text": "研究指導者は研究補助者に「先に動く。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_196",
+    "text": "friend_bはfriend_aに「先に動く。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_197",
+    "text": "寮生は寮の指導員に「もう壊れた。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_198",
+    "text": "飼い主は動物病院の受付に「もう壊れた。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_199",
+    "text": "寮の指導員は寮生に「もう壊れた。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_200",
+    "text": "スタートアップ創業者は初期メンバー社員に「もう壊れた。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_201",
+    "text": "選手はコーチに「そんなに慌てない。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_202",
+    "text": "兵士は上官に「そんなに慌てない。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_203",
+    "text": "上官は兵士に「そんなに慌てない。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_204",
+    "text": "常連客はバーテンダーに「そんなに慌てない。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_205",
+    "text": "新入社員は人事担当者に「ここで決めよう。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_206",
+    "text": "保護者は担任教師に「ここで決めよう。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_207",
+    "text": "ボランティアリーダーはボランティアメンバーに「ここで決めよう。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_208",
+    "text": "孫は祖母に「ここで決めよう。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_209",
+    "text": "観客は案内係に「もう飲んでる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_210",
+    "text": "乗客は客室乗務員に「もう飲んでる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_211",
+    "text": "映画監督は撮影助手に「もう飲んでる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_212",
+    "text": "後輩インターンは先輩インターンに「もう飲んでる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_213",
+    "text": "義息子は義父に「それを貸してくれる？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_214",
+    "text": "契約者はカスタマーサポート担当者に「それを貸してくれる？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_215",
+    "text": "ディベート指導者はディベート部員に「それを貸してくれる？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_216",
+    "text": "祖母は孫に「それを貸してくれる？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_217",
+    "text": "インターンはマネージャーに「この資料、読む？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_218",
+    "text": "弁護士は依頼人に「この資料、読む？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_219",
+    "text": "年下のルームメイトは年上のルームメイトに「この資料、読む？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_220",
+    "text": "研究指導者は研究補助者に「この資料、読む？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_221",
+    "text": "寮生は寮の指導員に「あとで会うんだ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_222",
+    "text": "徒弟は親方に「あとで会うんだ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_223",
+    "text": "孫は祖母に「あとで会うんだ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_224",
+    "text": "常連客はバーテンダーに「あとで会うんだ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_225",
+    "text": "イベントスタッフはイベント参加者に「一度比較したら？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_226",
+    "text": "新入社員は人事担当者に「一度比較したら？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_227",
+    "text": "先輩インターンは後輩インターンに「一度比較したら？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_228",
+    "text": "姉は妹に「一度比較したら？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_229",
+    "text": "保護者は担任教師に「先に共有してほしい。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_230",
+    "text": "祭りの参加者はブーススタッフに「先に共有してほしい。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_231",
+    "text": "研究指導者は研究補助者に「先に共有してほしい。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_232",
+    "text": "友だちの親は幼稚園児に「先に共有してほしい。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_233",
+    "text": "祭りの参加者はブーススタッフに「ここを修正してみて。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_234",
+    "text": "年下のチームメイトはキャプテンに「ここを修正してみて。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_235",
+    "text": "先輩社員は若手社員に「ここを修正してみて。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_236",
+    "text": "常連客はバーテンダーに「ここを修正してみて。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_237",
+    "text": "ウェイターは食事客に「私が先に整理してあげる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_238",
+    "text": "徒弟は親方に「私が先に整理してあげる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_239",
+    "text": "キャプテンはチームメイトに「私が先に整理してあげる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_240",
+    "text": "姉は妹に「私が先に整理してあげる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_241",
+    "text": "インターンはマネージャーに「先に進んで。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_242",
+    "text": "飼い主は動物病院の受付に「先に進んで。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_243",
+    "text": "先輩インターンは後輩インターンに「先に進んで。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_244",
+    "text": "妹は姉に「先に進んで。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_245",
+    "text": "荷物の受取人は配達員に「全部集めろ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_246",
+    "text": "配送ドライバーは飲食店の店長に「全部集めろ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_247",
+    "text": "バンドリーダーはバンドメンバーに「全部集めろ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_248",
+    "text": "年上のルームメイトは年下のルームメイトに「全部集めろ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_249",
+    "text": "義息子は義父に「中を覗くな。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_250",
+    "text": "フロント係は宿泊客に「中を覗くな。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_251",
+    "text": "マネージャーはインターンに「中を覗くな。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_252",
+    "text": "同年代のチームメイトはキャプテンに「中を覗くな。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_253",
+    "text": "スタジオ会員はダンス講師に「今夜はここに泊まる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_254",
+    "text": "新入社員は人事担当者に「今夜はここに泊まる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_255",
+    "text": "ボランティアリーダーはボランティアメンバーに「今夜はここに泊まる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_256",
+    "text": "指導担当者は研修生に「今夜はここに泊まる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_257",
+    "text": "ボランティアはイベントコーディネーターに「もう治った。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_258",
+    "text": "年下のチームメイトはキャプテンに「もう治った。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_259",
+    "text": "キャプテンは年下のチームメイトに「もう治った。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_260",
+    "text": "上官は兵士に「もう治った。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_261",
+    "text": "若手社員は先輩社員に「そんなにためらわない。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_262",
+    "text": "義息子は義父に「そんなにためらわない。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_263",
+    "text": "寮の指導員は寮生に「そんなにためらわない。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_264",
+    "text": "スタートアップ創業者は初期メンバー社員に「そんなにためらわない。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_265",
+    "text": "宿泊客はフロント係に「もう一度考えよう。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_266",
+    "text": "電話予約の客は予約担当者に「もう一度考えよう。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_267",
+    "text": "合唱団の指揮者は合唱団員に「もう一度考えよう。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_268",
+    "text": "ボランティアリーダーはボランティアメンバーに「もう一度考えよう。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_269",
+    "text": "檀家は寺務所の職員に「もう着てる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_270",
+    "text": "客室乗務員は乗客に「もう着てる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_271",
+    "text": "年下のルームメイトは年上のルームメイトに「もう着てる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_272",
+    "text": "年上の家族ぐるみの知人は年下の家族ぐるみの知人に「もう着てる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_273",
+    "text": "檀家は寺務所の職員に「それを運んでくれる？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_274",
+    "text": "学生は教授に「それを運んでくれる？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_275",
+    "text": "キャプテンは年下のチームメイトに「それを運んでくれる？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_276",
+    "text": "コーチは選手に「それを運んでくれる？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_277",
+    "text": "兵士は上官に「これ選ぶ？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_278",
+    "text": "荷物の受取人は配達員に「これ選ぶ？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_279",
+    "text": "先輩インターンは後輩インターンに「これ選ぶ？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_280",
+    "text": "妹は姉に「これ選ぶ？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_281",
+    "text": "徒弟は親方に「その件はもう知るんだ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_282",
+    "text": "図書館利用者は司書に「その件はもう知るんだ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_283",
+    "text": "教授は学生に「その件はもう知るんだ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_284",
+    "text": "シフト責任者はアルバイトスタッフに「その件はもう知るんだ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_285",
+    "text": "ウェイターは食事客に「もう一度探したら？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_286",
+    "text": "コンサート来場者は会場スタッフに「もう一度探したら？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_287",
+    "text": "幼稚園児は友だちの親に「もう一度探したら？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_288",
+    "text": "親方は徒弟に「もう一度探したら？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_289",
+    "text": "学生は教授に「先に相談してほしい。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_290",
+    "text": "観光客はツアーガイドに「先に相談してほしい。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_291",
+    "text": "バーテンダーは常連客に「先に相談してほしい。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_292",
+    "text": "友だちの親は幼稚園児に「先に相談してほしい。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_293",
+    "text": "キャンプ参加者はキャンプ指導員に「ここに入力してみて。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_294",
+    "text": "配送ドライバーは飲食店の店長に「ここに入力してみて。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_295",
+    "text": "部の役員は部員に「ここに入力してみて。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_296",
+    "text": "義父は義息子に「ここに入力してみて。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_297",
+    "text": "食事客はウェイターに「私が先に用意してあげる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_298",
+    "text": "観光客はツアーガイドに「私が先に用意してあげる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_299",
+    "text": "キャプテンは年下のチームメイトに「私が先に用意してあげる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_300",
+    "text": "先輩社員は若手社員に「私が先に用意してあげる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_301",
+    "text": "新入社員は人事担当者に「次を右に曲がって。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_302",
+    "text": "年下のチームメイトはキャプテンに「次を右に曲がって。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_303",
+    "text": "先輩インターンは後輩インターンに「次を右に曲がって。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_304",
+    "text": "年下の家族ぐるみの知人は年上の家族ぐるみの知人に「次を右に曲がって。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_305",
+    "text": "フロント係は宿泊客に「そこに立て。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_306",
+    "text": "契約者はカスタマーサポート担当者に「そこに立て。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_307",
+    "text": "先輩インターンは後輩インターンに「そこに立て。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_308",
+    "text": "プロジェクトリーダーはチームメンバーに「そこに立て。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_309",
+    "text": "選手はコーチに「人を見て笑うな。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_310",
+    "text": "美術館来館者はツアーガイドに「人を見て笑うな。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_311",
+    "text": "映画監督は撮影助手に「人を見て笑うな。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_312",
+    "text": "親方は徒弟に「人を見て笑うな。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_313",
+    "text": "電話予約の客は予約担当者に「今日はもう帰る。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_314",
+    "text": "研修生は指導担当者に「今日はもう帰る。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_315",
+    "text": "妹は姉に「今日はもう帰る。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_316",
+    "text": "スタートアップ創業者は初期メンバー社員に「今日はもう帰る。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_317",
+    "text": "依頼人は弁護士に「まだ間に合った。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_318",
+    "text": "来店客は案内係に「まだ間に合った。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_319",
+    "text": "ディベート指導者はディベート部員に「まだ間に合った。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_320",
+    "text": "先輩インターンは後輩インターンに「まだ間に合った。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_321",
+    "text": "ウェイターは食事客に「そんなに心配しない。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_322",
+    "text": "フロント係は宿泊客に「そんなに心配しない。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_323",
+    "text": "キャプテンはチームメイトに「そんなに心配しない。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_324",
+    "text": "年上の家族ぐるみの知人は年下の家族ぐるみの知人に「そんなに心配しない。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_325",
+    "text": "図書館利用者は司書に「そろそろ動き出そう。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_326",
+    "text": "銀行の客は銀行員に「そろそろ動き出そう。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_327",
+    "text": "キャプテンは同年代のチームメイトに「そろそろ動き出そう。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_328",
+    "text": "息子は父に「そろそろ動き出そう。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_329",
+    "text": "銀行の客は銀行員に「もう寝てる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_330",
+    "text": "依頼人は弁護士に「もう寝てる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_331",
+    "text": "義父は義息子に「もう寝てる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_332",
+    "text": "ボランティアリーダーはボランティアメンバーに「もう寝てる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_333",
+    "text": "銀行の客は銀行員に「その資料、送ってくれる？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_334",
+    "text": "コンサート来場者は会場スタッフに「その資料、送ってくれる？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_335",
+    "text": "同年代のチームメイトはキャプテンに「その資料、送ってくれる？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_336",
+    "text": "指導担当者は研修生に「その資料、送ってくれる？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_337",
+    "text": "選手はコーチに「これ取る？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_338",
+    "text": "スタジオ会員はダンス講師に「これ取る？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_339",
+    "text": "上官は兵士に「これ取る？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_340",
+    "text": "監督は俳優に「これ取る？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_341",
+    "text": "運転手は駐車場係員に「明日訪問するんだ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_342",
+    "text": "店員は買い物客に「明日訪問するんだ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_343",
+    "text": "親方は徒弟に「明日訪問するんだ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_344",
+    "text": "合唱団の指揮者は合唱団員に「明日訪問するんだ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_345",
+    "text": "祭りの参加者はブーススタッフに「一度測ったら？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_346",
+    "text": "檀家は寺務所の職員に「一度測ったら？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_347",
+    "text": "プロジェクトリーダーはチームメンバーに「一度測ったら？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_348",
+    "text": "孫は祖母に「一度測ったら？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_349",
+    "text": "イベント参加者はイベントスタッフに「先に予約してほしい。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_350",
+    "text": "司書は図書館利用者に「先に予約してほしい。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_351",
+    "text": "寮の指導員は寮生に「先に予約してほしい。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_352",
+    "text": "映画監督は撮影助手に「先に予約してほしい。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_353",
+    "text": "美術館来館者はツアーガイドに「ここに着席してみて。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_354",
+    "text": "檀家は寺務所の職員に「ここに着席してみて。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_355",
+    "text": "親方は徒弟に「ここに着席してみて。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_356",
+    "text": "年下の家族ぐるみの知人は年上の家族ぐるみの知人に「ここに着席してみて。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_357",
+    "text": "ウェイターは食事客に「私が先に梱包してあげる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_358",
+    "text": "弁護士は依頼人に「私が先に梱包してあげる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_359",
+    "text": "常連客はバーテンダーに「私が先に梱包してあげる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_360",
+    "text": "先輩インターンは後輩インターンに「私が先に梱包してあげる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_361",
+    "text": "徒弟は親方に「先に乗って。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_362",
+    "text": "銀行の客は銀行員に「先に乗って。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_363",
+    "text": "バーの店長はバーテンダーに「先に乗って。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_364",
+    "text": "姉は妹に「先に乗って。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_365",
+    "text": "来店客は案内係に「それを写せ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_366",
+    "text": "コンサート来場者は会場スタッフに「それを写せ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_367",
+    "text": "寮の指導員は寮生に「それを写せ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_368",
+    "text": "バンドリーダーはバンドメンバーに「それを写せ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_369",
+    "text": "イベントスタッフはイベント参加者に「そこを汚すな。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_370",
+    "text": "年下のチームメイトはキャプテンに「そこを汚すな。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_371",
+    "text": "先輩研究室メンバーは新しく入った研究室メンバーに「そこを汚すな。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_372",
+    "text": "キャプテンは年下のチームメイトに「そこを汚すな。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_373",
+    "text": "買い物客は店員に「ここで乗り換える。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_374",
+    "text": "銀行員は銀行の客に「ここで乗り換える。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_375",
+    "text": "プロジェクトリーダーはチームメンバーに「ここで乗り換える。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_376",
+    "text": "店長は販売員に「ここで乗り換える。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_377",
+    "text": "乗客は客室乗務員に「もう売れた。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_378",
+    "text": "研修生は指導担当者に「もう売れた。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_379",
+    "text": "後輩インターンは先輩インターンに「もう売れた。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_380",
+    "text": "コーチは選手に「もう売れた。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_381",
+    "text": "選手はコーチに「そんなに怒らない。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_382",
+    "text": "荷物の受取人は配達員に「そんなに怒らない。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_383",
+    "text": "友だちの親は幼稚園児に「そんなに怒らない。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_384",
+    "text": "friend_bはfriend_aに「そんなに怒らない。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_385",
+    "text": "食事客はウェイターに「ここで一度話し合おう。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_386",
+    "text": "フロント係は宿泊客に「ここで一度話し合おう。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_387",
+    "text": "年下のルームメイトは年上のルームメイトに「ここで一度話し合おう。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_388",
+    "text": "friend_bはfriend_aに「ここで一度話し合おう。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_389",
+    "text": "飼い主は動物病院の受付に「もうやってる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_390",
+    "text": "ツアーガイドは観光客に「もうやってる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_391",
+    "text": "ディベート指導者はディベート部員に「もうやってる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_392",
+    "text": "スタートアップ創業者は初期メンバー社員に「もうやってる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_393",
+    "text": "銀行の客は銀行員に「ちょっと支えてくれる？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_394",
+    "text": "買い物客は店員に「ちょっと支えてくれる？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_395",
+    "text": "教授は学生に「ちょっと支えてくれる？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_396",
+    "text": "バーテンダーは常連客に「ちょっと支えてくれる？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_397",
+    "text": "銀行員は銀行の客に「この紙、切る？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_398",
+    "text": "キャンプ参加者はキャンプ指導員に「この紙、切る？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_399",
+    "text": "監督は俳優に「この紙、切る？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_400",
+    "text": "寮委員長は委員に「この紙、切る？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_401",
+    "text": "電話予約の客は予約担当者に「あとで伝えるんだ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_402",
+    "text": "ツアーガイドは観光客に「あとで伝えるんだ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_403",
+    "text": "監督は俳優に「あとで伝えるんだ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_404",
+    "text": "同年代のチームメイトはキャプテンに「あとで伝えるんだ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_405",
+    "text": "運転手は駐車場係員に「もう一度見比べたら？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_406",
+    "text": "飼い主は動物病院の受付に「もう一度見比べたら？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_407",
+    "text": "幼稚園児は友だちの親に「もう一度見比べたら？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_408",
+    "text": "シフト責任者はアルバイトスタッフに「もう一度見比べたら？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_409",
+    "text": "客室乗務員は乗客に「今日中に申請してほしい。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_410",
+    "text": "保護者は担任教師に「今日中に申請してほしい。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_411",
+    "text": "息子は父に「今日中に申請してほしい。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_412",
+    "text": "年下のルームメイトは年上のルームメイトに「今日中に申請してほしい。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_413",
+    "text": "ツアーガイドは観光客に「これを着用してみて。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_414",
+    "text": "キャンプ参加者はキャンプ指導員に「これを着用してみて。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_415",
+    "text": "指導担当者は研修生に「これを着用してみて。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_416",
+    "text": "先輩研究室メンバーは新しく入った研究室メンバーに「これを着用してみて。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_417",
+    "text": "配送ドライバーは飲食店の店長に「私が先に調整してあげる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_418",
+    "text": "依頼人は弁護士に「私が先に調整してあげる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_419",
+    "text": "年下の家族ぐるみの知人は年上の家族ぐるみの知人に「私が先に調整してあげる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_420",
+    "text": "スタートアップ創業者は初期メンバー社員に「私が先に調整してあげる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_421",
+    "text": "スタジオ会員はダンス講師に「ここで降りて。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_422",
+    "text": "檀家は寺務所の職員に「ここで降りて。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_423",
+    "text": "キャプテンは年下のチームメイトに「ここで降りて。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_424",
+    "text": "寮委員長は委員に「ここで降りて。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_425",
+    "text": "客は店員に「そのレバーを引け。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_426",
+    "text": "スタジオ会員はダンス講師に「そのレバーを引け。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_427",
+    "text": "マネージャーはインターンに「そのレバーを引け。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_428",
+    "text": "年上の家族ぐるみの知人は年下の家族ぐるみの知人に「そのレバーを引け。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_429",
+    "text": "イベント参加者はイベントスタッフに「ここで騒ぐな。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_430",
+    "text": "患者の家族は看護師に「ここで騒ぐな。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_431",
+    "text": "バーの店長はバーテンダーに「ここで騒ぐな。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_432",
+    "text": "コーチは選手に「ここで騒ぐな。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_433",
+    "text": "インターンはマネージャーに「それはここに置いていく。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_434",
+    "text": "司書は図書館利用者に「それはここに置いていく。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_435",
+    "text": "後輩インターンは先輩インターンに「それはここに置いていく。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_436",
+    "text": "キャプテンは同年代のチームメイトに「それはここに置いていく。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_437",
+    "text": "若手社員は先輩社員に「もう決まった。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_438",
+    "text": "祭りの参加者はブーススタッフに「もう決まった。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_439",
+    "text": "研究指導者は研究補助者に「もう決まった。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_440",
+    "text": "姉は妹に「もう決まった。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_441",
+    "text": "配送ドライバーは飲食店の店長に「まだあきらめない。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_442",
+    "text": "美術館来館者はツアーガイドに「まだあきらめない。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_443",
+    "text": "マネージャーはインターンに「まだあきらめない。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_444",
+    "text": "指導担当者は研修生に「まだあきらめない。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_445",
+    "text": "ボランティアはイベントコーディネーターに「ここで話をまとめよう。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_446",
+    "text": "図書館利用者は司書に「ここで話をまとめよう。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_447",
+    "text": "寮委員長は委員に「ここで話をまとめよう。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_448",
+    "text": "キャプテンは同年代のチームメイトに「ここで話をまとめよう。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_449",
+    "text": "年下のチームメイトはキャプテンに「もう持ってる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_450",
+    "text": "観客は案内係に「もう持ってる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_451",
+    "text": "幼稚園児は友だちの親に「もう持ってる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_452",
+    "text": "父は息子に「もう持ってる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_453",
+    "text": "患者の家族は看護師に「これ守ってくれる？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_454",
+    "text": "兵士は上官に「これ守ってくれる？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_455",
+    "text": "バーの店長はバーテンダーに「これ守ってくれる？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_456",
+    "text": "ディベート指導者はディベート部員に「これ守ってくれる？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_457",
+    "text": "司書は図書館利用者に「これ数える？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_458",
+    "text": "買い物客は店員に「これ数える？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_459",
+    "text": "祖母は孫に「これ数える？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_460",
+    "text": "ボランティアリーダーはボランティアメンバーに「これ数える？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_461",
+    "text": "司書は図書館利用者に「後で目を通すんだ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_462",
+    "text": "店員は客に「後で目を通すんだ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_463",
+    "text": "教授は学生に「後で目を通すんだ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_464",
+    "text": "年上の家族ぐるみの知人は年下の家族ぐるみの知人に「後で目を通すんだ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_465",
+    "text": "店員は客に「一度見直したら？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_466",
+    "text": "若手社員は先輩社員に「一度見直したら？」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_467",
+    "text": "父は息子に「一度見直したら？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_468",
+    "text": "先輩研究室メンバーは新しく入った研究室メンバーに「一度見直したら？」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_469",
+    "text": "患者の家族は看護師に「先に依頼してほしい。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_470",
+    "text": "買い物客は店員に「先に依頼してほしい。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_471",
+    "text": "先輩研究室メンバーは新しく入った研究室メンバーに「先に依頼してほしい。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_472",
+    "text": "部の役員は部員に「先に依頼してほしい。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_473",
+    "text": "研修生は指導担当者に「これを利用してみて。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_474",
+    "text": "飼い主は動物病院の受付に「これを利用してみて。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_475",
+    "text": "年下の家族ぐるみの知人は年上の家族ぐるみの知人に「これを利用してみて。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_476",
+    "text": "シェフは厨房スタッフに「これを利用してみて。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_477",
+    "text": "観客は案内係に「私が先に調達してあげる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_478",
+    "text": "契約者はカスタマーサポート担当者に「私が先に調達してあげる。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_479",
+    "text": "バーの店長はバーテンダーに「私が先に調達してあげる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_480",
+    "text": "コーチは選手に「私が先に調達してあげる。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_481",
+    "text": "店員は買い物客に「先に呼んで。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_482",
+    "text": "荷物の受取人は配達員に「先に呼んで。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_483",
+    "text": "先輩社員は若手社員に「先に呼んで。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_484",
+    "text": "friend_aはfriend_bに「先に呼んで。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_485",
+    "text": "客室乗務員は乗客に「きれいに並べろ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_486",
+    "text": "司書は図書館利用者に「きれいに並べろ。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_487",
+    "text": "先輩社員は若手社員に「きれいに並べろ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_488",
+    "text": "マネージャーはインターンに「きれいに並べろ。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_489",
+    "text": "宿泊客はフロント係に「そこに近づくな。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_490",
+    "text": "イベント参加者はイベントスタッフに「そこに近づくな。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_491",
+    "text": "先輩研究室メンバーは新しく入った研究室メンバーに「そこに近づくな。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_492",
+    "text": "寮委員長は委員に「そこに近づくな。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_493",
+    "text": "荷物の受取人は配達員に「今日はここに残る。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_494",
+    "text": "店員は客に「今日はここに残る。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_495",
+    "text": "息子は父に「今日はここに残る。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_496",
+    "text": "キャプテンは同年代のチームメイトに「今日はここに残る。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_497",
+    "text": "店員は買い物客に「もう届けた。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_498",
+    "text": "コンサート来場者は会場スタッフに「もう届けた。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_499",
+    "text": "教授は学生に「もう届けた。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_500",
+    "text": "合唱団の指揮者は合唱団員に「もう届けた。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_501",
+    "text": "依頼人は弁護士に「ここで待ってください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_502",
+    "text": "銀行員は銀行の客に「ここで待ってください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_503",
+    "text": "常連客はバーテンダーに「ここで待ってください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_504",
+    "text": "合唱団の指揮者は合唱団員に「ここで待ってください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_505",
+    "text": "ボランティアはイベントコーディネーターに「そこにお座りください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_506",
+    "text": "俳優は監督に「そこにお座りください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_507",
+    "text": "部の役員は部員に「そこにお座りください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_508",
+    "text": "プロジェクトリーダーはチームメンバーに「そこにお座りください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_509",
+    "text": "俳優は監督に「それに触らないでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_510",
+    "text": "美術館来館者はツアーガイドに「それに触らないでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_511",
+    "text": "店長は販売員に「それに触らないでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_512",
+    "text": "friend_aはfriend_bに「それに触らないでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_513",
+    "text": "店員は客に「先に行きます。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_514",
+    "text": "配送ドライバーは飲食店の店長に「先に行きます。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_515",
+    "text": "キャプテンはチームメイトに「先に行きます。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_516",
+    "text": "店長は販売員に「先に行きます。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_517",
+    "text": "運転手は駐車場係員に「もう着きました。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_518",
+    "text": "インターンはマネージャーに「もう着きました。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_519",
+    "text": "後輩インターンは先輩インターンに「もう着きました。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_520",
+    "text": "シェフは厨房スタッフに「もう着きました。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_521",
+    "text": "客は店員に「遅れません。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_522",
+    "text": "図書館利用者は司書に「遅れません。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_523",
+    "text": "バンドリーダーはバンドメンバーに「遅れません。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_524",
+    "text": "常連客はバーテンダーに「遅れません。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_525",
+    "text": "ウェイターは食事客に「そろそろ始めましょうか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_526",
+    "text": "ツアーガイドは観光客に「そろそろ始めましょうか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_527",
+    "text": "父は息子に「そろそろ始めましょうか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_528",
+    "text": "キャプテンはチームメイトに「そろそろ始めましょうか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_529",
+    "text": "スタジオ会員はダンス講師に「もういらっしゃっています。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_530",
+    "text": "ツアーガイドは観光客に「もういらっしゃっています。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_531",
+    "text": "友だちの親は幼稚園児に「もういらっしゃっています。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_532",
+    "text": "研究指導者は研究補助者に「もういらっしゃっています。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_533",
+    "text": "選手はコーチに「ちょっと手伝っていただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_534",
+    "text": "買い物客は店員に「ちょっと手伝っていただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_535",
+    "text": "常連客はバーテンダーに「ちょっと手伝っていただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_536",
+    "text": "寮委員長は委員に「ちょっと手伝っていただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_537",
+    "text": "学生は教授に「この資料を見ますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_538",
+    "text": "若手社員は先輩社員に「この資料を見ますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_539",
+    "text": "friend_aはfriend_bに「この資料を見ますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_540",
+    "text": "シェフは厨房スタッフに「この資料を見ますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_541",
+    "text": "ジム会員はフィットネス指導員に「後ほど詳しく伺います。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_542",
+    "text": "電話予約の客は予約担当者に「後ほど詳しく伺います。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_543",
+    "text": "義父は義息子に「後ほど詳しく伺います。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_544",
+    "text": "バーテンダーは常連客に「後ほど詳しく伺います。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_545",
+    "text": "宿泊客はフロント係に「先に確かめてもらえますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_546",
+    "text": "店員は買い物客に「先に確かめてもらえますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_547",
+    "text": "姉は妹に「先に確かめてもらえますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_548",
+    "text": "友だちの親は幼稚園児に「先に確かめてもらえますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_549",
+    "text": "兵士は上官に「先にご確認をお願いします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_550",
+    "text": "寮生は寮の指導員に「先にご確認をお願いします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_551",
+    "text": "監督は俳優に「先にご確認をお願いします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_552",
+    "text": "年上のルームメイトは年下のルームメイトに「先にご確認をお願いします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_553",
+    "text": "イベント参加者はイベントスタッフに「こちらをお試しいただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_554",
+    "text": "弁護士は依頼人に「こちらをお試しいただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_555",
+    "text": "friend_aはfriend_bに「こちらをお試しいただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_556",
+    "text": "父は息子に「こちらをお試しいただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_557",
+    "text": "契約者はカスタマーサポート担当者に「私が先にご案内いたします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_558",
+    "text": "保護者は担任教師に「私が先にご案内いたします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_559",
+    "text": "シェフは厨房スタッフに「私が先にご案内いたします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_560",
+    "text": "マネージャーはインターンに「私が先にご案内いたします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_561",
+    "text": "学生は教授に「先に入ってください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_562",
+    "text": "銀行員は銀行の客に「先に入ってください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_563",
+    "text": "部の役員は部員に「先に入ってください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_564",
+    "text": "バンドリーダーはバンドメンバーに「先に入ってください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_565",
+    "text": "フロント係は宿泊客に「机の上をお片づけください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_566",
+    "text": "コンサート来場者は会場スタッフに「机の上をお片づけください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_567",
+    "text": "同年代のチームメイトはキャプテンに「机の上をお片づけください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_568",
+    "text": "映画監督は撮影助手に「机の上をお片づけください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_569",
+    "text": "観客は案内係に「そのことは忘れないでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_570",
+    "text": "運転手は駐車場係員に「そのことは忘れないでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_571",
+    "text": "バーの店長はバーテンダーに「そのことは忘れないでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_572",
+    "text": "上官は兵士に「そのことは忘れないでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_573",
+    "text": "イベントスタッフはイベント参加者に「すぐ戻ります。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_574",
+    "text": "食事客はウェイターに「すぐ戻ります。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_575",
+    "text": "息子は父に「すぐ戻ります。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_576",
+    "text": "合唱団の指揮者は合唱団員に「すぐ戻ります。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_577",
+    "text": "イベントスタッフはイベント参加者に「もう終わりました。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_578",
+    "text": "運転手は駐車場係員に「もう終わりました。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_579",
+    "text": "コーチは選手に「もう終わりました。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_580",
+    "text": "キャプテンは同年代のチームメイトに「もう終わりました。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_581",
+    "text": "徒弟は親方に「そんなに迷いません。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_582",
+    "text": "店員は買い物客に「そんなに迷いません。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_583",
+    "text": "祖母は孫に「そんなに迷いません。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_584",
+    "text": "キャプテンはチームメイトに「そんなに迷いません。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_585",
+    "text": "観光客はツアーガイドに「ここに集まりましょうか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_586",
+    "text": "銀行員は銀行の客に「ここに集まりましょうか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_587",
+    "text": "後輩インターンは先輩インターンに「ここに集まりましょうか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_588",
+    "text": "先輩社員は若手社員に「ここに集まりましょうか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_589",
+    "text": "キャンプ参加者はキャンプ指導員に「もうそうおっしゃっています。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_590",
+    "text": "食事客はウェイターに「もうそうおっしゃっています。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_591",
+    "text": "バンドリーダーはバンドメンバーに「もうそうおっしゃっています。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_592",
+    "text": "祖母は孫に「もうそうおっしゃっています。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_593",
+    "text": "義息子は義父に「後で教えていただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_594",
+    "text": "俳優は監督に「後で教えていただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_595",
+    "text": "先輩インターンは後輩インターンに「後で教えていただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_596",
+    "text": "バーテンダーは常連客に「後で教えていただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_597",
+    "text": "依頼人は弁護士に「これを使いますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_598",
+    "text": "寮生は寮の指導員に「これを使いますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_599",
+    "text": "孫は祖母に「これを使いますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_600",
+    "text": "プロジェクトリーダーはチームメンバーに「これを使いますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_601",
+    "text": "インターンはマネージャーに「後ほど伺います。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_602",
+    "text": "俳優は監督に「後ほど伺います。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_603",
+    "text": "部の役員は部員に「後ほど伺います。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_604",
+    "text": "新聞編集者は記者に「後ほど伺います。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_605",
+    "text": "患者の家族は看護師に「先に比べてもらえますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_606",
+    "text": "義息子は義父に「先に比べてもらえますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_607",
+    "text": "friend_bはfriend_aに「先に比べてもらえますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_608",
+    "text": "息子は父に「先に比べてもらえますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_609",
+    "text": "客は店員に「先にご連絡をお願いします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_610",
+    "text": "図書館利用者は司書に「先にご連絡をお願いします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_611",
+    "text": "常連客はバーテンダーに「先にご連絡をお願いします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_612",
+    "text": "新聞編集者は記者に「先にご連絡をお願いします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_613",
+    "text": "電話予約の客は予約担当者に「まずご説明いただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_614",
+    "text": "イベント参加者はイベントスタッフに「まずご説明いただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_615",
+    "text": "バーテンダーは常連客に「まずご説明いただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_616",
+    "text": "常連客はバーテンダーに「まずご説明いただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_617",
+    "text": "新入社員は人事担当者に「私が先にご準備いたします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_618",
+    "text": "店員は客に「私が先にご準備いたします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_619",
+    "text": "新聞編集者は記者に「私が先にご準備いたします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_620",
+    "text": "常連客はバーテンダーに「私が先にご準備いたします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_621",
+    "text": "宿泊客はフロント係に「ここに並んでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_622",
+    "text": "研修生は指導担当者に「ここに並んでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_623",
+    "text": "義父は義息子に「ここに並んでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_624",
+    "text": "寮の指導員は寮生に「ここに並んでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_625",
+    "text": "研修生は指導担当者に「その窓をお開けください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_626",
+    "text": "兵士は上官に「その窓をお開けください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_627",
+    "text": "新聞編集者は記者に「その窓をお開けください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_628",
+    "text": "義父は義息子に「その窓をお開けください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_629",
+    "text": "キャンプ参加者はキャンプ指導員に「ここでは走らないでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_630",
+    "text": "乗客は客室乗務員に「ここでは走らないでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_631",
+    "text": "監督は俳優に「ここでは走らないでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_632",
+    "text": "年下のルームメイトは年上のルームメイトに「ここでは走らないでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_633",
+    "text": "ジム会員はフィットネス指導員に「少し休みます。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_634",
+    "text": "弁護士は依頼人に「少し休みます。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_635",
+    "text": "シフト責任者はアルバイトスタッフに「少し休みます。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_636",
+    "text": "年上のルームメイトは年下のルームメイトに「少し休みます。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_637",
+    "text": "寮生は寮の指導員に「もう届きました。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_638",
+    "text": "客は店員に「もう届きました。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_639",
+    "text": "シフト責任者はアルバイトスタッフに「もう届きました。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_640",
+    "text": "シェフは厨房スタッフに「もう届きました。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_641",
+    "text": "来店客は案内係に「そんなに焦りません。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_642",
+    "text": "ジム会員はフィットネス指導員に「そんなに焦りません。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_643",
+    "text": "指導担当者は研修生に「そんなに焦りません。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_644",
+    "text": "friend_bはfriend_aに「そんなに焦りません。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_645",
+    "text": "来店客は案内係に「このまま続けましょうか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_646",
+    "text": "若手社員は先輩社員に「このまま続けましょうか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_647",
+    "text": "親方は徒弟に「このまま続けましょうか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_648",
+    "text": "店長は販売員に「このまま続けましょうか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_649",
+    "text": "患者の家族は看護師に「もう召し上がっています。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_650",
+    "text": "観客は案内係に「もう召し上がっています。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_651",
+    "text": "新聞編集者は記者に「もう召し上がっています。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_652",
+    "text": "年上の家族ぐるみの知人は年下の家族ぐるみの知人に「もう召し上がっています。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_653",
+    "text": "弁護士は依頼人に「その画面を見せていただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_654",
+    "text": "保護者は担任教師に「その画面を見せていただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_655",
+    "text": "シフト責任者はアルバイトスタッフに「その画面を見せていただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_656",
+    "text": "ディベート指導者はディベート部員に「その画面を見せていただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_657",
+    "text": "契約者はカスタマーサポート担当者に「そこに置きますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_658",
+    "text": "イベントスタッフはイベント参加者に「そこに置きますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_659",
+    "text": "年上のルームメイトは年下のルームメイトに「そこに置きますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_660",
+    "text": "店長は販売員に「そこに置きますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_661",
+    "text": "観光客はツアーガイドに「先にそれをいただきます。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_662",
+    "text": "客室乗務員は乗客に「先にそれをいただきます。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_663",
+    "text": "先輩インターンは後輩インターンに「先にそれをいただきます。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_664",
+    "text": "年下の家族ぐるみの知人は年上の家族ぐるみの知人に「先にそれをいただきます。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_665",
+    "text": "来店客は案内係に「今のうちに直してもらえますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_666",
+    "text": "食事客はウェイターに「今のうちに直してもらえますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_667",
+    "text": "年上のルームメイトは年下のルームメイトに「今のうちに直してもらえますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_668",
+    "text": "妹は姉に「今のうちに直してもらえますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_669",
+    "text": "ジム会員はフィットネス指導員に「今日中にご提出をお願いします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_670",
+    "text": "祭りの参加者はブーススタッフに「今日中にご提出をお願いします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_671",
+    "text": "幼稚園児は友だちの親に「今日中にご提出をお願いします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_672",
+    "text": "教授は学生に「今日中にご提出をお願いします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_673",
+    "text": "宿泊客はフロント係に「こちらにご記入いただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_674",
+    "text": "乗客は客室乗務員に「こちらにご記入いただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_675",
+    "text": "幼稚園児は友だちの親に「こちらにご記入いただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_676",
+    "text": "孫は祖母に「こちらにご記入いただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_677",
+    "text": "客は店員に「私が先にご手配いたします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_678",
+    "text": "ボランティアはイベントコーディネーターに「私が先にご手配いたします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_679",
+    "text": "祖母は孫に「私が先にご手配いたします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_680",
+    "text": "friend_aはfriend_bに「私が先にご手配いたします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_681",
+    "text": "美術館来館者はツアーガイドに「ここで止まってください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_682",
+    "text": "ジム会員はフィットネス指導員に「ここで止まってください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_683",
+    "text": "同年代のチームメイトはキャプテンに「ここで止まってください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_684",
+    "text": "父は息子に「ここで止まってください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_685",
+    "text": "客室乗務員は乗客に「そのドアをお閉めください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_686",
+    "text": "学生は教授に「そのドアをお閉めください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_687",
+    "text": "先輩インターンは後輩インターンに「そのドアをお閉めください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_688",
+    "text": "上官は兵士に「そのドアをお閉めください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_689",
+    "text": "ボランティアはイベントコーディネーターに「そこを押さないでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_690",
+    "text": "観光客はツアーガイドに「そこを押さないでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_691",
+    "text": "妹は姉に「そこを押さないでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_692",
+    "text": "映画監督は撮影助手に「そこを押さないでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_693",
+    "text": "乗客は客室乗務員に「先に動きます。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_694",
+    "text": "俳優は監督に「先に動きます。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_695",
+    "text": "研究指導者は研究補助者に「先に動きます。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_696",
+    "text": "friend_bはfriend_aに「先に動きます。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_697",
+    "text": "寮生は寮の指導員に「もう壊れました。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_698",
+    "text": "飼い主は動物病院の受付に「もう壊れました。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_699",
+    "text": "寮の指導員は寮生に「もう壊れました。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_700",
+    "text": "スタートアップ創業者は初期メンバー社員に「もう壊れました。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_701",
+    "text": "選手はコーチに「そんなに慌てません。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_702",
+    "text": "兵士は上官に「そんなに慌てません。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_703",
+    "text": "上官は兵士に「そんなに慌てません。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_704",
+    "text": "常連客はバーテンダーに「そんなに慌てません。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_705",
+    "text": "新入社員は人事担当者に「ここで決めましょうか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_706",
+    "text": "保護者は担任教師に「ここで決めましょうか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_707",
+    "text": "ボランティアリーダーはボランティアメンバーに「ここで決めましょうか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_708",
+    "text": "孫は祖母に「ここで決めましょうか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_709",
+    "text": "観客は案内係に「もうお飲みになっています。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_710",
+    "text": "乗客は客室乗務員に「もうお飲みになっています。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_711",
+    "text": "映画監督は撮影助手に「もうお飲みになっています。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_712",
+    "text": "後輩インターンは先輩インターンに「もうお飲みになっています。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_713",
+    "text": "義息子は義父に「それを貸していただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_714",
+    "text": "契約者はカスタマーサポート担当者に「それを貸していただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_715",
+    "text": "ディベート指導者はディベート部員に「それを貸していただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_716",
+    "text": "祖母は孫に「それを貸していただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_717",
+    "text": "インターンはマネージャーに「この資料を読みますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_718",
+    "text": "弁護士は依頼人に「この資料を読みますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_719",
+    "text": "年下のルームメイトは年上のルームメイトに「この資料を読みますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_720",
+    "text": "研究指導者は研究補助者に「この資料を読みますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_721",
+    "text": "寮生は寮の指導員に「後ほどお目にかかります。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_722",
+    "text": "徒弟は親方に「後ほどお目にかかります。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_723",
+    "text": "孫は祖母に「後ほどお目にかかります。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_724",
+    "text": "常連客はバーテンダーに「後ほどお目にかかります。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_725",
+    "text": "イベントスタッフはイベント参加者に「一度比較してもらえますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_726",
+    "text": "新入社員は人事担当者に「一度比較してもらえますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_727",
+    "text": "先輩インターンは後輩インターンに「一度比較してもらえますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_728",
+    "text": "姉は妹に「一度比較してもらえますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_729",
+    "text": "保護者は担任教師に「先にご共有をお願いします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_730",
+    "text": "祭りの参加者はブーススタッフに「先にご共有をお願いします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_731",
+    "text": "研究指導者は研究補助者に「先にご共有をお願いします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_732",
+    "text": "友だちの親は幼稚園児に「先にご共有をお願いします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_733",
+    "text": "祭りの参加者はブーススタッフに「こちらをご修正いただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_734",
+    "text": "年下のチームメイトはキャプテンに「こちらをご修正いただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_735",
+    "text": "先輩社員は若手社員に「こちらをご修正いただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_736",
+    "text": "常連客はバーテンダーに「こちらをご修正いただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_737",
+    "text": "ウェイターは食事客に「私が先にご整理いたします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_738",
+    "text": "徒弟は親方に「私が先にご整理いたします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_739",
+    "text": "キャプテンはチームメイトに「私が先にご整理いたします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_740",
+    "text": "姉は妹に「私が先にご整理いたします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_741",
+    "text": "インターンはマネージャーに「先に進んでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_742",
+    "text": "飼い主は動物病院の受付に「先に進んでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_743",
+    "text": "先輩インターンは後輩インターンに「先に進んでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_744",
+    "text": "妹は姉に「先に進んでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_745",
+    "text": "荷物の受取人は配達員に「全部お集めください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_746",
+    "text": "配送ドライバーは飲食店の店長に「全部お集めください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_747",
+    "text": "バンドリーダーはバンドメンバーに「全部お集めください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_748",
+    "text": "年上のルームメイトは年下のルームメイトに「全部お集めください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_749",
+    "text": "義息子は義父に「中を覗かないでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_750",
+    "text": "フロント係は宿泊客に「中を覗かないでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_751",
+    "text": "マネージャーはインターンに「中を覗かないでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_752",
+    "text": "同年代のチームメイトはキャプテンに「中を覗かないでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_753",
+    "text": "スタジオ会員はダンス講師に「今夜はここに泊まります。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_754",
+    "text": "新入社員は人事担当者に「今夜はここに泊まります。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_755",
+    "text": "ボランティアリーダーはボランティアメンバーに「今夜はここに泊まります。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_756",
+    "text": "指導担当者は研修生に「今夜はここに泊まります。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_757",
+    "text": "ボランティアはイベントコーディネーターに「もう治りました。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_758",
+    "text": "年下のチームメイトはキャプテンに「もう治りました。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_759",
+    "text": "キャプテンは年下のチームメイトに「もう治りました。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_760",
+    "text": "上官は兵士に「もう治りました。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_761",
+    "text": "若手社員は先輩社員に「そんなにためらいません。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_762",
+    "text": "義息子は義父に「そんなにためらいません。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_763",
+    "text": "寮の指導員は寮生に「そんなにためらいません。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_764",
+    "text": "スタートアップ創業者は初期メンバー社員に「そんなにためらいません。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_765",
+    "text": "宿泊客はフロント係に「もう一度考えましょうか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_766",
+    "text": "電話予約の客は予約担当者に「もう一度考えましょうか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_767",
+    "text": "合唱団の指揮者は合唱団員に「もう一度考えましょうか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_768",
+    "text": "ボランティアリーダーはボランティアメンバーに「もう一度考えましょうか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_769",
+    "text": "檀家は寺務所の職員に「もうお召しになっています。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_770",
+    "text": "客室乗務員は乗客に「もうお召しになっています。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_771",
+    "text": "年下のルームメイトは年上のルームメイトに「もうお召しになっています。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_772",
+    "text": "年上の家族ぐるみの知人は年下の家族ぐるみの知人に「もうお召しになっています。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_773",
+    "text": "檀家は寺務所の職員に「それを運んでいただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_774",
+    "text": "学生は教授に「それを運んでいただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_775",
+    "text": "キャプテンは年下のチームメイトに「それを運んでいただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_776",
+    "text": "コーチは選手に「それを運んでいただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_777",
+    "text": "兵士は上官に「これを選びますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_778",
+    "text": "荷物の受取人は配達員に「これを選びますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_779",
+    "text": "先輩インターンは後輩インターンに「これを選びますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_780",
+    "text": "妹は姉に「これを選びますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_781",
+    "text": "徒弟は親方に「その件は存じています。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_782",
+    "text": "図書館利用者は司書に「その件は存じています。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_783",
+    "text": "教授は学生に「その件は存じています。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_784",
+    "text": "シフト責任者はアルバイトスタッフに「その件は存じています。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_785",
+    "text": "ウェイターは食事客に「もう一度探してもらえますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_786",
+    "text": "コンサート来場者は会場スタッフに「もう一度探してもらえますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_787",
+    "text": "幼稚園児は友だちの親に「もう一度探してもらえますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_788",
+    "text": "親方は徒弟に「もう一度探してもらえますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_789",
+    "text": "学生は教授に「先にご相談をお願いします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_790",
+    "text": "観光客はツアーガイドに「先にご相談をお願いします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_791",
+    "text": "バーテンダーは常連客に「先にご相談をお願いします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_792",
+    "text": "友だちの親は幼稚園児に「先にご相談をお願いします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_793",
+    "text": "キャンプ参加者はキャンプ指導員に「こちらにご入力いただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_794",
+    "text": "配送ドライバーは飲食店の店長に「こちらにご入力いただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_795",
+    "text": "部の役員は部員に「こちらにご入力いただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_796",
+    "text": "義父は義息子に「こちらにご入力いただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_797",
+    "text": "食事客はウェイターに「私が先にご用意いたします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_798",
+    "text": "観光客はツアーガイドに「私が先にご用意いたします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_799",
+    "text": "キャプテンは年下のチームメイトに「私が先にご用意いたします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_800",
+    "text": "先輩社員は若手社員に「私が先にご用意いたします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_801",
+    "text": "新入社員は人事担当者に「次を右に曲がってください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_802",
+    "text": "年下のチームメイトはキャプテンに「次を右に曲がってください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_803",
+    "text": "先輩インターンは後輩インターンに「次を右に曲がってください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_804",
+    "text": "年下の家族ぐるみの知人は年上の家族ぐるみの知人に「次を右に曲がってください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_805",
+    "text": "フロント係は宿泊客に「そこにお立ちください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_806",
+    "text": "契約者はカスタマーサポート担当者に「そこにお立ちください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_807",
+    "text": "先輩インターンは後輩インターンに「そこにお立ちください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_808",
+    "text": "プロジェクトリーダーはチームメンバーに「そこにお立ちください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_809",
+    "text": "選手はコーチに「人を見て笑わないでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_810",
+    "text": "美術館来館者はツアーガイドに「人を見て笑わないでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_811",
+    "text": "映画監督は撮影助手に「人を見て笑わないでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_812",
+    "text": "親方は徒弟に「人を見て笑わないでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_813",
+    "text": "電話予約の客は予約担当者に「今日はもう帰ります。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_814",
+    "text": "研修生は指導担当者に「今日はもう帰ります。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_815",
+    "text": "妹は姉に「今日はもう帰ります。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_816",
+    "text": "スタートアップ創業者は初期メンバー社員に「今日はもう帰ります。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_817",
+    "text": "依頼人は弁護士に「まだ間に合いました。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_818",
+    "text": "来店客は案内係に「まだ間に合いました。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_819",
+    "text": "ディベート指導者はディベート部員に「まだ間に合いました。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_820",
+    "text": "先輩インターンは後輩インターンに「まだ間に合いました。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_821",
+    "text": "ウェイターは食事客に「そんなに心配しません。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_822",
+    "text": "フロント係は宿泊客に「そんなに心配しません。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_823",
+    "text": "キャプテンはチームメイトに「そんなに心配しません。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_824",
+    "text": "年上の家族ぐるみの知人は年下の家族ぐるみの知人に「そんなに心配しません。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_825",
+    "text": "図書館利用者は司書に「そろそろ動き出しましょうか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_826",
+    "text": "銀行の客は銀行員に「そろそろ動き出しましょうか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_827",
+    "text": "キャプテンは同年代のチームメイトに「そろそろ動き出しましょうか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_828",
+    "text": "息子は父に「そろそろ動き出しましょうか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_829",
+    "text": "銀行の客は銀行員に「もうお休みになっています。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_830",
+    "text": "依頼人は弁護士に「もうお休みになっています。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_831",
+    "text": "義父は義息子に「もうお休みになっています。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_832",
+    "text": "ボランティアリーダーはボランティアメンバーに「もうお休みになっています。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_833",
+    "text": "銀行の客は銀行員に「その資料を送っていただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_834",
+    "text": "コンサート来場者は会場スタッフに「その資料を送っていただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_835",
+    "text": "同年代のチームメイトはキャプテンに「その資料を送っていただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_836",
+    "text": "指導担当者は研修生に「その資料を送っていただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_837",
+    "text": "選手はコーチに「これを取りますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_838",
+    "text": "スタジオ会員はダンス講師に「これを取りますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_839",
+    "text": "上官は兵士に「これを取りますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_840",
+    "text": "監督は俳優に「これを取りますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_841",
+    "text": "運転手は駐車場係員に「明日伺います。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_842",
+    "text": "店員は買い物客に「明日伺います。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_843",
+    "text": "親方は徒弟に「明日伺います。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_844",
+    "text": "合唱団の指揮者は合唱団員に「明日伺います。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_845",
+    "text": "祭りの参加者はブーススタッフに「一度測ってもらえますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_846",
+    "text": "檀家は寺務所の職員に「一度測ってもらえますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_847",
+    "text": "プロジェクトリーダーはチームメンバーに「一度測ってもらえますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_848",
+    "text": "孫は祖母に「一度測ってもらえますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_849",
+    "text": "イベント参加者はイベントスタッフに「先にご予約をお願いします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_850",
+    "text": "司書は図書館利用者に「先にご予約をお願いします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_851",
+    "text": "寮の指導員は寮生に「先にご予約をお願いします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_852",
+    "text": "映画監督は撮影助手に「先にご予約をお願いします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_853",
+    "text": "美術館来館者はツアーガイドに「こちらにご着席いただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_854",
+    "text": "檀家は寺務所の職員に「こちらにご着席いただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_855",
+    "text": "親方は徒弟に「こちらにご着席いただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_856",
+    "text": "年下の家族ぐるみの知人は年上の家族ぐるみの知人に「こちらにご着席いただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_857",
+    "text": "ウェイターは食事客に「私が先に梱包いたします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_858",
+    "text": "弁護士は依頼人に「私が先に梱包いたします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_859",
+    "text": "常連客はバーテンダーに「私が先に梱包いたします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_860",
+    "text": "先輩インターンは後輩インターンに「私が先に梱包いたします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_861",
+    "text": "徒弟は親方に「先に乗ってください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_862",
+    "text": "銀行の客は銀行員に「先に乗ってください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_863",
+    "text": "バーの店長はバーテンダーに「先に乗ってください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_864",
+    "text": "姉は妹に「先に乗ってください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_865",
+    "text": "来店客は案内係に「それをお写しください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_866",
+    "text": "コンサート来場者は会場スタッフに「それをお写しください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_867",
+    "text": "寮の指導員は寮生に「それをお写しください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_868",
+    "text": "バンドリーダーはバンドメンバーに「それをお写しください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_869",
+    "text": "イベントスタッフはイベント参加者に「そこを汚さないでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_870",
+    "text": "年下のチームメイトはキャプテンに「そこを汚さないでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_871",
+    "text": "先輩研究室メンバーは新しく入った研究室メンバーに「そこを汚さないでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_872",
+    "text": "キャプテンは年下のチームメイトに「そこを汚さないでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_873",
+    "text": "買い物客は店員に「ここで乗り換えます。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_874",
+    "text": "銀行員は銀行の客に「ここで乗り換えます。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_875",
+    "text": "プロジェクトリーダーはチームメンバーに「ここで乗り換えます。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_876",
+    "text": "店長は販売員に「ここで乗り換えます。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_877",
+    "text": "乗客は客室乗務員に「もう売れました。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_878",
+    "text": "研修生は指導担当者に「もう売れました。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_879",
+    "text": "後輩インターンは先輩インターンに「もう売れました。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_880",
+    "text": "コーチは選手に「もう売れました。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_881",
+    "text": "選手はコーチに「そんなに怒りません。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_882",
+    "text": "荷物の受取人は配達員に「そんなに怒りません。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_883",
+    "text": "友だちの親は幼稚園児に「そんなに怒りません。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_884",
+    "text": "friend_bはfriend_aに「そんなに怒りません。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_885",
+    "text": "食事客はウェイターに「ここで一度話し合いましょうか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_886",
+    "text": "フロント係は宿泊客に「ここで一度話し合いましょうか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_887",
+    "text": "年下のルームメイトは年上のルームメイトに「ここで一度話し合いましょうか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_888",
+    "text": "friend_bはfriend_aに「ここで一度話し合いましょうか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_889",
+    "text": "飼い主は動物病院の受付に「もうなさっています。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_890",
+    "text": "ツアーガイドは観光客に「もうなさっています。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_891",
+    "text": "ディベート指導者はディベート部員に「もうなさっています。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_892",
+    "text": "スタートアップ創業者は初期メンバー社員に「もうなさっています。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_893",
+    "text": "銀行の客は銀行員に「ちょっと支えていただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_894",
+    "text": "買い物客は店員に「ちょっと支えていただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_895",
+    "text": "教授は学生に「ちょっと支えていただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_896",
+    "text": "バーテンダーは常連客に「ちょっと支えていただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_897",
+    "text": "銀行員は銀行の客に「この紙を切りますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_898",
+    "text": "キャンプ参加者はキャンプ指導員に「この紙を切りますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_899",
+    "text": "監督は俳優に「この紙を切りますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_900",
+    "text": "寮委員長は委員に「この紙を切りますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_901",
+    "text": "電話予約の客は予約担当者に「後ほど申し上げます。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_902",
+    "text": "ツアーガイドは観光客に「後ほど申し上げます。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_903",
+    "text": "監督は俳優に「後ほど申し上げます。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_904",
+    "text": "同年代のチームメイトはキャプテンに「後ほど申し上げます。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_905",
+    "text": "運転手は駐車場係員に「もう一度見比べてもらえますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_906",
+    "text": "飼い主は動物病院の受付に「もう一度見比べてもらえますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_907",
+    "text": "幼稚園児は友だちの親に「もう一度見比べてもらえますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_908",
+    "text": "シフト責任者はアルバイトスタッフに「もう一度見比べてもらえますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_909",
+    "text": "客室乗務員は乗客に「今日中にご申請をお願いします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_910",
+    "text": "保護者は担任教師に「今日中にご申請をお願いします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_911",
+    "text": "息子は父に「今日中にご申請をお願いします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_912",
+    "text": "年下のルームメイトは年上のルームメイトに「今日中にご申請をお願いします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_913",
+    "text": "ツアーガイドは観光客に「こちらをご着用いただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_914",
+    "text": "キャンプ参加者はキャンプ指導員に「こちらをご着用いただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_915",
+    "text": "指導担当者は研修生に「こちらをご着用いただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_916",
+    "text": "先輩研究室メンバーは新しく入った研究室メンバーに「こちらをご着用いただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_917",
+    "text": "配送ドライバーは飲食店の店長に「私が先に調整いたします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_918",
+    "text": "依頼人は弁護士に「私が先に調整いたします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_919",
+    "text": "年下の家族ぐるみの知人は年上の家族ぐるみの知人に「私が先に調整いたします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_920",
+    "text": "スタートアップ創業者は初期メンバー社員に「私が先に調整いたします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_921",
+    "text": "スタジオ会員はダンス講師に「ここで降りてください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_922",
+    "text": "檀家は寺務所の職員に「ここで降りてください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_923",
+    "text": "キャプテンは年下のチームメイトに「ここで降りてください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_924",
+    "text": "寮委員長は委員に「ここで降りてください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_925",
+    "text": "客は店員に「そのレバーをお引きください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_926",
+    "text": "スタジオ会員はダンス講師に「そのレバーをお引きください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_927",
+    "text": "マネージャーはインターンに「そのレバーをお引きください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_928",
+    "text": "年上の家族ぐるみの知人は年下の家族ぐるみの知人に「そのレバーをお引きください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_929",
+    "text": "イベント参加者はイベントスタッフに「ここで騒がないでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_930",
+    "text": "患者の家族は看護師に「ここで騒がないでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_931",
+    "text": "バーの店長はバーテンダーに「ここで騒がないでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_932",
+    "text": "コーチは選手に「ここで騒がないでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_933",
+    "text": "インターンはマネージャーに「それはここに置いていきます。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_934",
+    "text": "司書は図書館利用者に「それはここに置いていきます。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_935",
+    "text": "後輩インターンは先輩インターンに「それはここに置いていきます。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_936",
+    "text": "キャプテンは同年代のチームメイトに「それはここに置いていきます。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_937",
+    "text": "若手社員は先輩社員に「もう決まりました。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_938",
+    "text": "祭りの参加者はブーススタッフに「もう決まりました。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_939",
+    "text": "研究指導者は研究補助者に「もう決まりました。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_940",
+    "text": "姉は妹に「もう決まりました。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_941",
+    "text": "配送ドライバーは飲食店の店長に「まだあきらめません。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_942",
+    "text": "美術館来館者はツアーガイドに「まだあきらめません。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_943",
+    "text": "マネージャーはインターンに「まだあきらめません。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_944",
+    "text": "指導担当者は研修生に「まだあきらめません。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_945",
+    "text": "ボランティアはイベントコーディネーターに「ここで話をまとめましょうか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_946",
+    "text": "図書館利用者は司書に「ここで話をまとめましょうか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_947",
+    "text": "寮委員長は委員に「ここで話をまとめましょうか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_948",
+    "text": "キャプテンは同年代のチームメイトに「ここで話をまとめましょうか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_949",
+    "text": "年下のチームメイトはキャプテンに「もうお持ちです。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_950",
+    "text": "観客は案内係に「もうお持ちです。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_951",
+    "text": "幼稚園児は友だちの親に「もうお持ちです。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_952",
+    "text": "父は息子に「もうお持ちです。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_953",
+    "text": "患者の家族は看護師に「これを守っていただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_954",
+    "text": "兵士は上官に「これを守っていただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_955",
+    "text": "バーの店長はバーテンダーに「これを守っていただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_956",
+    "text": "ディベート指導者はディベート部員に「これを守っていただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_957",
+    "text": "司書は図書館利用者に「これを数えますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_958",
+    "text": "買い物客は店員に「これを数えますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_959",
+    "text": "祖母は孫に「これを数えますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_960",
+    "text": "ボランティアリーダーはボランティアメンバーに「これを数えますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_961",
+    "text": "司書は図書館利用者に「後ほど拝見します。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_962",
+    "text": "店員は客に「後ほど拝見します。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_963",
+    "text": "教授は学生に「後ほど拝見します。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_964",
+    "text": "年上の家族ぐるみの知人は年下の家族ぐるみの知人に「後ほど拝見します。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_965",
+    "text": "店員は客に「一度見直してもらえますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_966",
+    "text": "若手社員は先輩社員に「一度見直してもらえますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_967",
+    "text": "父は息子に「一度見直してもらえますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_968",
+    "text": "先輩研究室メンバーは新しく入った研究室メンバーに「一度見直してもらえますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_969",
+    "text": "患者の家族は看護師に「先にご依頼をお願いします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_970",
+    "text": "買い物客は店員に「先にご依頼をお願いします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_971",
+    "text": "先輩研究室メンバーは新しく入った研究室メンバーに「先にご依頼をお願いします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_972",
+    "text": "部の役員は部員に「先にご依頼をお願いします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_973",
+    "text": "研修生は指導担当者に「こちらをご利用いただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_974",
+    "text": "飼い主は動物病院の受付に「こちらをご利用いただけますか。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_975",
+    "text": "年下の家族ぐるみの知人は年上の家族ぐるみの知人に「こちらをご利用いただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_976",
+    "text": "シェフは厨房スタッフに「こちらをご利用いただけますか。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_977",
+    "text": "観客は案内係に「私が先に調達いたします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_978",
+    "text": "契約者はカスタマーサポート担当者に「私が先に調達いたします。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_979",
+    "text": "バーの店長はバーテンダーに「私が先に調達いたします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_980",
+    "text": "コーチは選手に「私が先に調達いたします。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_981",
+    "text": "店員は買い物客に「先に呼んでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_982",
+    "text": "荷物の受取人は配達員に「先に呼んでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_983",
+    "text": "先輩社員は若手社員に「先に呼んでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_984",
+    "text": "friend_aはfriend_bに「先に呼んでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_985",
+    "text": "客室乗務員は乗客に「きれいにお並べください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_986",
+    "text": "司書は図書館利用者に「きれいにお並べください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_987",
+    "text": "先輩社員は若手社員に「きれいにお並べください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_988",
+    "text": "マネージャーはインターンに「きれいにお並べください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_989",
+    "text": "宿泊客はフロント係に「そこに近づかないでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_990",
+    "text": "イベント参加者はイベントスタッフに「そこに近づかないでください。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_991",
+    "text": "先輩研究室メンバーは新しく入った研究室メンバーに「そこに近づかないでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_992",
+    "text": "寮委員長は委員に「そこに近づかないでください。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_993",
+    "text": "荷物の受取人は配達員に「今日はここに残ります。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_994",
+    "text": "店員は客に「今日はここに残ります。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_995",
+    "text": "息子は父に「今日はここに残ります。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_996",
+    "text": "キャプテンは同年代のチームメイトに「今日はここに残ります。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_997",
+    "text": "店員は買い物客に「もう届けました。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_998",
+    "text": "コンサート来場者は会場スタッフに「もう届けました。」と言った。",
+    "label": "natural"
+  },
+  {
+    "id": "train_999",
+    "text": "教授は学生に「もう届けました。」と言った。",
+    "label": "unnatural"
+  },
+  {
+    "id": "train_1000",
+    "text": "合唱団の指揮者は合唱団員に「もう届けました。」と言った。",
+    "label": "unnatural"
+  }
+]

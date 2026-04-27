@@ -239,18 +239,13 @@ def run_extraction(dataloader, model, device, texts, encodings, tokenizer, desc)
         tokenizer=tokenizer,
     )
 
-    x_layers_mean = [
-        mean_pool_np(h, attention_masks)
-        for h in x_layers_full
-    ]
-
     x_layers_context_quote = [
         context_quote_rep_np(h, context_masks, quote_masks)
-        for h in x_layers_full
+        for h in tqdm(x_layers_full, desc="Context+quote pooling", unit="layer")
     ]
 
     return (
-        x_layers_mean,
+        None,
         x_layers_full,
         attention_masks,
         y,
