@@ -61,7 +61,7 @@ tokenizer:
   max_length: 128
 
 das:
-  k: 32
+  k: 128
   lr: 0.001
   epochs: 20
 

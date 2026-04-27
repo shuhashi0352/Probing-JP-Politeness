@@ -19,7 +19,7 @@ from line_distil_bert.eval_line import dev, test
 from line_distil_bert.checkpoint import inspect_checkpoint
 
 # Visualization
-from probing.visual import line_graph, plot_transition_heatmap_from_json
+from probing.visual import load_das_layer_results, generate_das_visualizations
 
 
 def load_yaml(path): # "config.yaml"
@@ -133,6 +133,9 @@ def run_das(cfg):
 
     with out_path.open("w", encoding="utf-8") as f:
         json.dump(all_results, f, ensure_ascii=False, indent=2)
+
+    result_path = cfg["data"]["das_out_dir"]
+    generate_das_visualizations(all_results, out_dir=f"{result_path}/figures")
 
 
     """

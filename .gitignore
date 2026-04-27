@@ -3,6 +3,7 @@ data/keico_corpus(forLREC)-OldVersion.csv
 
 # Results
 results_lineDistilBERT/
+results_das/
 
 # Compiled bytecode
 src_base/__pycache__/

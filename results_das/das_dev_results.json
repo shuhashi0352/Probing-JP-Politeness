@@ -1,17 +1,17 @@
 {
   "n": 720,
-  "patched_target_accuracy": 0.6541666666666667,
-  "flip_rate": 0.4486111111111111,
+  "patched_target_accuracy": 0.6402777777777777,
+  "flip_rate": 0.43194444444444446,
   "transition_counts": [
     [
-      229,
-      157
+      225,
+      151
     ],
     [
-      166,
-      168
+      160,
+      184
     ]
   ],
-  "hs_index": 5,
+  "hs_index": 6,
   "k": 32
 }
