@@ -1,5 +1,6 @@
 from pathlib import Path
 import yaml
+import json
 from data import split_data, prepare_model, make_das_dataloaders
 from preprocess import build_tokenizer
 from probing.extract_hs import run_extraction
@@ -42,25 +43,96 @@ def run_das(cfg):
     print("best_laye_q: ", best_layer_cq, "best_score_q: ", best_score_cq)
     print(dev_scores_cq)
 
-    hidden_size = model.config.dim * 2
+    # hidden_size = model.config.dim * 2
 
-    torch_probe = StandardizedLinearProbe(hidden_size, num_labels=2)
-    torch_probe, probe_mean, probe_std = train_pooled_vector_probe(cfg, torch_probe, x_train_cq_layers[best_layer_cq], y_train, device)
-    dev_probe_results = eval_pooled_vector_probe(cfg, torch_probe, x_dev_cq_layers[best_layer_cq], y_dev, device, probe_mean, probe_std)
-    print("PyTorch pooled-vector probe dev:", dev_probe_results["accuracy"])
+    # torch_probe = StandardizedLinearProbe(hidden_size, num_labels=2)
+    # torch_probe, probe_mean, probe_std = train_pooled_vector_probe(cfg, torch_probe, x_train_cq_layers[best_layer_cq], y_train, device)
+    # dev_probe_results = eval_pooled_vector_probe(cfg, torch_probe, x_dev_cq_layers[best_layer_cq], y_dev, device, probe_mean, probe_std)
+    # print("PyTorch pooled-vector probe dev:", dev_probe_results["accuracy"])
 
-    ##### DAS #####
+    # ##### DAS #####
 
     train_receiver_dl, train_donor_dl, train_receiver_df, train_donor_df = make_das_dataloaders(train_df, tokenizer, batch_size=cfg["task"]["batch_size"], max_length=cfg["tokenizer"]["max_length"])
 
     dev_receiver_dl, dev_donor_dl, dev_receiver_df, dev_donor_df = make_das_dataloaders(dev_df, tokenizer, batch_size=cfg["task"]["batch_size"], max_length=cfg["tokenizer"]["max_length"])
 
-    layer_module = get_distilbert_layer_module(model, best_layer_cq)
+    # layer_module = get_distilbert_layer_module(model, best_layer_cq)
 
-    das = train_das(cfg, model, torch_probe, probe_mean, probe_std, train_receiver_dl, train_donor_dl, layer_module, best_layer_cq, hidden_size, device)
-    dev_das_results = eval_das(cfg, model, torch_probe, probe_mean, probe_std, dev_receiver_dl, dev_donor_dl, layer_module, best_layer_cq, das, device)
-    print(dev_das_results)
+    # das = train_das(cfg, model, torch_probe, probe_mean, probe_std, train_receiver_dl, train_donor_dl, layer_module, best_layer_cq, hidden_size, device)
+    # dev_das_results = eval_das(cfg, model, torch_probe, probe_mean, probe_std, dev_receiver_dl, dev_donor_dl, layer_module, best_layer_cq, das, device)
+    # print(dev_das_results)
 
+    all_results = []
+
+    for hs_index in range(1, model_num_layers + 1):
+        print(f"\n===== DAS layer {hs_index} =====")
+
+        hidden_size = model.config.dim * 2
+
+        torch_probe = StandardizedLinearProbe(hidden_size, num_labels=2)
+
+        torch_probe, probe_mean, probe_std = train_pooled_vector_probe(
+            cfg,
+            torch_probe,
+            x_train_cq_layers[hs_index],
+            y_train,
+            device,
+        )
+
+        dev_probe_results = eval_pooled_vector_probe(
+            cfg,
+            torch_probe,
+            x_dev_cq_layers[hs_index],
+            y_dev,
+            device,
+            probe_mean,
+            probe_std,
+        )
+
+        layer_module = get_distilbert_layer_module(model, hs_index)
+
+        das = train_das(
+            cfg,
+            model,
+            torch_probe,
+            probe_mean,
+            probe_std,
+            train_receiver_dl,
+            train_donor_dl,
+            layer_module,
+            hs_index,
+            hidden_size,
+            device,
+        )
+
+        dev_das_results = eval_das(
+            cfg,
+            model,
+            torch_probe,
+            probe_mean,
+            probe_std,
+            dev_receiver_dl,
+            dev_donor_dl,
+            layer_module,
+            hs_index,
+            das,
+            device,
+        )
+
+        all_results.append({
+            "hs_index": hs_index,
+            "sklearn_probe_f1": float(dev_scores_cq[hs_index]),
+            "torch_probe_acc": float(dev_probe_results["accuracy"]),
+            "das_target_acc": float(dev_das_results["patched_target_accuracy"]),
+            "das_flip_rate": float(dev_das_results["flip_rate"]),
+            "transition_counts": dev_das_results["transition_counts"],
+        })
+
+    out_path = Path(cfg["data"]["das_out_dir"]) / "das_all_layers_results.json"
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with out_path.open("w", encoding="utf-8") as f:
+        json.dump(all_results, f, ensure_ascii=False, indent=2)
 
 
     """
