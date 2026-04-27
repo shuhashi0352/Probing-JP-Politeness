@@ -1,344 +1,226 @@
-# Probing Internal Representations of Japanese Politeness
+# Probing-JP-Politeness
 
-This project investigates **how much Japanese BERT-style models internally encode “politeness”** by combining:
-
-1) **Supervised politeness classification** (baseline fine-tuning)  
-2) **Layerwise analysis** to identify where politeness becomes *linearly accessible*  
-3) **Representation probing** on extracted embeddings (as “features-as-data”)
-
-The core idea is: **if politeness information is systematically decodable from specific hidden layers (under controlled probes), that’s evidence the model’s representations encode politeness-related pragmatic information.**
+A research project for analyzing how Japanese politeness is represented inside transformer models using probing and causal intervention methods.
 
 ---
 
-## Project Goals
+# Motivation
 
-- Train a supervised baseline (4-way politeness classification) to ensure the model learns a usable politeness signal.
-- Validate the baseline on test data (e.g., accuracy / macro-F1) so later analyses aren’t probing a broken or underfit model.
-- Locate “where” politeness becomes linearly accessible by running **layerwise linear probes** on sentence embeddings extracted from every layer.
-- Run **causal intervention tests** (**CLS patching**) at the selected layer to check whether swapping internal representations changes predictions in the expected direction.
-- Run **control interventions** to verify that the patching effect is not an implementation artifact:
-  1. **Self-patch** (receiver CLS → receiver CLS): should produce ~no change.
-  2. **Random-donor** (shuffle donor CLS within batch): effect should weaken or destabilize.
-  3. **Wrong-layer sweep** (patch across all layers): effect should peak near the probe-selected layer.
-- Summarize effects with transition heatmaps (4×4) and logit deltas, producing figures suitable for inclusion in a paper.
+Japanese politeness is not expressed through a single surface marker. It emerges from interactions between:
 
----
+- lexical choices
+- verb morphology
+- sentence endings
+- speaker–listener relationships
+- discourse context
+- pragmatic appropriateness
 
-## Getting started
+This makes politeness an ideal test case for representation analysis in language models.
 
-### Start here: [Project Setup Guide](docs/setup.md)
+Many NLP systems can classify politeness correctly, but prediction accuracy alone does not reveal **where** politeness is encoded or **how** the model uses that information internally.
 
-#### Environment (uv recommended)
+This project addresses that gap through two complementary perspectives:
 
-This project is designed to be set up with **[uv]** (fast Python package + environment manager).  
-If you see files like `pyproject.toml` and `uv.lock`, **use uv** to ensure dependency versions match the author’s environment.
+## 1. Geometric Decodability
 
-The setup guide covers:
-- installing **uv**
-- creating / syncing the environment from `uv.lock`
-- installing dependencies
-- running the main scripts end-to-end
+Can politeness be linearly decoded from hidden states at each layer?
 
-> If you prefer conda/pip, you *may* be able to make it work, but the recommended and most reproducible path is **uv + uv.lock**
+If yes, then the representation contains accessible information about politeness.
 
----
+## 2. Causal Usefulness
 
-## Dataset
+Does changing an internal subspace alter the model’s politeness judgment?
 
-We use **KeiCO / KeiCorpus**:
+If yes, then the representation is not only decodable but functionally involved in prediction.
 
-- Repo: https://github.com/Liumx2020/KeiCO-corpus  
-- Based on: *“Construction and Validation of a Japanese Honorific Corpus Based on Systemic Functional Linguistics”*
+To study this, the repository combines:
 
-The dataset provides Japanese text paired with **four politeness levels** (as defined by the authors’ SFL-based framework).  
-- This project follows the original definition/structure of politeness used in KeiCO.
+- layerwise probing
+- hidden-state extraction
+- activation patching
+- Distributed Alignment Search (DAS)
+- transition analysis across labels
 
-#### Dataset Statistics (from Liu & Kobayashi, 2022) -> see [See table 3 in the paper](https://aclanthology.org/2022.dclrl-1.3/)
-
-| Polite level | Sentences | Avg. sentence length | Avg. kanji per sentence | Word tokens | Word types | Yule’s characteristic K |
-|---|---:|---:|---:|---:|---:|---:|
-| Level 1 | 2,584 | 18.2 | 2.6 | 47,111 | 4,744 | 135.70 |
-| Level 2 | 2,046 | 16.4 | 2.1 | 33,476 | 3,897 | 136.23 |
-| Level 3 | 2,694 | 15.2 | 1.8 | 40,980 | 4,448 | 130.28 |
-| Level 4 | 2,683 | 13.5 | 1.6 | 36,233 | 4,315 | 129.80 |
-| **Total** | **10,007** | **15.8** | **2.0** | **157,806** | **6,465** | **125.54** |
+The broader goal is to move beyond black-box classification and better understand how socially grounded linguistic knowledge is structured inside pretrained models.
 
 ---
 
-## Task Definition
+# Dataset / Model
 
-### Supervised baseline task
-- Input: Japanese text
-- Output: politeness label in **4 classes**
+# Dataset
 
+The project uses a Japanese politeness dataset built from controlled dialogue situations.
 
-The baseline fine-tuning is used to ensure:
-- The model can perform the task reliably (not random / underfit).
-- Its learned hidden states provide meaningful representations for later probing.
+Each example includes:
+
+- speaker role
+- listener role
+- social setting
+- utterance
+- expected politeness level
+- realized politeness level
+- naturalness label
+
+Examples are converted into sentence prompts such as:
+
+    {
+      "text": "学生は教授に「了解」と言った。",
+      "label": "unnatural"
+    }
+
+This allows the model to jointly process:
+
+- social relation information
+- utterance form
+- pragmatic appropriateness
+
+## Label Space
+
+- natural
+- unnatural
+
+## Split Strategy
+
+To reduce memorization leakage, the dataset is split by shared utterance identity rather than random row split.
+
+This means the same utterance template does not appear across train / dev / test splits.
 
 ---
 
-## Models
+# Model
 
-This project uses a **single Japanese BERT-style encoder model**:
+The main encoder is:
 
-- **[LINE DistilBERT (Japanese)](https://huggingface.co/line-corporation/line-distilbert-base-japanese)**: `line-corporation/line-distilbert-base-japanese`
+- LineDistilBERT (Japanese DistilBERT classifier backbone)
 
-We fine-tune this checkpoint for **4-class politeness classification** and then reuse the same fine-tuned model for:
-- layerwise hidden-state extraction (`output_hidden_states=True`)
-- linear probing (logistic regression over per-layer `[CLS]` vectors)
-- causal interventions (CLS patching via forward hooks)
+Used in frozen form for interpretability experiments.
+
+The encoder outputs hidden states from all transformer layers, enabling layerwise analysis.
 
 ---
 
-## Method Overview
+# Methods
 
-### 1) Baseline training (supervised fine-tuning)
-- Fine-tune a Japanese BERT-style encoder for 4-way classification.
-- Evaluate on a held-out test set (accuracy, macro-F1).
+# 1. Prompt Conversion
+
+Structured metadata is converted into natural Japanese sentences:
+
+speaker + listener + quoted utterance + speech event
+
+Example:
+
+    学生は教授に「了解」と言った。
+
+This lets the model reason over both language form and social context in one sequence.
+
+---
+
+# 2. Hidden State Extraction
+
+For every split:
+
+- train
+- dev
+- test
+
+The system extracts hidden states from all layers.
+
+Representations include:
+
+- pooled full-sequence vectors
+- context-only vectors
+- quote-only vectors
+- context+quote combined vectors
+
+These become inputs for probing and intervention experiments.
+
+---
+
+# 3. Layerwise Linear Probing
+
+A linear classifier is trained separately on each layer representation.
+
+Purpose:
+
+- measure where politeness information becomes decodable
+- compare representational quality across layers
+- identify the best intervention layer
 
 Output:
-- A trained baseline model
-- Baseline performance metrics (sanity check that the task is learned)
+
+- dev accuracy per layer
+- best layer index
+- best probing score
 
 ---
 
-## 2) Layerwise probing
+# 4. PyTorch Probe Reproduction
 
-**Goal:** Identify *where* politeness becomes **linearly accessible** in the model’s representation stack.
+After selecting the best layer, a standardized linear probe is retrained in PyTorch.
 
-We extract a sentence vector from each layer (default: **`[CLS]`**) and train a **multinomial L2 logistic regression probe** per layer.
+Purpose:
 
-> **Why logistic regression?** Because (multinomial) logistic regression evaluates each layer in terms of how much it's linearly decodable. It means if linear probes succeed, the representaion has made politeness explicit and easy to read out.
-
----
-
-### 2.1 Representation extraction (features-as-data)
-
-We run the (fine-tuned) model with:
-
-- `output_hidden_states=True`
-
-This returns:
-
-- `hidden_states[0]`: embedding output (pre-transformer)
-- `hidden_states[1]`: output after encoder layer 0
-- ...
-- `hidden_states[L]`: output after encoder layer (L−1)
-
-**Sentence representation (default):**
-
-- Use the `[CLS]` token hidden state:
-  - `x = hidden_states[hs_index][:, 0, :]`  (shape: `(B, H)`)
-
-This produces, for each `hs_index`:
-
-- `X_train[hs_index]` with shape `(N_train, H)`
-- `X_dev[hs_index]` with shape `(N_dev, H)`
-- (optionally) `X_test[hs_index]` with shape `(N_test, H)`
-
-> Alternative (optional): mean pooling over non-padding tokens. In this project, `[CLS]` is the default.
+- align probe implementation with downstream DAS pipeline
+- ensure compatible optimization and tensor handling
+- provide a target classifier for interventions
 
 ---
 
-### 2.2 Linear probe per layer
+# 5. Distributed Alignment Search (DAS)
 
-For each `hs_index`:
+DAS learns a low-dimensional subspace inside hidden representations that controls classifier behavior.
 
-- Train a multinomial logistic regression probe:
-  - L2 regularization
-  - solver: `lbfgs`
-- Evaluate on dev (recommended metric: **macro-F1**)
+Instead of replacing the full hidden state, the method:
 
-Selection rule:
+1. selects donor and receiver examples
+2. learns a transformation subspace
+3. patches only the learned dimensions
+4. observes prediction changes
 
-- `best_layer = argmax_hs_index macroF1_dev(hs_index)`
-
-**Important:** We use **dev only** to choose `best_layer` to avoid test leakage.
-
-We plot dev macro-F1 across layers as:
-
-- a line plot (primary)
-- (optionally) a heatmap-style plot over layers
-
-The peak region indicates where politeness is most linearly decodable.
-
-This step produces:
-
-- `dev_f1_macro_by_layer` (array of size `num_hidden_states`)
-- `best_layer` and `best_f1_macro`
-- a plot of dev macro-F1 by layer
+This tests whether a compact internal direction causally influences politeness judgments.
 
 ---
 
-## 3) Probing on the best layer (final probe evaluation)
+# 6. Donor / Receiver Construction
 
-After selecting `best_layer` on dev:
+Examples are aligned by utterance identity.
 
-- Extract CLS `X_test[best_layer]`
-- Train probe on **train** features at `best_layer`
-- Evaluate on **test** features at `best_layer`
+For each shared utterance:
 
-This yields the final probing performance:
+- natural example ↔ unnatural example
 
-- accuracy
-- macro-F1
-- (optional) confusion matrix
+Two directions are created:
 
-If the probe score at `best_layer` is close to the fine-tuned classifier score, it suggests the politeness signal is already quite explicit in the representation (linearly readable). 
+- unnatural receiver + natural donor
+- natural receiver + unnatural donor
 
-However, you still can’t say it’s “explicit” in a mechanistic sense even if that's the case. 
-
-- The information may be **weakly present** but still separable.
-- It only tells you they reach similar accuracy, **not that they reach it in the same way**.
+This controls lexical content while changing pragmatic label.
 
 ---
 
-## 4) Causal intervention via CLS patching (activation patching)
+# 7. Evaluation Metrics
 
-**Goal:** Test whether the representation at `best_layer` is not only *decodable*, but also *causally used* by the classifier.
+DAS outputs are evaluated with:
 
-We perform **CLS patching**:
+- patched target accuracy
+- flip rate
+- transition matrix
+- layer index
+- subspace dimension k
 
-Here, we exclusively use these two labels to make contrast clear.
+## Interpretation
 
-- Receiver: the most casual class (Level 4)
-- Donor: the most polite class (Level 1)
-
-For each receiver batch:
-
-1. Run **baseline** forward pass on the receiver → `base_logits`, `base_pred`
-2. Run donor forward pass with `output_hidden_states=True` and extract donor CLS at `hs_index = best_layer`:
-   - `donor_cls = hidden_states[best_layer][:, 0, :]`
-3. Register a forward hook on the **encoder layer module** corresponding to `best_layer`
-4. In the hook, replace only the receiver CLS vector with `donor_cls`:
-   - `patched[:, 0, :] = donor_cls`
-5. Run receiver again → `patched_logits`, `patched_pred`
-6. Aggregate transition statistics across the dataset
+- High flip rate: intervention strongly changes decisions
+- High target accuracy: flips move toward intended labels
+- Structured transitions: evidence of meaningful control rather than noise
 
 ---
 
-### 4.1 What is actually replaced?
+# Research Question
 
-- Only the `[CLS]` vector at the patched layer is replaced.
-- All other token vectors remain unchanged.
+This study investigates:
 
-This is intentional:
-
-- It tests whether a **sentence-level** control signal is sufficient to shift politeness predictions without directly overwriting token-specific honorific markers.
-
----
-
-### 4.2 Metrics reported
-
-We compute:
-
-- `avg_delta_target_logit`  
-  Average change in the target class logit due to patching:
-  - `patched_logits[:, target] - base_logits[:, target]`
-
-- `flip_to_target_rate`  
-  Fraction of instances where prediction flips **into** the target class:
-  - baseline is **not** target AND patched prediction **is** target
-
-- `base_pred_counts`  
-  Predicted class counts **before** patching (length 4)
-
-- `patched_pred_counts`  
-  Predicted class counts **after** patching (length 4)
-
-- `transition_counts` (4×4)  
-  Confusion-like transition matrix:
-  - rows = baseline prediction
-  - cols = patched prediction
-  - entry `(i, j)` counts how many moved from `i → j`
-
-We visualize `transition_counts` as a **4×4 heatmap**.
-
----
-
-## 5) Controls (sanity + strength checks)
-
-We include controls to ensure the effect is not an artifact.
-
-### 5.1 Self-patch (implementation sanity check)
-
-**Definition (strict):**
-
-- Use the **same receiver batch** as the donor
-- Extract donor CLS from the receiver itself
-- Patch receiver CLS with its own CLS
-
-Expected:
-
-- Almost no change (transition matrix ~ diagonal)
-
-Implementation:
-
-- `mode="self"` sets `donor_no_labels = receiver_no_labels`
-
----
-
-### 5.2 Random donor CLS (break pairing)
-
-**Definition:**
-
-- Extract donor CLS normally (from Level 1 donors),
-- then shuffle donor CLS vectors **within the batch** (break sentence ↔ CLS correspondence).
-
-Expected:
-
-- The effect weakens or becomes less consistent,
-- because “this donor sentence’s CLS” is no longer aligned.
-
-Implementation:
-
-- `perm = torch.randperm(B, generator=g)`
-- `donor_cls = donor_cls[perm]`
-
----
-
-### 5.3 Wrong-layer patch (layer sweep)
-
-**Definition:**
-
-- Patch CLS at **every encoder layer** (or every hidden-state index),
-- compute effect curves across layers.
-
-Expected:
-
-- Stronger effect near the layer(s) where politeness is encoded/used.
-- If it aligns with probe peak layers, that strengthens the causal story.
-
-Implementation:
-
-- Loop over encoder layers, hook each `layer_module`
-- Use matching hidden-state index `hs_idx = layer_idx + 1` for donor CLS
-
----
-
-## 6) Practical notes (indexing: hidden states vs encoder layers)
-
-HuggingFace `hidden_states` indexing and encoder layer indexing differ:
-
-- `hidden_states[0]` is **embeddings**, not an encoder block output.
-- Encoder layers are `layer_idx = 0..L-1`
-- Their outputs correspond to:
-  - `hidden_states[layer_idx + 1]`
-
-Therefore we track two indices:
-
-- `layer_idx` = encoder layer module index (for hooks)
-- `hs_index` = hidden states index (for extracting donor CLS)
-
-In code:
-
-- `layer_module = model.distilbert.transformer.layer[layer_idx]`
-- `donor_cls = donor_out.hidden_states[hs_index][:, 0, :]`
-- Usually: `hs_index = layer_idx + 1`
-
-When using `best_layer` selected from probing:
-
-- If probing was done over `hidden_states` indices, use it directly as `hs_index`.
-- Convert to encoder layer index via:
-  - `layer_idx = best_layer - 1`
+- Where is Japanese politeness represented inside transformer layers?
+- Is politeness merely decodable, or causally actionable?
+- Can compact subspaces control pragmatic judgments?
+- How much social reasoning is encoded in pretrained language models?
