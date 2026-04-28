@@ -35,6 +35,8 @@ def run_das(cfg):
     tokenizer, train_enc, dev_enc, test_enc, train_labels, dev_labels, test_labels = build_tokenizer(cfg, train_df, dev_df, test_df)
     train_dataloader, dev_dataloader, test_dataloader, model, device, model_num_layers = prepare_model(cfg, train_enc, dev_enc, test_enc, train_labels, dev_labels, test_labels)
 
+    train(cfg, train_dataloader, model, device, dev_dl=dev_dataloader)
+
     (x_train_layers, x_train_layers_full, train_masks, y_train, train_context_masks, train_quote_masks, x_train_cq_layers) = run_extraction(train_dataloader, model, device, train_df["text"].tolist(), train_enc, tokenizer, desc="Train hidden states")
     (x_dev_layers, x_dev_layers_full, dev_masks,y_dev, dev_context_masks, dev_quote_masks, x_dev_cq_layers) = run_extraction(dev_dataloader, model, device, dev_df["text"].tolist(), dev_enc, tokenizer, desc="Dev hidden states")
     (x_test_layers, x_test_layers_full, test_masks, y_test, test_context_masks, test_quote_masks, x_test_cq_layers) = run_extraction(test_dataloader, model, device, test_df["text"].tolist(), test_enc, tokenizer, desc="Test hidden states")
@@ -77,6 +79,8 @@ def run_das(cfg):
             x_train_cq_layers[hs_index],
             y_train,
             device,
+            x_dev=x_dev_cq_layers[hs_index],
+            y_dev=y_dev,
         )
 
         dev_probe_results = eval_pooled_vector_probe(

@@ -38,65 +38,140 @@ def mean_pool_hidden_torch(hidden, attention_mask):
 def train_pooled_vector_probe(
     cfg,
     probe,
-    X_train,
+    x_train,
     y_train,
     device,
-    mean=None,
-    std=None,
+    x_dev=None,
+    y_dev=None,
 ):
-    lr = cfg["tr_probe"]["lr"]
-    epochs = cfg["tr_probe"]["epochs"]
-    batch_size = cfg["tr_probe"]["batch_size"]
+    """
+    Train a linear probe on pooled context+quote vectors.
 
-    if mean is None or std is None:
-        mean, std = fit_standardizer(X_train)
+    Prints train/dev loss and accuracy for each epoch if dev data is provided.
 
-    X_train = apply_standardizer(X_train, mean, std)
-    y_train = torch.tensor(y_train, dtype=torch.long)
+    x_train: np.ndarray, shape (N, D)
+    y_train: np.ndarray, shape (N,)
+    x_dev:   optional np.ndarray, shape (N_dev, D)
+    y_dev:   optional np.ndarray, shape (N_dev,)
+    """
 
-    dataset = torch.utils.data.TensorDataset(X_train, y_train)
-    dataloader = torch.utils.data.DataLoader(
-        dataset,
+    import numpy as np
+    import torch
+    from torch.utils.data import DataLoader, TensorDataset
+
+    probe = probe.to(device)
+
+    # Standardize using train statistics only
+    train_mean = x_train.mean(axis=0, keepdims=True)
+    train_std = x_train.std(axis=0, keepdims=True)
+    train_std = np.where(train_std == 0, 1.0, train_std)
+
+    x_train_std = (x_train - train_mean) / train_std
+
+    x_train_tensor = torch.tensor(x_train_std, dtype=torch.float32)
+    y_train_tensor = torch.tensor(y_train, dtype=torch.long)
+
+    train_dataset = TensorDataset(x_train_tensor, y_train_tensor)
+
+    batch_size = cfg["das"].get("probe_batch_size", cfg["task"]["batch_size"])
+    epochs = cfg["das"].get("probe_epochs", 20)
+    lr = cfg["das"].get("probe_lr", 1e-3)
+
+    train_loader = DataLoader(
+        train_dataset,
         batch_size=batch_size,
         shuffle=True,
     )
 
-    probe = probe.to(device)
-    optimizer = torch.optim.AdamW(
-        probe.parameters(),
-        lr=lr,
-        weight_decay=cfg["tr_probe"]["weight_decay"],
-    )
+    if x_dev is not None and y_dev is not None:
+        x_dev_std = (x_dev - train_mean) / train_std
+        x_dev_tensor = torch.tensor(x_dev_std, dtype=torch.float32)
+        y_dev_tensor = torch.tensor(y_dev, dtype=torch.long)
 
-    for epoch in range(epochs):
+        dev_dataset = TensorDataset(x_dev_tensor, y_dev_tensor)
+        dev_loader = DataLoader(
+            dev_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+        )
+    else:
+        dev_loader = None
+
+    optimizer = torch.optim.AdamW(probe.parameters(), lr=lr)
+    criterion = torch.nn.CrossEntropyLoss()
+
+    for epoch in range(1, epochs + 1):
         probe.train()
-        total_loss = 0.0
-        total_correct = 0
-        total_n = 0
 
-        for x, labels in tqdm(dataloader, desc=f"Probe epoch {epoch+1}/{epochs}"):
-            x = x.to(device)
-            labels = labels.to(device)
+        total_train_loss = 0.0
+        total_train_correct = 0
+        total_train_examples = 0
+
+        for xb, yb in train_loader:
+            xb = xb.to(device)
+            yb = yb.to(device)
 
             optimizer.zero_grad()
-            logits = probe(x)
-            loss = F.cross_entropy(logits, labels)
+
+            logits = probe(xb)
+            loss = criterion(logits, yb)
 
             loss.backward()
             optimizer.step()
 
-            pred = logits.argmax(dim=1)
-            total_loss += loss.item() * labels.size(0)
-            total_correct += (pred == labels).sum().item()
-            total_n += labels.size(0)
+            batch_size_actual = xb.size(0)
+            total_train_loss += loss.item() * batch_size_actual
 
-        print(
-            f"epoch={epoch+1} "
-            f"loss={total_loss / total_n:.4f} "
-            f"acc={total_correct / total_n:.4f}"
-        )
+            preds = logits.argmax(dim=-1)
+            total_train_correct += (preds == yb).sum().item()
+            total_train_examples += batch_size_actual
 
-    return probe, mean, std
+        avg_train_loss = total_train_loss / total_train_examples
+        train_acc = total_train_correct / total_train_examples
+
+        if dev_loader is not None:
+            probe.eval()
+
+            total_dev_loss = 0.0
+            total_dev_correct = 0
+            total_dev_examples = 0
+
+            with torch.no_grad():
+                for xb, yb in dev_loader:
+                    xb = xb.to(device)
+                    yb = yb.to(device)
+
+                    logits = probe(xb)
+                    loss = criterion(logits, yb)
+
+                    batch_size_actual = xb.size(0)
+                    total_dev_loss += loss.item() * batch_size_actual
+
+                    preds = logits.argmax(dim=-1)
+                    total_dev_correct += (preds == yb).sum().item()
+                    total_dev_examples += batch_size_actual
+
+            avg_dev_loss = total_dev_loss / total_dev_examples
+            dev_acc = total_dev_correct / total_dev_examples
+
+            print(
+                f"[Probe epoch {epoch:03d}/{epochs}] "
+                f"train_loss={avg_train_loss:.4f} "
+                f"train_acc={train_acc:.4f} "
+                f"dev_loss={avg_dev_loss:.4f} "
+                f"dev_acc={dev_acc:.4f}",
+                flush=True,
+            )
+
+        else:
+            print(
+                f"[Probe epoch {epoch:03d}/{epochs}] "
+                f"train_loss={avg_train_loss:.4f} "
+                f"train_acc={train_acc:.4f}",
+                flush=True,
+            )
+
+    return probe, train_mean, train_std
 
 
 def eval_pooled_vector_probe(
