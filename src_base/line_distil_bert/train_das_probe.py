@@ -170,8 +170,26 @@ def train_pooled_vector_probe(
                 f"train_acc={train_acc:.4f}",
                 flush=True,
             )
+    
+    probe_mean = torch.tensor(train_mean, dtype=torch.float32, device=device)
+    probe_std = torch.tensor(train_std, dtype=torch.float32, device=device)
 
-    return probe, train_mean, train_std
+    return probe, probe_mean, probe_std
+
+def apply_standardizer(X, mean, std):
+    if not torch.is_tensor(X):
+        X = torch.tensor(X, dtype=torch.float32)
+
+    if not torch.is_tensor(mean):
+        mean = torch.tensor(mean, dtype=torch.float32)
+
+    if not torch.is_tensor(std):
+        std = torch.tensor(std, dtype=torch.float32)
+
+    mean = mean.detach().cpu()
+    std = std.detach().cpu()
+
+    return (X - mean) / std
 
 
 def eval_pooled_vector_probe(

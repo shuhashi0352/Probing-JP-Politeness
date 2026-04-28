@@ -9,50 +9,94 @@ def load_yaml(path): # "config.yaml"
     with open(path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
 
-def train(cfg, train_dl, model, device):
+def train(cfg, train_dl, model, device, dev_dl=None):
+    import torch
+    from tqdm import tqdm
 
-    sched = cfg["scheduler"]
-    sched_name = sched["name"]
-    num_warmup_steps = sched["warmup_steps"]
-    epochs = cfg["task"]["num_epochs"]
-    lr = cfg["task"]["learning_rate"]
-    num_training_steps = len(train_dl) * epochs
+    model.to(device)
 
-    optimizer = AdamW((p for p in model.parameters() if p.requires_grad), lr=lr)
+    epochs = cfg["task"].get("epochs", 3)
+    lr = cfg["task"].get("lr", 2e-5)
 
-    lr_scheduler = get_scheduler(
-        sched_name, 
-        optimizer=optimizer, 
-        num_warmup_steps=num_warmup_steps, 
-        num_training_steps=num_training_steps)  
+    optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
 
-    start_epoch = 0
-    global_step = 0
-
-    for epoch in range(start_epoch, epochs):
-        # set the model to training mode
+    for epoch in range(1, epochs + 1):
         model.train()
-        total_loss = 0
-        
-        for batch in tqdm(train_dl, desc="Train Per Batch", unit="batch"):
-            batch = {k: v.to(device) for k, v in batch.items() if k != "offset_mapping"}
 
-            # reset the gradient descent
+        total_train_loss = 0.0
+        total_train_correct = 0
+        total_train_examples = 0
+
+        pbar = tqdm(train_dl, desc=f"Classifier train epoch {epoch}/{epochs}", unit="batch")
+
+        for batch in pbar:
+            batch = {k: v.to(device) for k, v in batch.items()}
+
             optimizer.zero_grad()
 
             outputs = model(**batch)
-
             loss = outputs.loss
-            total_loss += loss.item()
+            logits = outputs.logits
 
-            # Backpropagation
             loss.backward()
-
-            # updates the parameters and the learning rate
             optimizer.step()
-            lr_scheduler.step()
 
-            global_step += 1
-        
-        avg_loss = total_loss / len(train_dl)
-        print(f"Epoch {epoch+1}, Training Loss: {avg_loss:.4f}")
+            batch_size = batch["labels"].size(0)
+
+            total_train_loss += loss.item() * batch_size
+            total_train_examples += batch_size
+
+            preds = logits.argmax(dim=-1)
+            total_train_correct += (preds == batch["labels"]).sum().item()
+
+            pbar.set_postfix({
+                "loss": f"{loss.item():.4f}",
+            })
+
+        avg_train_loss = total_train_loss / total_train_examples
+        train_acc = total_train_correct / total_train_examples
+
+        if dev_dl is not None:
+            model.eval()
+
+            total_dev_loss = 0.0
+            total_dev_correct = 0
+            total_dev_examples = 0
+
+            with torch.no_grad():
+                for batch in tqdm(dev_dl, desc=f"Classifier dev epoch {epoch}/{epochs}", unit="batch"):
+                    batch = {k: v.to(device) for k, v in batch.items()}
+
+                    outputs = model(**batch)
+                    loss = outputs.loss
+                    logits = outputs.logits
+
+                    batch_size = batch["labels"].size(0)
+
+                    total_dev_loss += loss.item() * batch_size
+                    total_dev_examples += batch_size
+
+                    preds = logits.argmax(dim=-1)
+                    total_dev_correct += (preds == batch["labels"]).sum().item()
+
+            avg_dev_loss = total_dev_loss / total_dev_examples
+            dev_acc = total_dev_correct / total_dev_examples
+
+            print(
+                f"[Classifier epoch {epoch:03d}/{epochs}] "
+                f"train_loss={avg_train_loss:.4f} "
+                f"train_acc={train_acc:.4f} "
+                f"dev_loss={avg_dev_loss:.4f} "
+                f"dev_acc={dev_acc:.4f}",
+                flush=True,
+            )
+
+        else:
+            print(
+                f"[Classifier epoch {epoch:03d}/{epochs}] "
+                f"train_loss={avg_train_loss:.4f} "
+                f"train_acc={train_acc:.4f}",
+                flush=True,
+            )
+
+    return model

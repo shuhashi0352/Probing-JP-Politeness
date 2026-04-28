@@ -46,8 +46,21 @@ def load_yaml(path): # "config.yaml"
     
 # Freeze the encoder parameters
 def freeze_model(model):
-    for p in model.parameters():
-        p.requires_grad = False
+    """
+    Freeze DistilBERT encoder only.
+    Keep the classification head trainable.
+    """
+
+    # Freeze encoder
+    for param in model.distilbert.parameters():
+        param.requires_grad = False
+
+    # Keep classifier head trainable
+    for param in model.pre_classifier.parameters():
+        param.requires_grad = True
+
+    for param in model.classifier.parameters():
+        param.requires_grad = True
     
 def prepare_model(cfg, train_enc, dev_enc, test_enc, train_labels, dev_labels, test_labels):
 
@@ -66,7 +79,7 @@ def prepare_model(cfg, train_enc, dev_enc, test_enc, train_labels, dev_labels, t
     test_dataset = PolitenessDataset(test_enc, test_labels)
 
     # Create DataLoaders for batch training
-    train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=False, generator=g)
+    train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, generator=g)
     dev_dataloader = DataLoader(dev_dataset, batch_size=batch_size, shuffle=False)
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
