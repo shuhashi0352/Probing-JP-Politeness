@@ -215,41 +215,98 @@ def context_quote_rep_torch(hidden, context_mask, quote_mask):
 
 def run_extraction(dataloader, model, device, texts, encodings, tokenizer, desc):
     """
-    Main extraction function.
+    Memory-efficient extraction.
 
-    Returns:
-      x_layers_mean:          list[(N, H)]
-      x_layers_full:          list[(N, T, H)]
-      attention_masks:        (N, T)
-      y:                      (N,)
-      context_masks:          (N, T)
-      quote_masks:            (N, T)
-      x_layers_context_quote: list[(N, 2H)]
+    Instead of storing full hidden states:
+        list[(N, T, H)]
+
+    this stores only context+quote pooled vectors:
+        list[(N, 2H)]
+
+    Returns the same tuple shape expected by run_das.py.
     """
-    x_layers_full, attention_masks, y = extract_hs_by_layer(
-        dataloader,
-        model,
-        device,
-        desc=desc,
-    )
 
-    context_masks, quote_masks = build_context_quote_masks(
+    print(f"\n{desc}...\n", flush=True)
+
+    model.eval()
+
+    context_masks_np, quote_masks_np = build_context_quote_masks(
         texts=texts,
         encodings=encodings,
         tokenizer=tokenizer,
     )
 
+    all_layer_cq_chunks = None
+    all_attention_masks = []
+    all_labels = []
+
+    start = 0
+
+    with torch.no_grad():
+        for batch in tqdm(dataloader, desc=desc, unit="batch", total=len(dataloader)):
+            batch_size = batch["input_ids"].size(0)
+            end = start + batch_size
+
+            batch_context_masks = torch.tensor(
+                context_masks_np[start:end],
+                dtype=torch.float32,
+                device=device,
+            )
+            batch_quote_masks = torch.tensor(
+                quote_masks_np[start:end],
+                dtype=torch.float32,
+                device=device,
+            )
+
+            batch = {k: v.to(device) for k, v in batch.items()}
+
+            all_labels.append(batch["labels"].detach().cpu())
+            all_attention_masks.append(batch["attention_mask"].detach().cpu())
+
+            batch_no_labels = {
+                k: v for k, v in batch.items()
+                if k not in ["labels", "offset_mapping"]
+            }
+
+            outputs = model(
+                **batch_no_labels,
+                output_hidden_states=True,
+                return_dict=True,
+            )
+
+            hidden_states = outputs.hidden_states
+
+            if all_layer_cq_chunks is None:
+                all_layer_cq_chunks = [[] for _ in range(len(hidden_states))]
+
+            for layer_idx, h in enumerate(hidden_states):
+                cq = context_quote_rep_torch(
+                    h,
+                    batch_context_masks,
+                    batch_quote_masks,
+                )
+                all_layer_cq_chunks[layer_idx].append(cq.detach().cpu())
+
+            start = end
+
+    print(f"{desc}: finished batch-level context+quote pooling", flush=True)
+
     x_layers_context_quote = [
-        context_quote_rep_np(h, context_masks, quote_masks)
-        for h in tqdm(x_layers_full, desc="Context+quote pooling", unit="layer")
+        torch.cat(chunks, dim=0).numpy()
+        for chunks in all_layer_cq_chunks
     ]
+
+    attention_masks = torch.cat(all_attention_masks, dim=0).numpy()
+    y = torch.cat(all_labels, dim=0).numpy()
+
+    print(f"{desc}: returning pooled hidden states", flush=True)
 
     return (
         None,
-        x_layers_full,
+        None,
         attention_masks,
         y,
-        context_masks,
-        quote_masks,
+        context_masks_np,
+        quote_masks_np,
         x_layers_context_quote,
     )
