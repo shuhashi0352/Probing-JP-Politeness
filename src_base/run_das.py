@@ -5,18 +5,12 @@ from data import split_data, prepare_model, make_das_dataloaders
 from preprocess import build_tokenizer
 from probing.extract_hs import run_extraction
 from probing.probe_dev import layerwise_logreg_scores
-from probing.probe_test_bestLayer import train_trdev_probe_and_eval_test
-from probing.utils import get_encoder_layer_module
-from probing.patching import causal_cls_patching
 from line_distil_bert.das import get_distilbert_layer_module, train_das, eval_das
 from line_distil_bert.train_das_probe import StandardizedLinearProbe, train_pooled_vector_probe, eval_pooled_vector_probe, apply_standardizer
 
 # For finetuning (if needed)
 from line_distil_bert.train_line import train
 from line_distil_bert.eval_line import dev, test
-
-# If the checkpoint setting exists
-from line_distil_bert.checkpoint import inspect_checkpoint
 
 # Visualization
 from probing.visual import load_das_layer_results, generate_das_visualizations
